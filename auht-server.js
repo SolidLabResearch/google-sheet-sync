@@ -13,9 +13,9 @@ const server = createServer((request, response) => {
     const code = query.code;
 
     if (code) {
-        client.getToken(code, (err, token) => {
-            if (err) {
-                console.error('Error retrieving access token:', err);
+        client.getToken(code, (error, token) => {
+            if (error) {
+                console.error('Error retrieving access token:', error);
                 response.writeHead(400, {'Content-Type': 'text/plain'});
                 response.end("Error: Code missing or incorrect");
             }
@@ -33,8 +33,18 @@ const server = createServer((request, response) => {
             redirect_uri: "http://localhost:" + port
         });
 
-        response.writeHead(302, {'Location': authUrl});
-        response.end();
+        fs.readFile('index.html', 'utf8', (error, data) => {
+            if (error) {
+                response.writeHead(500, { 'Content-Type': 'text/plain' });
+                response.end('Internal Server Error');
+                return;
+            }
+
+            const html = data.replace('DYNAMIC_AUTH_URL', authUrl);
+
+            response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.end(html);
+        });
     }
 })
 

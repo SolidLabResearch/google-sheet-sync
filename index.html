@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Authentication</title>
+</head>
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+<div style="text-align: center;">
+    <h2>Google Sheets API Authentication</h2>
+    <p>To create an access and refresh token pair, click the authentication button bellow and log in with the Google account connected to your Client ID and secret.</p>
+    <button id='authButton'>Authenticate</button>
+</div>
+<script>
+    document.getElementById('authButton').onclick = function () {
+        location.href = 'DYNAMIC_AUTH_URL'
+    }
+</script>
+</body>
+</html>
