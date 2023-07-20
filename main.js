@@ -63,35 +63,31 @@ function startFromFile(path) {
     });
 }
 
-async function mapsTo2DArray(maps) {
+async function mapsTo2DArray(maps, keys) {
+    config.keys = [...keys];
+
     let arrays = [];
     let array = [];
 
-    for (const key in config.required) {
+    config.keys.forEach((key) => {
         array.push(key.toUpperCase());
-    }
-
-    for (const key in config.optional) {
-        array.push(key.toUpperCase());
-    }
+    });
     arrays.push(array);
 
-    for (let i = 0; i < maps.length; i++) {
+    maps.forEach((map) => {
         let array = [];
-        for (const key in config.required) {
-            array.push(maps[i].get(key));
-        }
 
-        for (const key in config.optional) {
-            if (maps[i].has(key)) {
-                array.push(maps[i].get(key));
+        config.keys.forEach((key) => {
+            if (map.has(key)) {
+                array.push(map.get(key));
             } else {
                 array.push('');
             }
-        }
+        });
 
         arrays.push(array);
-    }
+    });
+
     console.log(arrays)
     await writeToSheet(arrays, config.sheetid)
 }

@@ -4,6 +4,7 @@ export async function queryResource(config, callback) {
     const myEngine = new QueryEngine();
 
     const results = [];
+    const keys = new Set();
 
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
@@ -16,22 +17,16 @@ export async function queryResource(config, callback) {
     const stream = await result.execute();
 
     stream.on('data', (binding) =>  {
-        const entry = new Map();
-
-        for (const key in config.required) {
-            entry.set(key, binding.get(key).value);
-        }
-
-        for (const key in config.optional) {
-            if (binding.has(key)) {
-                entry.set(key, binding.get(key).value);
-            }
-        }
-        results.push(entry);
+        const result = new Map();
+        binding.entries.forEach((value, key) => {
+            keys.add(key)
+            result.set(key, value.id);
+        })
+        results.push(result);
     })
 
     stream.on('end', () => {
-        callback(results);
+        callback(results, keys);
     })
 }
 
