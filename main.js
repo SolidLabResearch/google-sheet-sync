@@ -78,11 +78,7 @@ async function mapsTo2DArray(maps, keys) {
         let array = [];
 
         config.keys.forEach((key) => {
-            if (map.has(key)) {
-                array.push(map.get(key));
-            } else {
-                array.push('');
-            }
+            array.push(map.has(key) ? map.get(key) : '');
         });
 
         arrays.push(array);
