@@ -22,8 +22,6 @@ function ymlContentToConfig(ymlContent) {
                     requiredFields[name] = value;
                 });
                 config.required = requiredFields;
-            } else {
-                console.error("Error parsing YML: at least one required field should be given")
             }
 
             if (configJson.resource.fields.optional) {
