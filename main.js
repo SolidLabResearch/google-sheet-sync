@@ -35,24 +35,24 @@ function ymlContentToConfig(ymlContent) {
         } else if (configJson.resource.query) {
             config.query = configJson.resource.query;
         } else {
-            console.error("Error parsing YML: either fields or a SPARQL query should be given");
+            console.error("Error parsing YAML: either fields or a SPARQL query should be given");
             return;
         }
 
         if (configJson.resource.sources) {
             config.sources = configJson.resource.sources;
         } else {
-            console.error("Error parsing YML: at least one source must be specified");
+            console.error("Error parsing YAML: at least one source must be specified");
         }
 
         if (configJson.sheet.id) {
             config.sheetid = configJson.sheet.id;
         } else {
-            console.error("Error parsing YML: Google sheet id should be specified");
+            console.error("Error parsing YAML: Google sheet id should be specified");
         }
 
     } catch (error) {
-        console.error('Error parsing YML:', error);
+        console.error('Error parsing YAML:', error);
     }
 }
 
