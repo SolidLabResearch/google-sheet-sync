@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts" :{
     "start": "node main.js",
-    "auth": "node auht-server.js"
+    "auth": "node auth-server.js"
   },
   "dependencies": {
     "@comunica/query-sparql": "^2.8.1",
