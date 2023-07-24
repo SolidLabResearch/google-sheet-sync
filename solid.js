@@ -3,9 +3,10 @@ import {QueryEngine} from "@comunica/query-sparql";
 /**
  * Query the necessary data from the Solid pod/resource(s) using the configuration
  * @param {Object} config - Configuration object containing the necessary information to query and process the retrieved data.
- * @param {Function} callback - Function to call once the query is completed.
+ * @return {Promise<{array, array}>} Map objects containing the retrieved data
+ * and all possible keys representing the properties contained in the maps.
  */
-export async function queryResource(config, callback) {
+export async function queryResource(config) {
     const myEngine = new QueryEngine();
     const results = [];
     const keys = new Set();
@@ -28,9 +29,13 @@ export async function queryResource(config, callback) {
         results.push(result);
     })
 
-    stream.on('end', () => {
-        callback(results, keys);
-    })
+    return new Promise((resolve, reject) => {
+        stream.on('end', () => {
+            resolve({results, keys});
+        });
+
+        stream.on('error', reject);
+    });
 }
 
 /**

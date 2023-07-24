@@ -43,6 +43,7 @@ function ymlContentToConfig(ymlContent) {
             config.sources = configJson.resource.sources;
         } else {
             console.error("Error parsing YAML: at least one source must be specified");
+            return;
         }
 
         if (configJson.sheet.id) {
@@ -59,11 +60,9 @@ function ymlContentToConfig(ymlContent) {
 /**
  * Convert an array of Map objects into a 2D array.
  * @param {array} maps - An array of Map objects containing data to be converted to the 2D array.
- * @param {array} keys - An array of keys representing the possible properties to be extracted from the maps.
+ * @return {array} 2D array containing the converted data.
  */
-async function mapsTo2DArray(maps, keys) {
-    config.keys = [...keys];
-
+function mapsTo2DArray(maps) {
     let arrays = [];
     let array = [];
 
@@ -83,7 +82,7 @@ async function mapsTo2DArray(maps, keys) {
     });
 
     console.log(arrays)
-    await writeToSheet(arrays, config.sheetid)
+    return arrays;
 }
 
 /**
@@ -96,7 +95,10 @@ function startFromFile(path) {
             console.error('Error reading the file:', err);
         } else {
             ymlContentToConfig(data);
-            await queryResource(config, mapsTo2DArray);
+            const {results, keys} = await queryResource(config);
+            config.keys = [...keys]
+            const arrays = mapsTo2DArray(results);
+            await writeToSheet(arrays, config.sheetid)
         }
     });
 }
