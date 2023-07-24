@@ -1,5 +1,10 @@
 import {QueryEngine} from "@comunica/query-sparql";
 
+/**
+ * Query the necessary data from the Solid pod/resource(s) using the configuration
+ * @param {Object} config - Configuration object containing the necessary information to query and process the retrieved data.
+ * @param {Function} callback - Function to call once the query is completed.
+ */
 export async function queryResource(config, callback) {
     const myEngine = new QueryEngine();
 
@@ -30,6 +35,11 @@ export async function queryResource(config, callback) {
     })
 }
 
+/**
+ * Convert the "fields" configuration data into a SPARQL query
+ * @param {Object} config - Configuration object containing the necessary information build the SPARQL query (required and optional fields).
+ * @return {String} The constructed SPARQL query.
+ */
 function configToSPARQLQuery(config) {
 
     let sparqlQuery = `SELECT DISTINCT * WHERE {\n`;

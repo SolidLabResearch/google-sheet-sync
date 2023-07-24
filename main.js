@@ -3,8 +3,13 @@ import fs from 'fs';
 import {queryResource} from "./solid.js";
 import {writeToSheet} from "./google.js";
 
+// Object containing information relating to the configuration of the synchronisation app
 let config = {};
 
+/**
+ * Parse YAML data and write it to the configuration object.
+ * @param {string} ymlContent - String containing the contents of a YAML file.
+ */
 function ymlContentToConfig(ymlContent) {
     try {
         const parsedYml = load(ymlContent);
@@ -52,17 +57,11 @@ function ymlContentToConfig(ymlContent) {
     }
 }
 
-function startFromFile(path) {
-    fs.readFile(path, 'utf8', async (err, data) => {
-        if (err) {
-            console.error('Error reading the file:', err);
-        } else {
-            ymlContentToConfig(data);
-            await queryResource(config, mapsTo2DArray);
-        }
-    });
-}
-
+/**
+ * Convert an array of Map objects into a 2D array.
+ * @param {array} maps - An array of Map objects containing data to be converted to the 2D array.
+ * @param {array} keys - An array of keys representing the possible properties to be extracted from the maps.
+ */
 async function mapsTo2DArray(maps, keys) {
     config.keys = [...keys];
 
@@ -86,6 +85,21 @@ async function mapsTo2DArray(maps, keys) {
 
     console.log(arrays)
     await writeToSheet(arrays, config.sheetid)
+}
+
+/**
+ * Start the synchronisation app from the path of the configuration file.
+ * @param {String} path - Path of the configuration file.
+ */
+function startFromFile(path) {
+    fs.readFile(path, 'utf8', async (err, data) => {
+        if (err) {
+            console.error('Error reading the file:', err);
+        } else {
+            ymlContentToConfig(data);
+            await queryResource(config, mapsTo2DArray);
+        }
+    });
 }
 
 async function main() {
