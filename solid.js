@@ -1,7 +1,7 @@
 import {QueryEngine} from "@comunica/query-sparql";
 
 /**
- * Query the necessary data from the Solid pod/resource(s) using the configuration
+ * Query the data from the Solid pod/resource(s) using the configuration
  * @param {Object} config - Configuration object containing the necessary information to query and process the retrieved data.
  * @return {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
