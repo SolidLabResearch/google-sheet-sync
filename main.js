@@ -12,12 +12,12 @@ let config = {};
  */
 function ymlContentToConfig(ymlContent) {
     try {
-        const parsedYml = load(ymlContent);
+        const configJson = load(ymlContent);
 
-        if (parsedYml.resource && parsedYml.resource.fields) {
-            if (parsedYml.resource.fields.required) {
+        if (configJson.resource && configJson.resource.fields) {
+            if (configJson.resource.fields.required) {
                 const requiredFields = {};
-                parsedYml.resource.fields.required.forEach((field) => {
+                configJson.resource.fields.required.forEach((field) => {
                     const [name, value] = Object.entries(field)[0];
                     requiredFields[name] = value;
                 });
@@ -26,28 +26,29 @@ function ymlContentToConfig(ymlContent) {
                 console.error("Error parsing YML: at least one required field should be given")
             }
 
-            if (parsedYml.resource.fields.optional) {
+            if (configJson.resource.fields.optional) {
                 const optionalFields = {};
-                parsedYml.resource.fields.optional.forEach((field) => {
+                configJson.resource.fields.optional.forEach((field) => {
                     const [name, value] = Object.entries(field)[0];
                     optionalFields[name] = value;
                 });
                 config.optional = optionalFields;
             }
-        } else if (parsedYml.resource.query) {
-            config.query = parsedYml.resource.query;
+        } else if (configJson.resource.query) {
+            config.query = configJson.resource.query;
         } else {
             console.error("Error parsing YML: either fields or a SPARQL query should be given");
+            return;
         }
 
-        if (parsedYml.resource.sources) {
-            config.sources = parsedYml.resource.sources;
+        if (configJson.resource.sources) {
+            config.sources = configJson.resource.sources;
         } else {
             console.error("Error parsing YML: at least one source must be specified");
         }
 
-        if (parsedYml.sheet.id) {
-            config.sheetid = parsedYml.sheet.id;
+        if (configJson.sheet.id) {
+            config.sheetid = configJson.sheet.id;
         } else {
             console.error("Error parsing YML: Google sheet id should be specified");
         }
@@ -102,8 +103,8 @@ function startFromFile(path) {
     });
 }
 
-async function main() {
-    await startFromFile("config.yml");
+function main() {
+    startFromFile("config.yml");
 }
 
-await main();
+main();

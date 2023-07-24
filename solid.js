@@ -7,10 +7,8 @@ import {QueryEngine} from "@comunica/query-sparql";
  */
 export async function queryResource(config, callback) {
     const myEngine = new QueryEngine();
-
     const results = [];
     const keys = new Set();
-
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
     console.log("query: ", query)
@@ -41,7 +39,6 @@ export async function queryResource(config, callback) {
  * @return {String} The constructed SPARQL query.
  */
 function configToSPARQLQuery(config) {
-
     let sparqlQuery = `SELECT DISTINCT * WHERE {\n`;
 
     for (const key in config.required) {
