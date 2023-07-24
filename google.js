@@ -43,7 +43,7 @@ export async function writeToSheet(array, sheetId) {
 
         const response = await sheets.spreadsheets.values.update({
             spreadsheetId: sheetId,
-            range: range,
+            range,
             valueInputOption: 'RAW',
             resource: resource,
         });

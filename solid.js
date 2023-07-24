@@ -41,7 +41,6 @@ export async function queryResource(config, callback) {
  * @return {String} The constructed SPARQL query.
  */
 function configToSPARQLQuery(config) {
-
     let sparqlQuery = `SELECT DISTINCT * WHERE {\n`;
 
     for (const key in config.required) {
