@@ -3,7 +3,7 @@ import fs from 'fs';
 import {queryResource} from "./solid.js";
 import {writeToSheet} from "./google.js";
 
-// Object containing information relating to the configuration of the synchronisation app
+// Object containing information relating to the configuration of the synchronisation app.
 let config = {};
 
 /**
