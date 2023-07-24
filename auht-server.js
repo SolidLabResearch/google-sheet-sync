@@ -4,7 +4,7 @@ import {config} from "dotenv";
 import {google} from "googleapis";
 import fs from 'fs';
 
-const port = 80;
+const port = 5000;
 
 let client;
 
@@ -24,7 +24,7 @@ const server = createServer((request, response) => {
             fs.writeFileSync('credentials.json', jsonString, 'utf-8');
 
             response.writeHead(200, {'Content-Type': 'text/plain'});
-            response.end('Authentication succeeded. Credentials written to "credentials.json"');
+            response.end('Authentication successful. Credentials written to "credentials.json"');
         });
     } else {
         const authUrl = client.generateAuthUrl({

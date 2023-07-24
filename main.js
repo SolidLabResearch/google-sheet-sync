@@ -92,4 +92,4 @@ async function main() {
     await startFromFile("config.yml");
 }
 
-main().then();
+await main();
