@@ -33,25 +33,21 @@ export async function writeToSheet(array, sheetId) {
         auth: client
     });
 
-    try {
-        const range = 'A1:' + convertToCellIndex(array);
-        console.log("range: ", range)
+    const range = 'A1:' + convertToCellIndex(array);
+    console.log("range: ", range)
 
-        const resource = {
-            values: array,
-        };
+    const resource = {
+        values: array,
+    };
 
-        const response = await sheets.spreadsheets.values.update({
-            spreadsheetId: sheetId,
-            range,
-            valueInputOption: 'RAW',
-            resource: resource,
-        });
+    const response = await sheets.spreadsheets.values.update({
+        spreadsheetId: sheetId,
+        range,
+        valueInputOption: 'RAW',
+        resource: resource,
+    });
 
-        console.log(`${response.data.updatedCells} cells updated.`);
-    } catch (error) {
-        console.error('The API returned an error:', error.message);
-    }
+    console.log(`${response.data.updatedCells} cells updated.`);
 }
 
 /**
