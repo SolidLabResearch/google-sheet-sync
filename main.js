@@ -11,49 +11,42 @@ let config = {};
  * @param {string} ymlContent - String containing the contents of a YAML file.
  */
 function ymlContentToConfig(ymlContent) {
-    try {
-        const configJson = load(ymlContent);
+    const configJson = load(ymlContent);
 
-        if (configJson.resource && configJson.resource.fields) {
-            if (configJson.resource.fields.required) {
-                const requiredFields = {};
-                configJson.resource.fields.required.forEach((field) => {
-                    const [name, value] = Object.entries(field)[0];
-                    requiredFields[name] = value;
-                });
-                config.required = requiredFields;
-            }
-
-            if (configJson.resource.fields.optional) {
-                const optionalFields = {};
-                configJson.resource.fields.optional.forEach((field) => {
-                    const [name, value] = Object.entries(field)[0];
-                    optionalFields[name] = value;
-                });
-                config.optional = optionalFields;
-            }
-        } else if (configJson.resource.query) {
-            config.query = configJson.resource.query;
-        } else {
-            console.error("Error parsing YAML: either fields or a SPARQL query should be given");
-            return;
+    if (configJson.resource && configJson.resource.fields) {
+        if (configJson.resource.fields.required) {
+            const requiredFields = {};
+            configJson.resource.fields.required.forEach((field) => {
+                const [name, value] = Object.entries(field)[0];
+                requiredFields[name] = value;
+            });
+            config.required = requiredFields;
         }
 
-        if (configJson.resource.sources) {
-            config.sources = configJson.resource.sources;
-        } else {
-            console.error("Error parsing YAML: at least one source must be specified");
-            return;
+        if (configJson.resource.fields.optional) {
+            const optionalFields = {};
+            configJson.resource.fields.optional.forEach((field) => {
+                const [name, value] = Object.entries(field)[0];
+                optionalFields[name] = value;
+            });
+            config.optional = optionalFields;
         }
+    } else if (configJson.resource.query) {
+        config.query = configJson.resource.query;
+    } else {
+        throw new Error("Error parsing YAML: either fields or a SPARQL query should be given");
+    }
 
-        if (configJson.sheet.id) {
-            config.sheetid = configJson.sheet.id;
-        } else {
-            console.error("Error parsing YAML: Google sheet id should be specified");
-        }
+    if (configJson.resource.sources) {
+        config.sources = configJson.resource.sources;
+    } else {
+        throw new Error("Error parsing YAML: at least one source must be specified");
+    }
 
-    } catch (error) {
-        console.error('Error parsing YAML:', error);
+    if (configJson.sheet.id) {
+        config.sheetid = configJson.sheet.id;
+    } else {
+        throw new Error("Error parsing YAML: Google sheet id should be specified");
     }
 }
 
@@ -93,6 +86,7 @@ function startFromFile(path) {
     fs.readFile(path, 'utf8', async (err, data) => {
         if (err) {
             console.error('Error reading the file:', err);
+            process.exit(1);
         } else {
             ymlContentToConfig(data);
             const {results, keys} = await queryResource(config);
