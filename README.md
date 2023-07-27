@@ -33,12 +33,13 @@ An example on how this should be done is present in `.example.env`.
 When a valid OAuth2 ID and secret is supplied, one still has to create an access token and refresh token to use the API.
 To create these, follow these steps using the authentication app:
 
-1) Run `npm run auth` to start the authentication web app.
-2) Navigate to `http://localhost:5000/` (or another port if changed) in a browser.
-3) press "Authenticate".
-4) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
+1) Make sure all dependencies have been installed by running `npm i`.
+2) Run `npm run auth` to start the authentication web app.
+3) Navigate to `http://localhost:5000/` (or another port if changed) in a browser.
+4) press "Authenticate".
+5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
-5) When successfull, the correct tokens have now been written to `credentials.json`.
+6) When successfull, the correct tokens have now been written to `credentials.json`.
    An example of how this should look like is present in `credentials.example.json`.
 
 The synchronisation app can now read and use these tokes to access the Google Sheet with the Google Sheets API.
@@ -88,7 +89,7 @@ sheet:
   id: "ABCD1234"
 ```
 
-To find the id of your Google sheet, Look at the URL of the Google Sheet in the address bar of your web browser.
+To find the id of your Google sheet, look at the URL of the Google Sheet in the address bar of your web browser.
 The URL should look something like this:
 ```
 https://docs.google.com/spreadsheets/d/DOCUMENT_ID/edit#gid=0
