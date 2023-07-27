@@ -1,0 +1,14 @@
+resource:
+
+  sources:
+    - "https://data.knows.idlab.ugent.be/person/office/software"
+
+  fields:
+    required:
+      - name: "<http://schema.org/name>"
+    optional:
+      - description: "<http://schema.org/description>"
+      - logo: "<http://schema.org/logo>"
+
+sheet:
+  id: "ABCD1234"

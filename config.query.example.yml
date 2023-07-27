@@ -1,0 +1,14 @@
+resource:
+
+  sources:
+    - "https://data.knows.idlab.ugent.be/person/office/software"
+
+  query: >
+    SELECT DISTINCT * WHERE {
+        ?s <http://schema.org/name> ?name .
+        OPTIONAL {?s <http://schema.org/description> ?description} .
+        OPTIONAL {?s <http://schema.org/logo> ?logo} .
+    }
+
+sheet:
+  id: "ABCD1234"

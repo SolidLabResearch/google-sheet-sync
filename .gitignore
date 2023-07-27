@@ -1,0 +1,4 @@
+.env
+config.yml
+credentials.json
+node_modules
