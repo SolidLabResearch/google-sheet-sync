@@ -1,7 +1,8 @@
-import {load} from "js-yaml";
 import fs from 'fs';
+import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
+import {load} from "js-yaml";
+import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
 import {queryResource} from "./solid.js";
-import {writeToSheet} from "./google.js";
 
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
@@ -48,6 +49,8 @@ function ymlContentToConfig(ymlContent) {
     } else {
         throw new Error("Error parsing YAML: Google sheet id should be specified");
     }
+
+    config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
 }
 
 /**
@@ -60,7 +63,7 @@ function mapsTo2DArray(maps) {
     let array = [];
 
     config.keys.forEach((key) => {
-        array.push(key.toUpperCase());
+        array.push(key);
     });
     arrays.push(array);
 
@@ -74,8 +77,24 @@ function mapsTo2DArray(maps) {
         arrays.push(array);
     });
 
-    console.log(arrays)
     return arrays;
+}
+
+function arraysToMaps(arrays) {
+    const [keys, ...values] = arrays;
+    const results = [];
+
+    for (const valueSet of values) {
+        const result = {};
+        for (let i = 0; i < keys.length; i++) {
+            if (valueSet[i]) {
+                result[keys[i]] = valueSet[i];
+            }
+        }
+        results.push(result);
+    }
+
+    return results;
 }
 
 /**
@@ -88,11 +107,29 @@ function startFromFile(path) {
             console.error('Error reading the file:', err);
             process.exit(1);
         } else {
+
+            // Cold start
             ymlContentToConfig(data);
             const {results, keys} = await queryResource(config);
             config.keys = [...keys]
             const arrays = mapsTo2DArray(results);
-            await writeToSheet(arrays, config.sheetid)
+            await makeClient();
+            await writeToSheet(arrays, config.sheetid);
+
+            // Sheet -> Pod sync
+            setInterval(async () => {
+                const {arrays, hasChanged} = await checkSheetForChanges(config.sheetid);
+                if (hasChanged) {
+                    console.log("Changes detected. Synchronizing...");
+                    const maps = arraysToMaps(arrays);
+                    fs.readFile('yarrrml.yml', 'utf8', async (err, data) => {
+                        const rml = await yarrrmlToRml(data);
+                        const rdfData = await objectsToRdf({data: maps}, rml);
+
+                        console.log(rdfData)
+                    });
+                }
+            }, config.interval);
         }
     });
 }

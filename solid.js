@@ -12,8 +12,6 @@ export async function queryResource(config) {
     const keys = new Set();
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
-    console.log("query: ", query)
-
     const result = await myEngine.query(query, {
         sources: config.sources,
     });
@@ -45,15 +43,14 @@ export async function queryResource(config) {
  */
 function configToSPARQLQuery(config) {
     let sparqlQuery = `SELECT DISTINCT * WHERE {\n`;
-
     for (const key in config.required) {
         sparqlQuery += `    ?s ${config.required[key]} ?${key} .\n`;
     }
-
     for (const key in config.optional) {
         sparqlQuery += `    OPTIONAL {?s ${config.optional[key]} ?${key}} .\n`;
     }
-
     sparqlQuery += `}`;
+
+    console.log("Constructed query: ", sparqlQuery);
     return sparqlQuery;
 }

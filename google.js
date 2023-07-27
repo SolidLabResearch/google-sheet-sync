@@ -2,11 +2,17 @@ import {config} from "dotenv";
 import fs from 'fs';
 import {google} from "googleapis"
 
+let sheets;
+
+let range;
+
+let previousRows;
+
 /**
  * Make an authenticated Google client object to be used to access Google Cloud API's using the stored credentials.
  * @return {Object} Authenticated Google client object.
  */
-async function makeClient() {
+export async function makeClient() {
     config();
     const {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} = process.env;
     const client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
@@ -16,7 +22,10 @@ async function makeClient() {
 
     await client.refreshAccessToken();
 
-    return client;
+    sheets = google.sheets({
+        version: 'v4',
+        auth: client
+    });
 }
 
 /**
@@ -25,15 +34,7 @@ async function makeClient() {
  * @param {String} sheetId - ID of the sheet to which the data should be written.
  */
 export async function writeToSheet(array, sheetId) {
-
-    const client = await makeClient();
-
-    const sheets = google.sheets({
-        version: 'v4',
-        auth: client
-    });
-
-    const range = 'A1:' + convertToCellIndex(array);
+    range = 'A1:' + convertToCellIndex(array);
     console.log("range: ", range)
 
     const resource = {
@@ -47,7 +48,28 @@ export async function writeToSheet(array, sheetId) {
         resource: resource,
     });
 
+    previousRows = array;
+
     console.log(`${response.data.updatedCells} cells updated.`);
+}
+
+export async function checkSheetForChanges(sheetId) {
+    const rows = await getFromSheet(sheetId);
+    const hasChanged = previousRows !== undefined && !areArraysEqual(rows, previousRows);
+    previousRows = rows;
+    return {
+        hasChanged,
+        arrays: rows
+    }
+}
+
+async function getFromSheet(sheetId){
+    const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range: range
+    });
+
+    return response.data.values;
 }
 
 /**
@@ -67,4 +89,15 @@ function convertToCellIndex(array) {
     const rowNumber = array.length;
 
     return column + rowNumber;
+}
+
+function areArraysEqual(arr1, arr2) {
+    for (let i = 0; i < arr1.length; i++) {
+        for (let j = 0; j < arr1[i].length; j++) {
+            if (arr1[i][j] !== arr2[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
