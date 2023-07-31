@@ -51,6 +51,8 @@ export async function writeToSheet(array, sheetId) {
     previousRows = array;
 
     console.log(`${response.data.updatedCells} cells updated.`);
+
+    return array;
 }
 
 export async function checkSheetForChanges(sheetId) {
@@ -58,9 +60,9 @@ export async function checkSheetForChanges(sheetId) {
     const hasChanged = previousRows !== undefined && !areArraysEqual(rows, previousRows);
     previousRows = rows;
     return {
-        hasChanged,
-        arrays: rows
-    }
+        rows,
+        hasChanged
+    };
 }
 
 async function getFromSheet(sheetId){

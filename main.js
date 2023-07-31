@@ -2,10 +2,12 @@ import fs from 'fs';
 import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {queryResource} from "./solid.js";
+import {queryResource, updateResource} from "./solid.js";
 
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
+
+let previousQuads
 
 /**
  * Parse YAML data and write it to the configuration object.
@@ -38,10 +40,10 @@ function ymlContentToConfig(ymlContent) {
         throw new Error("Error parsing YAML: either fields or a SPARQL query should be given");
     }
 
-    if (configJson.resource.sources) {
-        config.sources = configJson.resource.sources;
+    if (configJson.resource.source) {
+        config.source = configJson.resource.source;
     } else {
-        throw new Error("Error parsing YAML: at least one source must be specified");
+        throw new Error("Error parsing YAML: source must be specified");
     }
 
     if (configJson.sheet.id) {
@@ -80,7 +82,7 @@ function mapsTo2DArray(maps) {
     return arrays;
 }
 
-function arraysToMaps(arrays) {
+function rowsToObjects(arrays) {
     const [keys, ...values] = arrays;
     const results = [];
 
@@ -95,6 +97,16 @@ function arraysToMaps(arrays) {
     }
 
     return results;
+}
+
+function compareQuads(a, b) {
+    return a.equals(b);
+}
+
+function onlyInLeft(left, right, compareFunction) {
+    return left.filter(leftValue =>
+        !right.some(rightValue =>
+            compareFunction(leftValue, rightValue)));
 }
 
 /**
@@ -114,19 +126,29 @@ function startFromFile(path) {
             config.keys = [...keys]
             const arrays = mapsTo2DArray(results);
             await makeClient();
-            await writeToSheet(arrays, config.sheetid);
+            const rows = await writeToSheet(arrays, config.sheetid);
+            const maps = rowsToObjects(rows);
+
+            fs.readFile('yarrrml.yml', 'utf8', async (err, data) => {
+                const rml = await yarrrmlToRml(data);
+                previousQuads = await objectsToRdf({data: maps}, rml);
+            });
 
             // Sheet -> Pod sync
             setInterval(async () => {
-                const {arrays, hasChanged} = await checkSheetForChanges(config.sheetid);
+                const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);
                 if (hasChanged) {
                     console.log("Changes detected. Synchronizing...");
-                    const maps = arraysToMaps(arrays);
+                    const maps = rowsToObjects(rows);
                     fs.readFile('yarrrml.yml', 'utf8', async (err, data) => {
                         const rml = await yarrrmlToRml(data);
-                        const rdfData = await objectsToRdf({data: maps}, rml);
+                        const quads = await objectsToRdf({data: maps}, rml);
 
-                        console.log(rdfData)
+                        const deletedQuads = onlyInLeft(previousQuads, quads, compareQuads);
+                        const addedQuads = onlyInLeft(quads, previousQuads, compareQuads);
+                        previousQuads = quads;
+
+                        await updateResource(deletedQuads, addedQuads, config.source);
                     });
                 }
             }, config.interval);

@@ -1,5 +1,5 @@
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
-import {Writer} from 'n3';
+import {Parser, Writer} from 'n3';
 
 export async function objectsToRdf(data, rml) {
     const input = {
@@ -17,7 +17,27 @@ export async function objectsToRdf(data, rml) {
         body: JSON.stringify(input),
     });
 
-    return await response.text();
+    const text =  await response.text();
+    return await parseRdfText(JSON.parse(text).output);
+}
+
+async function parseRdfText(text) {
+    const parser = new Parser();
+
+    return new Promise((resolve, reject) => {
+        const quads = [];
+        parser.parse(text, (error, quad) => {
+            if (error) {
+                reject(error);
+            }
+
+            if (quad) {
+                quads.push(quad);
+            } else {
+                resolve(quads);
+            }
+        });
+    });
 }
 
 export async function yarrrmlToRml(yarrrml) {
@@ -28,7 +48,7 @@ export async function yarrrmlToRml(yarrrml) {
         writer.addQuad(quad.subject, quad.predicate, quad.object, quad.graph);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         writer.end(async (error, result) => {
             resolve(result);
         });

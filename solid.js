@@ -1,4 +1,5 @@
 import {QueryEngine} from "@comunica/query-sparql";
+import {Writer} from "n3";
 
 /**
  * Query the data from the Solid pod/resource(s) using the configuration
@@ -13,7 +14,7 @@ export async function queryResource(config) {
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
     const result = await myEngine.query(query, {
-        sources: config.sources,
+        sources: [config.source],
     });
 
     const stream = await result.execute();
@@ -53,4 +54,37 @@ function configToSPARQLQuery(config) {
 
     console.log("Constructed query: ", sparqlQuery);
     return sparqlQuery;
+}
+
+export async function updateResource(deleted, added, url) {
+    const deletedString = await joinQuads(deleted);
+    const addedString = await joinQuads(added);
+
+    const update = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+    _:rename a solid:InsertDeletePatch;
+    solid:deletes {
+    ${deletedString}
+    };
+    solid:inserts {
+    ${addedString}
+    }.
+    `
+    console.log(update);
+
+    await fetch(url, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'text/n3'},
+        body: update
+    });
+}
+
+async function joinQuads(quads) {
+    const writer = new Writer({format: 'N-Triples'});
+    quads.forEach(quad => writer.addQuad(quad));
+
+    return new Promise(resolve => {
+        writer.end((error, result) => {
+            resolve(result);
+        })
+    })
 }
