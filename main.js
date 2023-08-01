@@ -148,6 +148,8 @@ function startFromFile(path) {
                 previousQuads = await objectsToRdf({data: maps}, rml);
             });
 
+            console.log("Synchronisation cold start completed");
+
             // Sheet -> Pod sync
             setInterval(async () => {
                 const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);

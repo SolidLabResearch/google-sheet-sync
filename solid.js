@@ -75,7 +75,6 @@ export async function updateResource(deleted, added, url) {
     ${addedString}
     }.
     `
-    console.log(update);
 
     const response  = await fetch(url, {
         method: 'PATCH',
