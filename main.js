@@ -7,7 +7,8 @@ import {queryResource, updateResource} from "./solid.js";
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
 
-let previousQuads
+// Array containing all quads on the sheet when the last change was detected
+let previousQuads;
 
 /**
  * Parse YAML data and write it to the configuration object.
@@ -99,10 +100,23 @@ function rowsToObjects(arrays) {
     return results;
 }
 
+/**
+ * Determine if two Quad objects are considered equal.
+ * @param {quad} a - First quad object
+ * @param {quad} b - Second quad object
+ * @return {boolean} Boolean that indicate if the two quad objects are considered equal.
+ */
 function compareQuads(a, b) {
     return a.equals(b);
 }
 
+/**
+ * Give objects that are only present in one list but not in the other or both
+ * @param {Array} left - Array in which the objects should be present.
+ * @param {Array} right - Array in which the objects should not be present.
+ * @param {Function} compareFunction - Function to determine if two objects are considered equal.
+ * @returns {Array} Collection of objects that are present in the 'left' array but not in the 'right' array.
+ */
 function onlyInLeft(left, right, compareFunction) {
     return left.filter(leftValue =>
         !right.some(rightValue =>

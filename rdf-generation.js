@@ -1,6 +1,12 @@
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 import {Parser, Writer} from 'n3';
 
+/**
+ * Convert an array of objects into RDF data
+ * @param {[Object]} data - Array of objects which should be converted into RDF
+ * @param {String} rml - RML containing declarative rules on how to convert the objects into RDF.
+ * @return {Promise<String>} - Converted RDF data.
+ */
 export async function objectsToRdf(data, rml) {
     const input = {
         sources: {
@@ -17,10 +23,16 @@ export async function objectsToRdf(data, rml) {
         body: JSON.stringify(input),
     });
 
-    const text =  await response.text();
+    const text = await response.text();
     return await parseRdfText(JSON.parse(text).output);
 }
 
+
+/**
+ * Convert a String containing RDF data into quad objects.
+ * @param {String} text - A string containing the RDF data.
+ * @return {[quad]} Parsed quad objects.
+ */
 async function parseRdfText(text) {
     const parser = new Parser();
 
@@ -40,9 +52,15 @@ async function parseRdfText(text) {
     });
 }
 
+/**
+ * Convert yarrrml into RML.
+ * @param {String} yarrrml - Yarrrml that should be converted into RML.
+ * @return {Promise<String>} - Converted RML.
+ */
 export async function yarrrmlToRml(yarrrml) {
     const generator = new pkg({includeMetadata: false});
     const quads = generator.convert(yarrrml);
+
     const writer = new Writer();
     for (const quad of quads) {
         writer.addQuad(quad.subject, quad.predicate, quad.object, quad.graph);

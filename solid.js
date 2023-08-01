@@ -56,6 +56,12 @@ function configToSPARQLQuery(config) {
     return sparqlQuery;
 }
 
+/**
+ * Add and delete a collection of N-Triples on a Solid pod.
+ * @param {String} deleted - String of N-Triples that should be deleted from the pod.
+ * @param {String} added - String of N-Triples that should be added to the pod.
+ * @param {String} url - URL of the pod on which the additions and deletions should be executed.
+ */
 export async function updateResource(deleted, added, url) {
     const deletedString = await joinQuads(deleted);
     const addedString = await joinQuads(added);
@@ -78,6 +84,11 @@ export async function updateResource(deleted, added, url) {
     });
 }
 
+/**
+ * Convert an array of quads into a string of N-triples.
+ * @param {[quad]} quads - Array of quads that should be converted.
+ * @returns {Promise<String>} String of N-triples.
+ */
 async function joinQuads(quads) {
     const writer = new Writer({format: 'N-Triples'});
     quads.forEach(quad => writer.addQuad(quad));
