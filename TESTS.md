@@ -10,8 +10,8 @@ Set the "id" section to the id of an existing Google Sheet.
 - Copy the contents of `yarrrml.example.yml` to `yarrrml.yml`.
 
 ### Steps
-- Run `npm start` to start the synchronisation agent.
-- Wait a couple of seconds until the initial cold start of the synchronisation process is completed.
+1. Run `npm start` to start the synchronisation agent.
+2. Wait a couple of seconds until the initial cold start of the synchronisation process is completed.
 
 ### Postconditions
 - All the RDF data on the resource should be correctly converted and displayed on the Google Sheet.
@@ -22,8 +22,8 @@ Set the "id" section to the id of an existing Google Sheet.
 - Follow and execute all steps in the `Cold start` test above.
 
 ### Steps
-- Change and/or delete any amount of cells in the Google Sheet.
-- Wait at least the configured amount of milliseconds as configured under `interval` in the configuration file (default 5000).
+1. Change and/or delete any amount of cells in the Google Sheet.
+2. Wait at least the configured amount of milliseconds as configured under `interval` in the configuration file (default 5000).
 
 ### Postconditions
 - The changes are correctly converted and written back to the resource.
