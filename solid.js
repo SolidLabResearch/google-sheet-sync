@@ -23,8 +23,8 @@ export async function queryResource(config) {
         const result = new Map();
         binding.entries.forEach((value, key) => {
             keys.add(key)
-            result.set(key, value.id);
-        })
+            result.set(key, value.value);
+        });
         results.push(result);
     })
 
@@ -77,11 +77,13 @@ export async function updateResource(deleted, added, url) {
     `
     console.log(update);
 
-    await fetch(url, {
+    const response  = await fetch(url, {
         method: 'PATCH',
         headers: {'Content-Type': 'text/n3'},
         body: update
     });
+
+    console.log(await response.text());
 }
 
 /**
