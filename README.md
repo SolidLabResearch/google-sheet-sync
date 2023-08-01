@@ -50,17 +50,16 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 The synchronisation application is configurated through the `config.yml` file.
 
 ### Resource configuration
-The `resource` section of the configuration file contains settings related to data sources and queries for the resource.
+The `resource` section of the configuration file contains settings related to data source and queries for the resource.
 
-#### sources (list)
-This parameter allows a user to specify a list of resources. 
-Each resource should be represented as a URI to a Solid pod from which the data will be fetched.
+#### source (string)
+This parameter allows a user to specify a resource. 
+This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
 example:
 ```yaml
 resource:
-  sources:
-    - "https://data.knows.idlab.ugent.be/person/office/software"
+  source: "https://data.knows.idlab.ugent.be/person/office/software"
 ```
 
 #### query (string)
