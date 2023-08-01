@@ -1,7 +1,7 @@
 resource:
 
   sources:
-    - "https://data.knows.idlab.ugent.be/person/office/software"
+    - "http://localhost:3000/example/software"
 
   fields:
     required:
