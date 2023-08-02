@@ -40,7 +40,7 @@ To create these, follow these steps using the authentication app:
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
 6) When successfull, the correct tokens have now been written to `credentials.json`.
-   An example of how this should look like is present in `credentials.example.json`.
+   You find an example in `credentials.example.json`.
 
 The synchronisation app can now read and use these tokes to access the Google Sheet with the Google Sheets API.
 
@@ -125,14 +125,14 @@ fields:
 Full configuration examples that incorporate either the query or fields method are present in 
 `config.query.example.yml` and `config.fields.example.yml` respectively.
 
-## Rules (Yarrrml)
+## Rules (YARRRML)
 
-To convert and write back changes from the Google Sheet back to the resource, the synchronisation agent
-make use of the [RML](https://rml.io/) Mapper. This mapper relies on declarative rules 
+To convert and write back changes from the Google Sheet back to the resource, the synchronisation agent 
+uses the [RMLMapper](https://rml.io/). This mapper relies on declarative rules 
 that define how the RDF data should be generated from the data on the Google Sheet.
-These rules should be written in the form of [yarrrml](https://rml.io/yarrrml/) in the `rules.yml` file.
+Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rules.yml` file.
 
-An example on how this should look like is present in `rules.example.yml`.
+You find an example in `rules.example.yml`.
 
 ## Start synchronisation app
 To set up and use the synchronisation agent, first make sure all the necessary dependencies have been installed by running
