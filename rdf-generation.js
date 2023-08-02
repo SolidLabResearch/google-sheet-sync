@@ -62,9 +62,7 @@ export async function yarrrmlToRml(yarrrml) {
     const quads = generator.convert(yarrrml);
 
     const writer = new Writer();
-    for (const quad of quads) {
-        writer.addQuad(quad.subject, quad.predicate, quad.object, quad.graph);
-    }
+    writer.addQuads(quads);
 
     return new Promise((resolve) => {
         writer.end(async (error, result) => {

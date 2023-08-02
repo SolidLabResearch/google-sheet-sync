@@ -76,8 +76,6 @@ export async function updateResource(deleted, added, url) {
     }.
     `
 
-    console.log(update);
-
     const response  = await fetch(url, {
         method: 'PATCH',
         headers: {'Content-Type': 'text/n3'},
@@ -94,7 +92,7 @@ export async function updateResource(deleted, added, url) {
  */
 async function joinQuads(quads) {
     const writer = new Writer({format: 'N-Triples'});
-    quads.forEach(quad => writer.addQuad(quad));
+    writer.addQuads(quads);
 
     return new Promise(resolve => {
         writer.end((error, result) => {
