@@ -2,18 +2,17 @@ import {config} from "dotenv";
 import fs from 'fs';
 import {google} from "googleapis"
 
-// Authenticated Google Sheet API object
+// Authenticated Google Sheet API object.
 let sheets;
 
-// Range of the data on the sheet
+// Range of the data on the sheet.
 let range;
 
-// Array containing all the rows on the sheet when the last check for differences was made
+// Array containing all the rows on the sheet when the last check for differences was made.
 let previousRows;
 
 /**
- * Make an authenticated Google client object to be used to access Google Cloud API's using the stored credentials.
- * @return {Object} Authenticated Google client object.
+ * Make an authenticated Google client object to be used to access the Google Sheets API using the stored credentials.
  */
 export async function makeClient() {
     config();

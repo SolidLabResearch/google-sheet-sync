@@ -7,11 +7,11 @@ import {queryResource, updateResource} from "./solid.js";
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
 
-// Array containing all quads on the sheet when the last change was detected
+// Array containing all quads on the sheet when the last change was detected.
 let previousQuads;
 
 /**
- * Parse YAML data and write it to the configuration object.
+ * Parse YAML data and store it in the configuration object.
  * @param {string} ymlContent - String containing the contents of a YAML file.
  */
 function ymlContentToConfig(ymlContent) {
@@ -111,7 +111,7 @@ function compareQuads(a, b) {
 }
 
 /**
- * Give objects that are only present in one list but not in the other or both
+ * Give objects that are only present in one list but not in the other.
  * @param {Array} left - Array in which the objects should be present.
  * @param {Array} right - Array in which the objects should not be present.
  * @param {Function} compareFunction - Function to determine if two objects are considered equal.
