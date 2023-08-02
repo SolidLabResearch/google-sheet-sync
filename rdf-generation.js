@@ -24,7 +24,7 @@ export async function objectsToRdf(data, rml) {
     });
 
     const text = await response.text();
-    return await parseRdfText(JSON.parse(text).output);
+    return await convertRdfToQuads(JSON.parse(text).output);
 }
 
 
@@ -33,7 +33,7 @@ export async function objectsToRdf(data, rml) {
  * @param {String} text - A string containing the RDF data.
  * @return {[quad]} Parsed quad objects.
  */
-async function parseRdfText(text) {
+async function convertRdfToQuads(text) {
     const parser = new Parser();
 
     return new Promise((resolve, reject) => {
