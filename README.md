@@ -125,6 +125,15 @@ fields:
 Full configuration examples that incorporate either the query or fields method are present in 
 `config.query.example.yml` and `config.fields.example.yml` respectively.
 
+## Rules (Yarrrml)
+
+To convert and write back changes from the Google Sheet back to the resource, the synchronisation agent
+make use of the [RML](https://rml.io/) Mapper. This mapper relies on declarative rules 
+that define how the RDF data should be generated from the data on the Google Sheet.
+These rules should be written in the form of [yarrrml](https://rml.io/yarrrml/) in the `rules.yml` file.
+
+An example on how this should look like is present in `rules.example.yml`.
+
 ## Start synchronisation app
 To set up and use the synchronisation agent, first make sure all the necessary dependencies have been installed by running
 ```shell
