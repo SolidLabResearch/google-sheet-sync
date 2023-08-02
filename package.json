@@ -2,10 +2,10 @@
   "name": "google-sheet-sync",
   "version": "1.0.0",
   "scripts": {
-    "auth": "node auth-server.js",
+    "auth": "node auth-server/auth-server.js",
     "prepare:pods": "cpy initial-pod-data/* pods/example/ --flat",
     "reset:pods": "npx rimraf pods && npm run prepare:pods",
-    "start": "node main.js",
+    "start": "node src/main.js",
     "start:pods": "npx @solid/community-server -c @css:config/file-no-setup.json -f pods"
   },
   "devDependencies": {
