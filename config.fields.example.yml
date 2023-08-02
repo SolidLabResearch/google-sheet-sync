@@ -1,14 +1,11 @@
-resource:
+resource: "http://localhost:3000/example/software"
 
-  sources:
-    - "http://localhost:3000/example/software"
-
-  fields:
-    required:
-      - name: "<http://schema.org/name>"
-    optional:
-      - description: "<http://schema.org/description>"
-      - logo: "<http://schema.org/logo>"
+fields:
+  required:
+    - name: "<http://schema.org/name>"
+  optional:
+    - description: "<http://schema.org/description>"
+    - logo: "<http://schema.org/logo>"
 
 sheet:
   id: "ABCD1234"

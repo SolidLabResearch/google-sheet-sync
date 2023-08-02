@@ -49,17 +49,13 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 The synchronisation application is configurated through the `config.yml` file.
 
-### Resource configuration
-The `resource` section of the configuration file contains settings related to data source and queries for the resource.
-
-#### source (string)
+#### resource (string)
 This parameter allows a user to specify a resource. 
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
 example:
 ```yaml
-resource:
-  source: "https://data.knows.idlab.ugent.be/person/office/software"
+resource: "https://data.knows.idlab.ugent.be/person/office/software"
 ```
 
 #### query (string)
@@ -67,13 +63,12 @@ This parameter allows a user to define a SPARQL query that will be used to retri
 
 example:
 ```yaml
-resource:
-  query: >
-    SELECT DISTINCT * WHERE {
-        ?s <http://schema.org/name> ?name .
-        OPTIONAL {?s <http://schema.org/description> ?description} .
-        OPTIONAL {?s <http://schema.org/logo> ?logo} .
-    }
+query: >
+ SELECT DISTINCT * WHERE {
+     ?s <http://schema.org/name> ?name .
+     OPTIONAL {?s <http://schema.org/description> ?description} .
+     OPTIONAL {?s <http://schema.org/logo> ?logo} .
+ }
 ```
 
 ### Google Sheet configuration
@@ -104,15 +99,14 @@ to specify the specific fields you want to retrieve from the data source.
 This method provides a more structured way of fetching data.
 
 #### required (list)
-This parameter allows you to specify a list of fields that must/should be present in the retrieved RDF data on the resource(s). 
+This parameter allows you to specify a list of fields that must/should be present in the retrieved RDF data on the resource. 
 Each field is represented as a key-value pair, where the key is the field name and the value is the corresponding SPARQL predicate or URI.
 
 example:
 ```yaml
-resource:
-  fields:
-    required:
-      - name: "<http://schema.org/name>"
+fields:
+ required:
+   - name: "<http://schema.org/name>"
 ```
 #### optional (list)
 This parameter allows you to specify a list of fields that are optional in the retrieved RDF data on the resource(s). 
@@ -120,11 +114,10 @@ Similar to required, each field is represented as a key-value pair.
 
 example:
 ```yaml
-resource:
-  fields:
-    optional:
-      - description: "<http://schema.org/description>"
-      - logo: "<http://schema.org/logo>"
+fields:
+ optional:
+   - description: "<http://schema.org/description>"
+   - logo: "<http://schema.org/logo>"
 ```
 
 

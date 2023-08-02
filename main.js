@@ -17,32 +17,32 @@ let previousQuads;
 function ymlContentToConfig(ymlContent) {
     const configJson = load(ymlContent);
 
-    if (configJson.resource && configJson.resource.fields) {
-        if (configJson.resource.fields.required) {
+    if (configJson.fields) {
+        if (configJson.fields.required) {
             const requiredFields = {};
-            configJson.resource.fields.required.forEach((field) => {
+            configJson.fields.required.forEach((field) => {
                 const [name, value] = Object.entries(field)[0];
                 requiredFields[name] = value;
             });
             config.required = requiredFields;
         }
 
-        if (configJson.resource.fields.optional) {
+        if (configJson.fields.optional) {
             const optionalFields = {};
-            configJson.resource.fields.optional.forEach((field) => {
+            configJson.fields.optional.forEach((field) => {
                 const [name, value] = Object.entries(field)[0];
                 optionalFields[name] = value;
             });
             config.optional = optionalFields;
         }
-    } else if (configJson.resource.query) {
-        config.query = configJson.resource.query;
+    } else if (configJson.query) {
+        config.query = configJson.query;
     } else {
         throw new Error("Error parsing YAML: either fields or a SPARQL query should be given");
     }
 
-    if (configJson.resource.source) {
-        config.source = configJson.resource.source;
+    if (configJson.resource) {
+        config.source = configJson.resource;
     } else {
         throw new Error("Error parsing YAML: source must be specified");
     }

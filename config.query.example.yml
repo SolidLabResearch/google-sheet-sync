@@ -1,13 +1,10 @@
-resource:
+resource: "http://localhost:3000/example/software"
 
-  sources:
-    - "http://localhost:3000/example/software"
-
-  query: >
-    SELECT DISTINCT * WHERE {
-        ?s <http://schema.org/name> ?name .
-        OPTIONAL {?s <http://schema.org/description> ?description} .
-        OPTIONAL {?s <http://schema.org/logo> ?logo} .
+query: >
+  SELECT DISTINCT * WHERE {
+      ?s <http://schema.org/name> ?name .
+      OPTIONAL {?s <http://schema.org/description> ?description} .
+      OPTIONAL {?s <http://schema.org/logo> ?logo} .
     }
 
 sheet:
