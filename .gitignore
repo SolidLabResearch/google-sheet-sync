@@ -3,4 +3,4 @@ config.yml
 credentials.json
 node_modules
 pods
-yarrrml.yml
+rules.yml

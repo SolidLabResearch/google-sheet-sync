@@ -58,8 +58,8 @@ function configToSPARQLQuery(config) {
 
 /**
  * Add and delete a collection of N-Triples on a Solid resource.
- * @param {String} deleted - String of N-Triples that should be deleted from the resource.
- * @param {String} added - String of N-Triples that should be added to the resource.
+ * @param {[quad]} deleted - String of N-Triples that should be deleted from the resource.
+ * @param {[quad]} added - String of N-Triples that should be added to the resource.
  * @param {String} url - URL of the resource on which the additions and deletions should be executed.
  */
 export async function updateResource(deleted, added, url) {

@@ -8,7 +8,7 @@
 in sections `Google Sheet API` and `OAuth2 tokens`.
 - Copy the contents of `config.query.example.yml` to `config.yml` in the working directory. 
 Set the `id` section to the id of an existing Google Sheet.
-- Copy the contents of `yarrrml.example.yml` to `yarrrml.yml`.
+- Copy the contents of `rules.example.yml` to `rules.yml`.
 
 ### Steps
 1. Run `npm start` to start the synchronisation agent.

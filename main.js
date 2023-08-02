@@ -1,8 +1,8 @@
-import fs from 'fs';
 import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
 import {queryResource, updateResource} from "./solid.js";
+import {readFile} from 'fs/promises'
 
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
@@ -130,55 +130,63 @@ function onlyInLeft(left, right, compareFunction) {
 
 /**
  * Start the synchronisation app from the path of the configuration file.
- * @param {String} path - Path of the configuration file.
+ * @param {String} configPath - Path of the configuration file.
+ * @param {String} rulesPath - Path of the rules file.
  */
-function startFromFile(path) {
-    fs.readFile(path, 'utf8', async (err, data) => {
-        if (err) {
-            console.error('Error reading the file:', err);
-            process.exit(1);
-        } else {
+async function startFromFile(configPath, rulesPath) {
+    let configYml;
 
-            // Cold start
-            ymlContentToConfig(data);
-            const {results, keys} = await queryResource(config);
-            config.keys = [...keys]
-            const arrays = mapsTo2DArray(results);
-            await makeClient();
-            const rows = await writeToSheet(arrays, config.sheetid);
+    try {
+        configYml = await readFile(configPath, 'utf-8');
+    } catch (error) {
+        console.error(`Error reading the configuration file [${configPath}]`);
+        process.exit(1);
+    }
+
+    let yarrrml;
+
+    try {
+        yarrrml = await readFile(rulesPath, 'utf-8');
+    } catch (error) {
+        console.error(`Error reading the rules file [${rulesPath}]`);
+        process.exit(1);
+    }
+
+    const rml = await yarrrmlToRml(yarrrml);
+
+    // Cold start
+    ymlContentToConfig(configYml);
+    const {results, keys} = await queryResource(config);
+    config.keys = [...keys]
+    const arrays = mapsTo2DArray(results);
+    await makeClient();
+    const rows = await writeToSheet(arrays, config.sheetid);
+    const maps = rowsToObjects(rows);
+    previousQuads = await objectsToRdf({data: maps}, rml);
+
+
+    console.log("Synchronisation cold start completed");
+
+    // Sheet -> Pod sync
+    setInterval(async () => {
+        const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);
+        if (hasChanged) {
+            console.log("Changes detected. Synchronizing...");
             const maps = rowsToObjects(rows);
 
-            fs.readFile('yarrrml.yml', 'utf8', async (err, data) => {
-                const rml = await yarrrmlToRml(data);
-                previousQuads = await objectsToRdf({data: maps}, rml);
-            });
+            const quads = await objectsToRdf({data: maps}, rml);
 
-            console.log("Synchronisation cold start completed");
+            const deletedQuads = onlyInLeft(previousQuads, quads, compareQuads);
+            const addedQuads = onlyInLeft(quads, previousQuads, compareQuads);
+            previousQuads = quads;
 
-            // Sheet -> Pod sync
-            setInterval(async () => {
-                const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);
-                if (hasChanged) {
-                    console.log("Changes detected. Synchronizing...");
-                    const maps = rowsToObjects(rows);
-                    fs.readFile('yarrrml.yml', 'utf8', async (err, data) => {
-                        const rml = await yarrrmlToRml(data);
-                        const quads = await objectsToRdf({data: maps}, rml);
-
-                        const deletedQuads = onlyInLeft(previousQuads, quads, compareQuads);
-                        const addedQuads = onlyInLeft(quads, previousQuads, compareQuads);
-                        previousQuads = quads;
-
-                        await updateResource(deletedQuads, addedQuads, config.source);
-                    });
-                }
-            }, config.interval);
+            await updateResource(deletedQuads, addedQuads, config.source);
         }
-    });
+    }, config.interval);
 }
 
 function main() {
-    startFromFile("config.yml");
+    startFromFile("config.yml", "rules.yml");
 }
 
 main();
