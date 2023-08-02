@@ -5,7 +5,7 @@ import {Parser, Writer} from 'n3';
  * Convert an array of objects into RDF data
  * @param {[Object]} data - Array of objects which should be converted into RDF
  * @param {String} rml - RML containing declarative rules on how to convert the objects into RDF.
- * @return {Promise<String>} - Converted RDF data.
+ * @return {Promise<[quad]>} - Converted RDF data.
  */
 export async function objectsToRdf(data, rml) {
     const input = {

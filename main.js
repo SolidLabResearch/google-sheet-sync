@@ -83,6 +83,11 @@ function mapsTo2DArray(maps) {
     return arrays;
 }
 
+/**
+ * Convert a 2D-array into objects using the first row as keys.
+ * @param {[Array]} arrays - 2D-array that should be converted.
+ * @return {[Object]} converted objects.
+ */
 function rowsToObjects(arrays) {
     const [keys, ...values] = arrays;
     const results = [];
