@@ -46,7 +46,7 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 ## Configuration
 
-The synchronisation application is configurated through the `config.yml` file.
+The synchronisation application is configured through the `config.yml` file.
 
 #### resource (string)
 This parameter allows a user to specify a resource. 
