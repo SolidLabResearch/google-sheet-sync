@@ -39,7 +39,7 @@ To create these, follow these steps using the authentication app:
 4) Press "Authenticate".
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
-6) When successfull, the correct tokens have now been written to `credentials.json`.
+6) When successful, the correct tokens have now been written to `credentials.json`.
    You find an example in `credentials.example.json`.
 
 The synchronisation app can now read and use these tokes to access the Google Sheet with the Google Sheets API.
