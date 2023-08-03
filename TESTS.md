@@ -27,4 +27,4 @@ Set the `id` section to the id of an existing Google Sheet.
 2. Wait at least the configured amount of milliseconds as configured under `interval` in the configuration file (default 5000).
 
 ### Postconditions
-- The changes are correctly converted and written back to the resource.
+- The changes are correctly converted and written back to the resource by navigating to the resource url in a browser.
