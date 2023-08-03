@@ -33,7 +33,7 @@ const server = createServer((request, response) => {
             redirect_uri: "http://localhost:" + port
         });
 
-        fs.readFile('index.html', 'utf8', (error, data) => {
+        fs.readFile('src/auth-server/index.html', 'utf8', (error, data) => {
             if (error) {
                 response.writeHead(500, { 'Content-Type': 'text/plain' });
                 response.end('Internal Server Error');

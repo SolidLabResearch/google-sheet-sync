@@ -1,0 +1,12 @@
+prefixes:
+  schema: "http://schema.org/"
+
+mappings:
+  person:
+    sources:
+      - ['data.json~jsonpath', '$.data[*]']
+    s: $(s)
+    po:
+      - [schema:name, $(name)]
+      - [schema:description, $(description)]
+      - [schema:logo, $(logo)]

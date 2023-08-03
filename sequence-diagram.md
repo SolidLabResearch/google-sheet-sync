@@ -15,8 +15,9 @@ sequenceDiagram
     user ->> sheet: Edit one or more fields
     Note over resource,app: Listen/check for changes on sheet
     loop periodically
-        app ->> sheet: Query changes
-        sheet -->> app: Return possible changes
+        app ->> sheet: Query data
+        sheet -->> app: Return data
+        app ->> app: Check for changes on data
         alt changes detected
             app ->> app: Convert changes to RDF data
             app ->> resource: Write changes

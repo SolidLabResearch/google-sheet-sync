@@ -1,0 +1,460 @@
+@prefix schema: <http://schema.org/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix software: <https://data.knows.idlab.ugent.be/person/office/software#> .
+@prefix knows: <https://data.knows.idlab.ugent.be/person/office/#> .
+@prefix cat: <https://data.knows.idlab.ugent.be/person/office/application-categories#> .
+
+# Software
+software:comunica schema:contributor knows: .
+software:rmlmapper schema:contributor knows: .
+software:rmlstreamer schema:contributor knows: .
+software:ldf-server schema:contributor knows: .
+software:rmleditor schema:contributor knows: .
+software:yarrrml-parser schema:contributor knows: .
+software:scholarmarkdown schema:contributor knows: .
+software:graphqlld schema:contributor knows: .
+software:ostrich schema:contributor knows: .
+software:knoodle schema:contributor knows: .
+software:community-solid-server schema:contributor knows: .
+software:bashlib schema:contributor knows: .
+software:ldflex schema:contributor knows: .
+software:acmebase schema:contributor knows: .
+software:formviewer schema:contributor knows: .
+software:solideditor schema:contributor knows: .
+software:waceditor schema:contributor knows: .
+software:acmecontainer schema:contributor knows: .
+software:acmeupload schema:contributor knows: .
+software:inboxviewer schema:contributor knows: .
+software:acmeopenin schema:contributor knows: .
+software:acmeviewer schema:contributor knows: .
+software:koreografeye schema:contributor knows: .
+software:streamingmassif schema:contributor knows: .
+software:roxi schema:contributor knows: .
+software:rsp-js schema:contributor knows: .
+software:dahcc schema:contributor knows: .
+software:DIVIDE schema:contributor knows: .
+software:folio schema:contributor knows: .
+software:lc-server schema:contributor knows: .
+software:plannerjs schema:contributor knows: .
+software:gtfs2lc schema:contributor knows: .
+software:gtfsrt2lc schema:contributor knows: .
+software:ttlmerge schema:contributor knows: .
+software:solid-authentication-browser-extension schema:contributor knows: .
+software:unshacled schema:contributor knows: .
+software:solidlablib-js schema:contributor knows: .
+software:solid-web-app-template schema:contributor knows: .
+software:solid-service-template schema:contributor knows: .
+
+software:comunica a schema:SoftwareApplication;
+  schema:name "Comunica";
+  schema:description "A modular framework for querying Linked Data on the Web.";
+  schema:category cat:developer-tools;
+  schema:logo <https://comunica.dev/img/comunica_red.svg>;
+  knows:showOnKNoWSwebsite "/dev/software";
+  knows:showInSolidLabDocumentationCenter true;
+  schema:softwareHelp <https://comunica.dev/docs/>.
+
+software:comunica-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:comunica;
+  schema:targetProduct software:comunica;
+  schema:codeRepository <https://github.com/comunica/> ;
+  doap:location "https://github.com/comunica/".
+
+software:ldf-server a schema:SoftwareApplication;
+  schema:name "Linked Data Fragments Server";
+  schema:description "A Triple Pattern Fragments server for Node.js";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:ldf-server-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:ldf-server;
+  schema:targetProduct software:ldf-server;
+  schema:codeRepository <https://github.com/LinkedDataFragments/Server.js> ;
+  doap:location "https://github.com/LinkedDataFragments/Server.js".
+
+software:rmleditor a schema:SoftwareApplication;
+  schema:name "RMLEditor";
+  schema:description "A Web app to create RML rules.";
+  schema:mainEntityOfPage "https://rml.io/tools/rmleditor/";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:yarrrml-parser a schema:SoftwareApplication;
+  schema:name "YARRRML Parser";
+  schema:description "A YARRRML parser library and CLI in Javascript";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:yarrrml-parser-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:yarrrml-parser;
+  schema:targetProduct software:yarrrml-parser;
+  schema:codeRepository <https://github.com/rmlio/yarrrml-parser> ;
+  doap:location "https://github.com/rmlio/yarrrml-parser".
+
+software:rmlmapper a schema:SoftwareApplication;
+  schema:name "RMLMapper";
+  schema:description "The RMLMapper executes RML rules to generate high quality Linked Data from multiple originally (semi-)structured data sources.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:rmlmapper-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:rmlmapper;
+  schema:targetProduct software:rmlmapper;
+  schema:codeRepository <https://github.com/rmlio/rmlmapper-java> ;
+  doap:location "https://github.com/rmlio/rmlmapper-java".
+
+software:rmlstreamer a schema:SoftwareApplication;
+  schema:name "RMLStreamer";
+  schema:description "The RMLStreamer executes RML rules to generate high quality Linked Data from multiple originally (semi-)structured data sources in a streaming way.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:rmlstreamer-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:rmlstreamer;
+  schema:targetProduct software:rmlstreamer;
+  schema:codeRepository <https://github.com/RMLio/RMLStreamer> ;
+  doap:location "https://github.com/RMLio/RMLStreamer".
+
+software:scholarmarkdown a schema:SoftwareApplication;
+  schema:name "ScholarMarkdown";
+  schema:description "A framework for writing markdown-based scholarly articles.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:scholarmarkdown-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:scholarmarkdown;
+  schema:targetProduct software:scholarmarkdown;
+  schema:codeRepository <https://github.com/rubensworks/ScholarMarkdown> ;
+  doap:location "https://github.com/rubensworks/ScholarMarkdown".
+
+software:graphqlld a schema:SoftwareApplication;
+  schema:name "GraphQL-LD";
+  schema:description "Linked Data Querying with GraphQL.";
+  schema:category cat:developer-tools;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:graphqlld-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:graphqlld;
+  schema:targetProduct software:graphqlld;
+  schema:codeRepository <https://github.com/rubensworks/graphql-ld.js> ;
+  doap:location "https://github.com/rubensworks/graphql-ld.js".
+
+software:ostrich a schema:SoftwareApplication;
+  schema:name "OSTRICH";
+  schema:description "An RDF triple store that allows multiple versions of a dataset to be stored and queried at the same time.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:ostrich-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:ostrich;
+  schema:targetProduct software:ostrich;
+  schema:codeRepository <https://github.com/rdfostrich/ostrich> ;
+  doap:location "https://github.com/rdfostrich/ostrich".
+
+software:lc-server a schema:SoftwareApplication;
+  schema:name "Linked Connections server";
+  schema:description "Hosting your public transport time schedules from a GTFS and GTFS-RT as a Linked Connections Web API";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:lc-server-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:lc-server;
+  schema:targetProduct software:lc-server;
+  schema:codeRepository <https://github.com/linkedconnections/linked-connections-server> ;
+  doap:location "https://github.com/linkedconnections/linked-connections-server".
+
+software:plannerjs a schema:SoftwareApplication;
+  schema:name "Planner.js";
+  schema:description "A route planning SDK for the browser.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:plannerjs-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:plannerjs;
+  schema:targetProduct software:plannerjs;
+  schema:codeRepository <https://github.com/openplannerteam/planner.js> ;
+  doap:location "https://github.com/openplannerteam/planner.js".
+
+software:community-solid-server a schema:SoftwareApplication;
+  schema:name "Community Solid Server";
+  schema:description "An open and modular implementation of the Solid specifications";
+  schema:category cat:developer-tools;
+  knows:showInSolidLabDocumentationCenter true;
+  knows:showOnKNoWSwebsite "/dev/software";
+  schema:softwareHelp <https://communitysolidserver.github.io/CommunitySolidServer/latest/>.
+
+software:community-solid-server-git a schema:SoftwareSourceCode;
+  schema:targetProduct software:community-solid-server ;
+  schema:codeRepository <https://github.com/CommunitySolidServer/CommunitySolidServer> .
+
+software:knoodle a schema:SoftwareApplication;
+  schema:name "KNoodle";
+  schema:category cat:productivity;
+  schema:description "KNoWS' Solid-based alternative to Doodle";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:knoodle-git a schema:SoftwareSourceCode;
+  schema:targetProduct software:knoodle ;
+  schema:codeRepository <https://github.com/KNowledgeOnWebScale/knoodle/> .
+
+software:bashlib a schema:SoftwareApplication;
+  schema:name "Bashlib";
+  schema:description "A Node.JS and CLI interface for Solid";
+  schema:category cat:developer-tools;
+  knows:showInSolidLabDocumentationCenter true;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:bashlib-git a schema:SoftwareSourceCode;
+  schema:targetProduct software:bashlib ;
+  schema:codeRepository <https://github.com/SolidLabResearch/Bashlib/> .
+
+software:ldflex a schema:SoftwareApplication;
+  schema:name "LDflex";
+  schema:description "A JavaScript DSL for querying Linked Data on the Web";
+  schema:logo <https://avatars.githubusercontent.com/u/44202839> ;
+  schema:category cat:developer-tools;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:ldflex-git a schema:SoftwareSourceCode;
+  schema:targetProduct software:ldflex ;
+  schema:codeRepository <https://github.com/LDflex/LDflex> .
+
+software:acmebase a schema:SoftwareApplication ;
+  schema:name "acmebase" ;
+  schema:description "A Base Svelte App that demonstrates a Solid Login session" ;
+  schema:category cat:developer-tools .
+
+software:acmebase-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:acmebase ;
+  schema:codeRepository <https://github.com/phochste/AcmeBase/>  .
+
+software:formviewer a schema:SoftwareApplication ;
+  schema:name "formviewer" ;
+  schema:description "A Solid App for rendering and submitting RDF forms" ;
+  schema:category cat:utilities ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:formviewer-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:formviewer ;
+  schema:codeRepository <https://github.com/phochste/FormViewer/>  .
+
+software:solideditor a schema:SoftwareApplication ;
+  schema:name "solideditor" ;
+  schema:description "A VSCode clone for editing plain text files on Solid pods" ;
+  schema:category cat:utilities ;
+  knows:showInSolidLabDocumentationCenter true;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:solideditor-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:solideditor ;
+  schema:codeRepository <https://github.com/phochste/SolidEditor/>  .
+
+software:waceditor a schema:SoftwareApplication ;
+  schema:name "waceditor" ;
+  schema:description "A Solid App to manage access rights for your pod resources" ;
+  schema:category cat:utilities ;
+  knows:showInSolidLabDocumentationCenter true;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:waceditor-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:waceditor ;
+  schema:codeRepository <https://github.com/phochste/WACEditor/>  .
+
+software:acmecontainer a schema:SoftwareApplication ;
+  schema:name "acmecontainer" ;
+  schema:description "A Svelte App that demonstrates how to access a Pod container" ;
+  schema:category cat:developer-tools.
+
+software:acmecontainer-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:acmecontainer;
+  schema:codeRepository <https://github.com/phochste/AcmeContainer/>  .
+
+software:acmeupload a schema:SoftwareApplication ;
+  schema:name "acmeupload" ;
+  schema:description "A Solid App that can be used as a dropzone for a Pod container" ;
+  schema:category cat:utilities ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:acmeupload-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:acmeupload;
+  schema:codeRepository <https://github.com/phochste/AcmeUpload/>  .
+
+software:inboxviewer a schema:SoftwareApplication ;
+  schema:name "inboxviewer" ;
+  schema:description "A Solid App to send and receive notifications in the Pod inbox" ;
+  schema:category cat:utilities ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:inboxviewer-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:inboxviewer;
+  schema:codeRepository <https://github.com/phochste/AcmeInboxViewer/> .
+
+software:acmeopenin a schema:SoftwareApplication ;
+  schema:name "acmeopenin" ;
+  schema:description "A Chrome extension to open web resources in existing Solid Apps" ;
+  schema:category cat:utilities ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:acmeopenin-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:acmeopenin;
+  schema:codeRepository <https://github.com/phochste/AcmePlugin/> .
+
+software:acmeviewer a schema:SoftwareApplication ;
+  schema:name "acmeviewer" ;
+  schema:description "A Solid App to view authenticated resources in a Pod" ;
+  schema:category cat:utilities ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:acmeviewer-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:acmeviewer;
+  schema:codeRepository <https://github.com/phochste/SolidViewer/> .
+
+software:koreografeye a schema:SoftwareApplication ;
+  schema:name "koreografeye" ;
+  schema:description "A web choreography service using eye" ;
+  schema:category cat:developer-tools ;
+  knows:showInSolidLabDocumentationCenter true;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:koreografeye-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:koreografeye;
+  schema:codeRepository <https://github.com/eyereasoner/Koreografeye/> .
+
+software:streamingmassif a schema:SoftwareApplication ;
+  schema:name "Streaming MASSIF" ;
+  schema:description "Cascading Reasoning platform" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:streamingmassif-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:streamingmassif;
+  schema:codeRepository <https://github.com/IBCNServices/StreamingMASSIF> .
+
+software:roxi a schema:SoftwareApplication ;
+  schema:name "RoXi" ;
+  schema:description "Reasoning framework for Reactive Reasoning" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:roxi-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:roxi;
+  schema:codeRepository <https://github.com/pbonte/roxi> .
+
+software:rsp-js a schema:SoftwareApplication ;
+  schema:name "RSP-JS" ;
+  schema:description "RDF Stream Processing library for JavaScript" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:rps-js-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:rsp-js;
+  schema:codeRepository <https://github.com/pbonte/RSP-JS> .
+
+  software:dahcc a schema:SoftwareApplication ;
+  schema:name "DAHCC ontology & KG" ;
+  schema:description "Data Analytics in Health and Connected Care (DAHCC) Ontology & Knowledge Graph based on data collected at HomeLab" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:dahcc-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:dahcc;
+  schema:codeRepository <https://dahcc.idlab.ugent.be/> .
+
+software:divide a schema:SoftwareApplication ;
+  schema:name "DIVIDE" ;
+  schema:description "DIVIDE is designed as a component of a semantic IoT platform, with the ability to automatically derive and configure the queries of the platform's stream processing components" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:divide-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:divide;
+  schema:codeRepository <https://github.com/IBCNServices/DIVIDE> .
+
+software:folio a schema:SoftwareApplication ;
+  schema:name "FOLIO Ontology & mappings" ;
+  schema:description "Mapping rules & ontology to automatically map any Failure Mode and Effect Analyses (FMEA) and Fault Tree Analysis (FTA) document to Linked Data" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:folio-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:folio;
+  schema:codeRepository <https://github.com/IBCNServices/Folio-Ontology> .
+
+software:gtfs2lc a schema:SoftwareApplication ;
+  schema:name "GTFS2LC" ;
+  schema:description "Mapping tool to create Linked Connections from GTFS data sources" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:gtfs2lc-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:gtfs2lc;
+  schema:codeRepository <https://github.com/linkedconnections/gtfs2lc> .
+
+software:gtfsrt2lc a schema:SoftwareApplication ;
+  schema:name "GTFSRT2LC" ;
+  schema:description "Mapping tool to create Linked Connections from GTFS-realtime data sources" ;
+  schema:category cat:developer-tools ;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:gtfsrt2lc-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:gtfsrt2lc;
+  schema:codeRepository <https://github.com/linkedconnections/gtfsrt2lc> .
+
+software:ttlmerge a schema:SoftwareApplication ;
+  schema:name "ttl-merge" ;
+  schema:description "A CLI tool to merge multiple turtle (RDF) files into one file." ;
+  schema:category cat:developer-tools .
+
+software:ttlmerge-git a schema:SoftwareSourceCode ;
+  schema:targetProduct software:ttlmerge;
+  schema:codeRepository <https://github.com/julianrojas87/ttl-merge> .
+
+software:solid-authentication-browser-extension a schema:SoftwareApplication;
+  schema:name "Solid Authentication Browser Extension";
+  schema:description "Firefox extension that replaces unauthenticated requests with authenticated Solid requests.";
+  schema:category cat:utilities;
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:solid-authentication-browser-extension-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:solid-authentication-browser-extension;
+  schema:targetProduct software:solid-authentication-browser-extension;
+  schema:codeRepository <https://github.com/KNowledgeOnWebScale/solid-authentication-browser-extension/> ;
+  doap:location "https://github.com/KNowledgeOnWebScale/solid-authentication-browser-extension/".
+
+software:unshacled a schema:SoftwareApplication;
+  schema:name "UnSHACLed";
+  schema:description "A visual editor for RDF constraints currently supporting the visual notations ShapeUML and ShapeVOWL and import/export/validation of SHACL constraints.";
+  knows:showOnKNoWSwebsite "/dev/software".
+
+software:unshacled-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:unshacled;
+  schema:targetProduct software:unshacled;
+  schema:codeRepository <https://github.com/KNowledgeOnWebScale/unshacled> ;
+  doap:location "https://github.com/KNowledgeOnWebScale/unshacled".
+
+software:solidlablib-js a schema:SoftwareApplication;
+  schema:name "SolidLabLib.js";
+  schema:description "A library of helper functions for developing Solid apps in TypeScript/JavaScript.";
+  knows:showInSolidLabDocumentationCenter true;
+  schema:category cat:developer-tools.
+
+software:solidlablib-js-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:solidlablib-js;
+  schema:targetProduct software:solidlablib-js;
+  schema:codeRepository <https://github.com/SolidLabResearch/SolidLabLib.js/> ;
+  doap:location "https://github.com/SolidLabResearch/SolidLabLib.js/".
+
+software:solid-web-app-template a schema:SoftwareApplication;
+  schema:name "Solid Web app template";
+  schema:description "A template for a Solid Web app.";
+  knows:showInSolidLabDocumentationCenter true;
+  schema:category cat:developer-tools.
+
+software:solid-web-app-template-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:solid-web-app-template;
+  schema:targetProduct software:solid-web-app-template;
+  schema:codeRepository <https://github.com/SolidLabResearch/solid-web-app-template/> ;
+  doap:location "https://github.com/SolidLabResearch/solid-web-app-template/".
+
+software:solid-service-template a schema:SoftwareApplication;
+  schema:name "Solid service template";
+  schema:description "A template for a Solid service.";
+  knows:showInSolidLabDocumentationCenter true;
+  schema:category cat:developer-tools.
+
+software:solid-service-template-git a doap:GitRepository, schema:SoftwareSourceCode;
+  doap:repositoryOf software:solid-service-template;
+  schema:targetProduct software:solid-service-template;
+  schema:codeRepository <https://github.com/SolidLabResearch/solid-service-template/> ;
+  doap:location "https://github.com/SolidLabResearch/solid-service-template/".

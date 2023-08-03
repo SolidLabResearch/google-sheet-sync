@@ -36,31 +36,25 @@ To create these, follow these steps using the authentication app:
 1) Make sure all dependencies have been installed by running `npm i`.
 2) Run `npm run auth` to start the authentication web app.
 3) Navigate to `http://localhost:5000/` (or another port if changed) in a browser.
-4) press "Authenticate".
+4) Press "Authenticate".
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
-6) When successfull, the correct tokens have now been written to `credentials.json`.
-   An example of how this should look like is present in `credentials.example.json`.
+6) When successful, the correct tokens have now been written to `credentials.json`.
+   You find an example in `credentials.example.json`.
 
 The synchronisation app can now read and use these tokes to access the Google Sheet with the Google Sheets API.
 
-
 ## Configuration
 
-The synchronisation application is configurated through the `config.yml` file.
+The synchronisation application is configured through the `config.yml` file.
 
-### Resource configuration
-The `resource` section of the configuration file contains settings related to data sources and queries for the resource.
-
-#### sources (list)
-This parameter allows a user to specify a list of resources. 
-Each resource should be represented as a URI to a Solid pod from which the data will be fetched.
+#### resource (string)
+This parameter allows a user to specify a resource. 
+This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
 example:
 ```yaml
-resource:
-  sources:
-    - "https://data.knows.idlab.ugent.be/person/office/software"
+resource: "https://data.knows.idlab.ugent.be/person/office/software"
 ```
 
 #### query (string)
@@ -68,13 +62,12 @@ This parameter allows a user to define a SPARQL query that will be used to retri
 
 example:
 ```yaml
-resource:
-  query: >
-    SELECT DISTINCT * WHERE {
-        ?s <http://schema.org/name> ?name .
-        OPTIONAL {?s <http://schema.org/description> ?description} .
-        OPTIONAL {?s <http://schema.org/logo> ?logo} .
-    }
+query: >
+ SELECT DISTINCT * WHERE {
+     ?s <http://schema.org/name> ?name .
+     OPTIONAL {?s <http://schema.org/description> ?description} .
+     OPTIONAL {?s <http://schema.org/logo> ?logo} .
+ }
 ```
 
 ### Google Sheet configuration
@@ -105,15 +98,14 @@ to specify the specific fields you want to retrieve from the data source.
 This method provides a more structured way of fetching data.
 
 #### required (list)
-This parameter allows you to specify a list of fields that must/should be present in the retrieved RDF data on the resource(s). 
+This parameter allows you to specify a list of fields that must/should be present in the retrieved RDF data on the resource. 
 Each field is represented as a key-value pair, where the key is the field name and the value is the corresponding SPARQL predicate or URI.
 
 example:
 ```yaml
-resource:
-  fields:
-    required:
-      - name: "<http://schema.org/name>"
+fields:
+ required:
+   - name: "<http://schema.org/name>"
 ```
 #### optional (list)
 This parameter allows you to specify a list of fields that are optional in the retrieved RDF data on the resource(s). 
@@ -121,17 +113,25 @@ Similar to required, each field is represented as a key-value pair.
 
 example:
 ```yaml
-resource:
-  fields:
-    optional:
-      - description: "<http://schema.org/description>"
-      - logo: "<http://schema.org/logo>"
+fields:
+ optional:
+   - description: "<http://schema.org/description>"
+   - logo: "<http://schema.org/logo>"
 ```
 
 
 ### Full examples
 Full configuration examples that incorporate either the query or fields method are present in 
 `config.query.example.yml` and `config.fields.example.yml` respectively.
+
+## Rules (YARRRML)
+
+To convert and write back changes from the Google Sheet back to the resource, the synchronisation agent 
+uses the [RMLMapper](https://rml.io/). This mapper relies on declarative rules 
+that define how the RDF data should be generated from the data on the Google Sheet.
+Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rules.yml` file.
+
+You find an example in `rules.example.yml`.
 
 ## Start synchronisation app
 To set up and use the synchronisation agent, first make sure all the necessary dependencies have been installed by running

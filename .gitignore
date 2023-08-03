@@ -2,3 +2,5 @@
 config.yml
 credentials.json
 node_modules
+pods
+rules.yml
