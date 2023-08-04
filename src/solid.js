@@ -68,18 +68,26 @@ export async function updateResource(deleted, added, url) {
         return;
     }
 
-    const addedString = await joinQuads(added);
     let update = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
     _:rename a solid:InsertDeletePatch;
-    solid:inserts {
-    ${addedString}
-    }.`
+    `
 
     if (deleted.length !== 0) {
         const deletedString = await joinQuads(deleted);
         update += `solid:deletes {
         ${deletedString}
-        }.`
+        }`
+    }
+
+    if (added.length !== 0) {
+        const addedString = await joinQuads(added);
+        update += `;
+        solid:inserts {
+        ${addedString}
+        }.
+        `
+    } else {
+        update += '.'
     }
 
     const response = await fetch(url, {
