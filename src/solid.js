@@ -63,26 +63,32 @@ function configToSPARQLQuery(config) {
  * @param {String} url - URL of the resource on which the additions and deletions should be executed.
  */
 export async function updateResource(deleted, added, url) {
-    const deletedString = await joinQuads(deleted);
-    const addedString = await joinQuads(added);
+    if (added.length === 0 && deleted.length === 0) {
+        console.log("Synchronization done.");
+        return;
+    }
 
-    const update = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+    const addedString = await joinQuads(added);
+    let update = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
     _:rename a solid:InsertDeletePatch;
-    solid:deletes {
-    ${deletedString}
-    };
     solid:inserts {
     ${addedString}
-    }.
-    `
+    }.`
 
-    const response  = await fetch(url, {
+    if (deleted.length !== 0) {
+        const deletedString = await joinQuads(deleted);
+        update += `solid:deletes {
+        ${deletedString}
+        }.`
+    }
+
+    const response = await fetch(url, {
         method: 'PATCH',
         headers: {'Content-Type': 'text/n3'},
         body: update
     });
 
-    if (response.status >= 200 && response.status < 300) {
+    if (response.ok) {
         console.log("Synchronization done.");
     } else if (response.status === 401) {
         console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
