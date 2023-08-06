@@ -143,3 +143,13 @@ Afterwards, start the agent by running
 ```shell
 npm start
 ```
+
+## Technical assumptions
+
+### Single resource
+Only a single resource url can be specified in the configuration file, as the agent can only 
+write back changes from the Google Sheet back to a single destination.
+
+### Public read/write authorization
+It is required for the resource specified in the configuration file to have public read and write access,
+as the agent has no support for authentication.
