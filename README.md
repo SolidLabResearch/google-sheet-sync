@@ -2,7 +2,7 @@
 
 Google Sheet Sync is an agent that allows a user to convert and synchronise data between a Google Sheet and a Solid pod.
 It is based off of [this challenge](https://github.com/SolidLabResearch/Challenges/issues/120).
-You find a screencast of agent [here](https://cloud.ilabt.imec.be/index.php/s/eFrEKF2YCkSx22j).
+You find a screencast of the agent [here](https://cloud.ilabt.imec.be/index.php/s/eFrEKF2YCkSx22j).
 
 ## Google Sheet API
 
