@@ -36,7 +36,7 @@ To create these, follow these steps using the authentication app:
 
 1) Make sure all dependencies have been installed by running `npm i`.
 2) Run `npm run auth` to start the authentication web app.
-3) Navigate to `http://localhost:5000/` (or another port if changed) in a browser.
+3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
 4) Press "Authenticate".
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
