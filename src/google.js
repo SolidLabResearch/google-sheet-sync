@@ -5,9 +5,6 @@ import {google} from "googleapis"
 // Authenticated Google Sheet API object.
 let sheets;
 
-// Range of the data on the sheet.
-let range;
-
 // Array containing all the rows on the sheet when the last check for differences was made.
 let previousRows;
 
@@ -36,7 +33,7 @@ export async function makeClient() {
  * @param {String} sheetId - ID of the sheet to which the data should be written.
  */
 export async function writeToSheet(array, sheetId) {
-    range = 'A1:' + convertToCellIndex(array);
+    const range = 'A1:' + convertToCellIndex(array);
     console.log("range: ", range)
 
     const resource = {
@@ -81,7 +78,7 @@ export async function checkSheetForChanges(sheetId) {
 async function getFromSheet(sheetId){
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
-        range
+        range: 'A:ZZZ'
     });
 
     return response.data.values;
@@ -113,6 +110,10 @@ function convertToCellIndex(array) {
  * @return {Boolean} Boolean indicating if the two 2D-arrays are equal.
  */
 function areArraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
     for (let i = 0; i < arr1.length; i++) {
         for (let j = 0; j < arr1[i].length; j++) {
             if (arr1[i][j] !== arr2[i][j]) {
