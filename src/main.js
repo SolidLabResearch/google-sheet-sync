@@ -53,6 +53,12 @@ function ymlContentToConfig(ymlContent) {
         throw new Error("Error parsing YAML: Google sheet id should be specified");
     }
 
+    if (configJson.host) {
+        config.host = configJson.host
+    } else {
+        throw new Error("Error parsing YAML: host value should be specified")
+    }
+
     config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
 }
 
