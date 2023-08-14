@@ -37,6 +37,21 @@ export async function queryResource(config) {
     });
 }
 
+export async function getNotificationChannelTypes(url){
+    const myEngine = new QueryEngine();
+    const result = await (await myEngine.queryBindings(`
+        SELECT DISTINCT ?channel WHERE {
+            ?s a <http://www.w3.org/ns/pim/space#Storage> .
+            ?s <http://www.w3.org/ns/solid/notifications#subscription> ?channel .
+            ?channel <http://www.w3.org/ns/solid/notifications#channelType> <http://www.w3.org/ns/solid/notifications#WebSocketChannel2023>
+        }`,
+        {
+            sources: [url],
+        }
+    )).toArray();
+    return result.map(binding => binding.get("channel").value)
+}
+
 /**
  * Convert the "fields" configuration data into a SPARQL query
  * @param {Object} config - Configuration object containing the necessary information build the SPARQL query (required and optional fields).
