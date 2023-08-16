@@ -4,11 +4,15 @@ import {Writer} from "n3";
 /**
  * Query the data from the Solid pod/resource(s) using the configuration
  * @param {Object} config - Configuration object containing the necessary information to query and process the retrieved data.
+ * @param {boolean} noCache - clear http cache to get most recent document.
  * @return {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
  */
-export async function queryResource(config) {
+export async function queryResource(config, noCache = false) {
     const myEngine = new QueryEngine();
+    if (noCache){
+        await myEngine.invalidateHttpCache();
+    }
     const results = [];
     const keys = new Set();
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
