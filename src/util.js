@@ -14,3 +14,18 @@ export function shallowEqual(obj1, obj2) {
 
     return true;
 }
+
+export function compareArrays(first, second) {
+    let equal = true
+    first.forEach((element) => {
+        if (second.filter((entry) => shallowEqual(entry, element)).length === 0){
+            equal = false;
+        }
+    })
+    second.forEach((element) => {
+        if(first.filter((entry) => shallowEqual(entry, element)).length === 0) {
+            equal = false;
+        }
+    })
+    return equal;
+}
