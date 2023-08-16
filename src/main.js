@@ -68,6 +68,12 @@ function ymlContentToConfig(ymlContent) {
         throw new Error("Error parsing YAML: host value should be specified")
     }
 
+    if (configJson.debug){
+        if (configJson.debug.websockets) {
+            config.debug_noWebSockets = configJson.debug.websockets === "false"
+        }
+    }
+
     config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
 }
 
@@ -186,7 +192,7 @@ async function startFromFile(configPath, rulesPath) {
 
     let websocket_endpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
 
-    if (websocket_endpoints.length > 0 && websocket_endpoints[0].length > 0) {
+    if (websocket_endpoints.length > 0 && websocket_endpoints[0].length > 0 && (!config.debug_noWebSockets)) {
         // listen using websockets
         let url = websocket_endpoints[0]
         let requestOptions = getWebsocketRequestOptions(config.source)
@@ -212,7 +218,17 @@ async function startFromFile(configPath, rulesPath) {
         })
     } else {
         // polling using timers
-        // TODO
+        setInterval(async () => {
+            const {results} = await queryResource(config, true);
+            const arrays = mapsTo2DArray(results);
+            const maps = rowsToObjects(arrays);
+            if (!compareArrays(maps, previousMap)) {
+                const rows = await writeToSheet(arrays, config.sheetid);
+                const maps2 = rowsToObjects(rows);
+                previousMap = maps2;
+                previousQuads = await objectsToRdf({data: maps2}, rml);
+            }
+        }, config.interval);
     }
 
     // Sheet -> Pod sync
