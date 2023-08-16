@@ -28,3 +28,25 @@ Set the `id` section to the id of an existing Google Sheet.
 
 ### Postconditions
 - The changes are correctly converted and written back to the resource `http://localhost:3000/example/software`.
+
+##  Test if changes on the Pod are synced back to the Google Sheet
+
+### Preconditions
+- Follow and execute all steps in the "cold start" test above.
+
+### Steps
+Using postman or another software to make requests, send 
+```
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>.
+@prefix schema: <http://schema.org/>.
+_:rename a solid:InsertDeletePatch;
+solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.
+```
+The resource endpoint ([http://localhost:3000/example/softwate](http://localhost:3000/example/softwate)).
+
+When using websockets, the change should be almost immediately be shown, 
+otherwise wait at least the configured amount of milliseconds as configured under interval in the configuration file (default 5000).
+
+### Postconditions
+- The changes are correctly converted and visible in the google sheet
