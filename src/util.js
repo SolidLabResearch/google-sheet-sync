@@ -29,3 +29,23 @@ export function compareArrays(first, second) {
     })
     return equal;
 }
+
+export function getWebsocketRequestOptions(source){
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/ld+json");
+
+    let raw = JSON.stringify({
+        "@context": [
+            "https://www.w3.org/ns/solid/notification/v1"
+        ],
+        "type": "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023",
+        "topic": source
+    });
+
+    return {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+}
