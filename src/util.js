@@ -1,3 +1,9 @@
+/**
+ * Compares objects - checks keys and values
+ * @param {Object} obj1
+ * @param {Object} obj2
+ * @returns {boolean} Boolean that indicates if the objects are equal
+ */
 export function shallowEqual(obj1, obj2) {
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
@@ -15,19 +21,31 @@ export function shallowEqual(obj1, obj2) {
     return true;
 }
 
+
+/**
+ * Compares 2 arrays and checks if they contain the same objects (order doesn't matter)
+ * @param {Object[]} first
+ * @param {Object[]} second
+ * @returns {boolean} Boolean that indicates if the arrays are equal (not counting order)
+ */
 export function compareArrays(first, second) {
-    if(first.length !== second.length) {
+    if (first.length !== second.length) {
         return false;
     }
     first.forEach((element) => {
-        if (second.filter((entry) => shallowEqual(entry, element)).length === 0){
+        if (second.filter((entry) => shallowEqual(entry, element)).length === 0) {
             return false;
         }
     })
     return true;
 }
 
-export function getWebsocketRequestOptions(source){
+/**
+ * Generates RequestOptions to establish a websocket connection for the source parameter resource
+ * @param {string} source - resource to which a websocket should be provided.
+ * @return {{redirect: string, headers: Headers, method: string, body: string}} RequestOptions to request a websocket connection to source parameter
+ */
+export function getWebsocketRequestOptions(source) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/ld+json");
 
