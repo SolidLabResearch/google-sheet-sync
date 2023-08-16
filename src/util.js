@@ -16,18 +16,15 @@ export function shallowEqual(obj1, obj2) {
 }
 
 export function compareArrays(first, second) {
-    let equal = true
+    if(first.length !== second.length) {
+        return false;
+    }
     first.forEach((element) => {
         if (second.filter((entry) => shallowEqual(entry, element)).length === 0){
-            equal = false;
+            return false;
         }
     })
-    second.forEach((element) => {
-        if(first.filter((entry) => shallowEqual(entry, element)).length === 0) {
-            equal = false;
-        }
-    })
-    return equal;
+    return true;
 }
 
 export function getWebsocketRequestOptions(source){
