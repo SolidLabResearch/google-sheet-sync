@@ -1,8 +1,10 @@
 import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {queryResource, updateResource} from "./solid.js";
+import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
 import {readFile} from 'fs/promises'
+import {WebSocket} from 'ws';
+import {compareArrays, getWebsocketRequestOptions} from "./util.js";
 
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
@@ -180,6 +182,38 @@ async function startFromFile(configPath, rulesPath) {
 
 
     console.log("Synchronisation cold start completed");
+    // Pod -> Sheet sync
+
+    let websocket_endpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
+
+    if (websocket_endpoints.length > 0 && websocket_endpoints[0].length > 0) {
+        // listen using websockets
+        let url = websocket_endpoints[0]
+        let requestOptions = getWebsocketRequestOptions(config.source)
+
+        let response = await (await fetch(url, requestOptions)).json()
+        let endpoint = response["receiveFrom"];
+        const ws = new WebSocket(endpoint);
+        ws.on("message", async (notification) => {
+            let content = JSON.parse(notification);
+            if (content.type === "Update") {
+                const {results} = await queryResource(config, true);
+                const arrays = mapsTo2DArray(results);
+                const maps = rowsToObjects(arrays);
+                if (!compareArrays(maps, previousMap)) {
+                    const rows = await writeToSheet(arrays, config.sheetid);
+                    const maps2 = rowsToObjects(rows);
+                    previousMap = maps2;
+                    previousQuads = await objectsToRdf({data: maps2}, rml);
+                } else {
+                    console.log("got notified but the latest changes are already present");
+                }
+            }
+        })
+    } else {
+        // polling using timers
+        // TODO
+    }
 
     // Sheet -> Pod sync
     setInterval(async () => {
