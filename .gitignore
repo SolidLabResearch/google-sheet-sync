@@ -1,3 +1,5 @@
+.idea/
+src/testing.js
 .env
 config.yml
 credentials.json
