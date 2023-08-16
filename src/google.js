@@ -57,11 +57,12 @@ export async function writeToSheet(array, sheetId) {
 /**
  * Pull data from the sheet and check if there are any changes with the previously pulled data.
  * @param {String} sheetId - ID of the Google sheet from which the data should be pulled and checked.
+ * @param {String} pageName - Name of the excel page to check
  * @return {Promise<{Boolean, Array}>} - 2D-array containing the latest data from the sheet
  * and a boolean indicating a possible change.
  */
-export async function checkSheetForChanges(sheetId) {
-    const rows = await getFromSheet(sheetId);
+export async function checkSheetForChanges(sheetId, pageName) {
+    const rows = await getFromSheet(sheetId, pageName);
     const hasChanged = previousRows !== undefined && !areArraysEqual(rows, previousRows);
     previousRows = rows;
     return {
@@ -73,12 +74,13 @@ export async function checkSheetForChanges(sheetId) {
 /**
  * Get the data from the sheet in the initial range.
  * @param {String} sheetId - ID from the sheet from which the data should be pulled.
+ * @param {String} pageName - Name of the excel page to check
  * @return {Array} 2D-array containing the data from the sheet.
  */
-async function getFromSheet(sheetId){
+async function getFromSheet(sheetId, pageName) {
     const response = await sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
-        range: 'A:ZZZ'
+        range: pageName
     });
 
     return response.data.values;
