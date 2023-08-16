@@ -53,6 +53,12 @@ function ymlContentToConfig(ymlContent) {
         throw new Error("Error parsing YAML: Google sheet id should be specified");
     }
 
+    if (configJson.sheet.name) {
+        config.sheetName = configJson.sheet.name
+    } else {
+        throw new Error("Error parsing YAML: Google sheet name should be specified")
+    }
+
     if (configJson.host) {
         config.host = configJson.host
     } else {
