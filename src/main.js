@@ -9,6 +9,7 @@ let config = {};
 
 // Array containing all quads on the sheet when the last change was detected.
 let previousQuads;
+let previousMap;
 
 /**
  * Parse YAML data and store it in the configuration object.
@@ -174,6 +175,7 @@ async function startFromFile(configPath, rulesPath) {
     await makeClient();
     const rows = await writeToSheet(arrays, config.sheetid);
     const maps = rowsToObjects(rows);
+    previousMap = maps;
     previousQuads = await objectsToRdf({data: maps}, rml);
 
 
@@ -181,10 +183,11 @@ async function startFromFile(configPath, rulesPath) {
 
     // Sheet -> Pod sync
     setInterval(async () => {
-        const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);
+        const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
         if (hasChanged) {
             console.log("Changes detected. Synchronizing...");
             const maps = rowsToObjects(rows);
+            previousMap = maps;
 
             const quads = await objectsToRdf({data: maps}, rml);
 
