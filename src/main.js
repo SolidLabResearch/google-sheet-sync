@@ -190,11 +190,11 @@ async function startFromFile(configPath, rulesPath) {
     console.log("Synchronisation cold start completed");
     // Pod -> Sheet sync
 
-    let websocket_endpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
+    let websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
 
-    if (websocket_endpoints.length > 0 && websocket_endpoints[0].length > 0 && (!config.debug_noWebSockets)) {
+    if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.debug_noWebSockets)) {
         // listen using websockets
-        let url = websocket_endpoints[0]
+        let url = websocketEndpoints[0]
         let requestOptions = getWebsocketRequestOptions(config.source)
 
         let response = await (await fetch(url, requestOptions)).json()
