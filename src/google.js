@@ -75,7 +75,7 @@ export async function checkSheetForChanges(sheetId, sheetName) {
  * Get the data from the sheet in the initial range.
  * @param {String} sheetId - ID from the sheet from which the data should be pulled.
  * @param {String} sheetName - Name of the excel page to check
- * @return {Array} 2D-array containing the data from the sheet.
+ * @return {Promise<Array>} 2D-array containing the data from the sheet.
  */
 async function getFromSheet(sheetId, sheetName) {
     const response = await sheets.spreadsheets.values.get({
