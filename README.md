@@ -93,8 +93,13 @@ Here, "DOCUMENT_ID" will be a long string of characters, letters, and numbers.
 This is the unique identifier for the Google Sheet.
 
 #### name (string)
-This parameter allows you to specify a name for the google sheet that should be read and/or altered. \
-This is the name of the tab on the bottom left that you want to read and/or alter
+This parameter allows you to specify a name for the Google sheet that should be read and/or altered. \
+This is the name of the tab on the bottom left that you want to sync.
+
+
+#### interval (int)
+This parameter allows you to specify the number of milliseconds between polls.
+This number will be used for polling the sheet for changes and polling the pod for changes when websockets aren't used.
 
 example:
 
@@ -102,6 +107,7 @@ example:
 sheet:
   id: "ABCD1234"
   name: "Sheet1"
+  interval: 1000
 ```
 
 
@@ -136,7 +142,8 @@ fields:
 ### Debug configurations
 
 #### websockets
-This parameter allows you to turn of websockets when you want explicit polling every X seconds.
+This parameter allows you to turn off websockets when you want explicit polling every 5 seconds.
+This value can de modified using the `interval` option from the Google Sheet configuration.
 
 example:
 ```yaml
