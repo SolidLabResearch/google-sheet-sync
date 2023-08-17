@@ -60,8 +60,8 @@ This is required to use the websocket protocol to listen for changes on the reso
 
 example:
 ```yaml
-resource: "https://data.knows.idlab.ugent.be/person/office/software"
-host: "http://data.knows.idlab.ugent.be"
+resource: "http://localhost:3000/example/software"
+host: "http://localhost:3000"
 ```
 
 #### query (string)
