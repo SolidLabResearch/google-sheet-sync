@@ -186,4 +186,4 @@ It is required for the resource specified in the configuration file to have publ
 as the agent has no support for authentication.
 
 ### No 2 applications write at the same time.
-Currently, it is not handled when the sheet and the resource in the pod are updated at exactly the same time.
+Currently, it is not handled when the sheet and another application try to update the resource in the pod at exactly the same time.
