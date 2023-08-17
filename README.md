@@ -53,9 +53,15 @@ The synchronisation application is configured through the `config.yml` file.
 This parameter allows a user to specify a resource. 
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
+
+#### host (string)
+This parameter allows a user to specify the host of a resource.
+This is required to use the websocket protocol to listen for changes on the resource.
+
 example:
 ```yaml
 resource: "https://data.knows.idlab.ugent.be/person/office/software"
+host: "http://data.knows.idlab.ugent.be"
 ```
 
 #### query (string)
