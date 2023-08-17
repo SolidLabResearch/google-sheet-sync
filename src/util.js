@@ -1,7 +1,7 @@
 /**
  * Compares objects - checks keys and values
- * @param {Object} obj1
- * @param {Object} obj2
+ * @param {Object} obj1 - first object to compare
+ * @param {Object} obj2 - second object to compare
  * @returns {boolean} Boolean that indicates if the objects are equal
  */
 export function shallowEqual(obj1, obj2) {
@@ -24,9 +24,9 @@ export function shallowEqual(obj1, obj2) {
 
 /**
  * Compares 2 arrays and checks if they contain the same objects (order doesn't matter)
- * @param {Object[]} first
- * @param {Object[]} second
- * @param {function(Object, Object): boolean } comparator
+ * @param {Object[]} first - first array of objects to compare
+ * @param {Object[]} second - second array of objects to compare
+ * @param {function(Object, Object): boolean } comparator - comparator function to use. Defaults to shallowEqual
  * @returns {boolean} Boolean that indicates if the arrays are equal (not counting order)
  */
 export function compareArrays(first, second, comparator = shallowEqual) {
