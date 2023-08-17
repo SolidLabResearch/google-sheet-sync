@@ -127,6 +127,16 @@ fields:
    - logo: "<http://schema.org/logo>"
 ```
 
+### Debug configurations
+
+#### websockets
+This parameter allows you to turn of websockets when you want explicit polling every X seconds.
+
+example:
+```yaml
+debug:
+  websockets: "false"
+```
 
 ### Full examples
 Full configuration examples that incorporate either the query or fields method are present in 
