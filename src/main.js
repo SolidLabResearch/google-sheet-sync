@@ -11,7 +11,6 @@ let config = {};
 
 // Array containing all quads on the sheet when the last change was detected.
 let previousQuads;
-let previousMap;
 
 /**
  * Parse YAML data and store it in the configuration object.
@@ -183,13 +182,12 @@ async function startFromFile(configPath, rulesPath) {
     await makeClient();
     const rows = await writeToSheet(arrays, config.sheetid);
     const maps = rowsToObjects(rows);
-    previousMap = maps;
     previousQuads = await objectsToRdf({data: maps}, rml);
 
 
     console.log("Synchronisation cold start completed");
-    // Pod -> Sheet sync
 
+    // Pod -> Sheet sync
     let websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
 
     if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.debug_noWebSockets)) {
@@ -206,10 +204,10 @@ async function startFromFile(configPath, rulesPath) {
                 const {results} = await queryResource(config, true);
                 const arrays = mapsTo2DArray(results);
                 const maps = rowsToObjects(arrays);
-                if (!compareArrays(maps, previousMap)) {
+                const quads = await objectsToRdf({data: maps}, rml);
+                if (!compareArrays(quads, previousQuads, compareQuads)) {
                     const rows = await writeToSheet(arrays, config.sheetid);
                     const maps2 = rowsToObjects(rows);
-                    previousMap = maps2;
                     previousQuads = await objectsToRdf({data: maps2}, rml);
                 } else {
                     console.log("got notified but the latest changes are already present");
@@ -222,10 +220,10 @@ async function startFromFile(configPath, rulesPath) {
             const {results} = await queryResource(config, true);
             const arrays = mapsTo2DArray(results);
             const maps = rowsToObjects(arrays);
-            if (!compareArrays(maps, previousMap)) {
+            const quads = await objectsToRdf({data: maps}, rml);
+            if (!compareArrays(quads, previousQuads, compareQuads)) {
                 const rows = await writeToSheet(arrays, config.sheetid);
                 const maps2 = rowsToObjects(rows);
-                previousMap = maps2;
                 previousQuads = await objectsToRdf({data: maps2}, rml);
             }
         }, config.interval);
@@ -237,7 +235,6 @@ async function startFromFile(configPath, rulesPath) {
         if (hasChanged) {
             console.log("Changes detected. Synchronizing...");
             const maps = rowsToObjects(rows);
-            previousMap = maps;
 
             const quads = await objectsToRdf({data: maps}, rml);
 
