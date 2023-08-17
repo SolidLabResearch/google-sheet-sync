@@ -10,3 +10,4 @@ query: >
 sheet:
   id: "ABCD1234"
   name: "Sheet1"
+  interval: 10000
