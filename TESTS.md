@@ -27,7 +27,7 @@ Set the `id` section to the id of an existing Google Sheet.
 2. Wait at least the configured amount of milliseconds as configured under `interval` in the configuration file (default 5000).
 
 ### Postconditions
-- The changes are correctly converted and written back to the resource `http://localhost:3000/example/software`.
+- The resource `http://localhost:3000/example/software` contains the new data.
 
 ##  Test if changes on the Pod are synced back to the Google Sheet
 
@@ -39,8 +39,8 @@ The pod can be updated with the following request:
 ```curl
 curl --location --request PATCH 'http://localhost:3000/example/software' --header 'Content-Type: text/n3' --data-raw '@prefix solid: <http://www.w3.org/ns/solid/terms#>. @prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>. @prefix schema: <http://schema.org/>. _:rename a solid:InsertDeletePatch; solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.'
 ```
-When using websockets, the change should be almost immediately be shown, 
+When using websockets, the change should be almost immediately shown, 
 otherwise wait at least the configured amount of milliseconds (default 5000ms).
 
 ### Postconditions
-- The changes are correctly converted and visible in the google sheet
+- The Google sheet contains the new data.
