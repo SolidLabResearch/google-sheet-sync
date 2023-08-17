@@ -57,7 +57,7 @@ export async function writeToSheet(array, sheetId) {
 /**
  * Pull data from the sheet and check if there are any changes with the previously pulled data.
  * @param {String} sheetId - ID of the Google sheet from which the data should be pulled and checked.
- * @param {String} sheetName - Name of the excel page to check
+ * @param {String} sheetName - Name of the Sheet page to check
  * @return {Promise<{Boolean, Array}>} - 2D-array containing the latest data from the sheet
  * and a boolean indicating a possible change.
  */
@@ -74,7 +74,7 @@ export async function checkSheetForChanges(sheetId, sheetName) {
 /**
  * Get the data from the sheet in the initial range.
  * @param {String} sheetId - ID from the sheet from which the data should be pulled.
- * @param {String} sheetName - Name of the excel page to check
+ * @param {String} sheetName - Name of the Sheet page to check
  * @return {Promise<Array>} 2D-array containing the data from the sheet.
  */
 async function getFromSheet(sheetId, sheetName) {
