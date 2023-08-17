@@ -33,11 +33,11 @@ export function compareArrays(first, second, comparator = shallowEqual) {
     if (first.length !== second.length) {
         return false;
     }
-    first.forEach((element) => {
+    for (const element of first) {
         if (second.filter((entry) => comparator(entry, element)).length === 0) {
             return false;
         }
-    })
+    }
     return true;
 }
 
