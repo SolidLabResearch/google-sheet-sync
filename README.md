@@ -49,12 +49,12 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 The synchronisation application is configured through the `config.yml` file.
 
-#### resource (string)
+### resource (string)
 This parameter allows a user to specify a resource. 
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
 
-#### host (string)
+### host (string)
 This parameter allows a user to specify the host of a resource.
 This is required to use the websocket protocol to listen for changes on the resource.
 
@@ -64,7 +64,7 @@ resource: "http://localhost:3000/example/software"
 host: "http://localhost:3000"
 ```
 
-#### query (string)
+### query (string)
 This parameter allows a user to define a SPARQL query that will be used to retrieve data from the specified data sources.
 
 example:
@@ -99,7 +99,8 @@ This is the name of the tab on the bottom left that you want to sync.
 
 #### interval (int)
 This parameter allows you to specify the number of milliseconds between polls.
-This number will be used for polling the sheet for changes and polling the pod for changes when websockets aren't used.
+The code will poll the sheet for changes after the specified number of milliseconds.
+The code will also poll the pod after this amount of milliseconds when websockets aren't used.
 
 example:
 
@@ -143,7 +144,7 @@ fields:
 
 #### websockets
 This parameter allows you to turn off websockets when you want explicit polling every 5 seconds.
-This value can de modified using the `interval` option from the Google Sheet configuration.
+The `interval` option from the Google Sheet configuration changes this value.
 
 example:
 ```yaml
@@ -185,5 +186,5 @@ write back changes from the Google Sheet back to a single destination.
 It is required for the resource specified in the configuration file to have public read and write access,
 as the agent has no support for authentication.
 
-### No 2 applications write at the same time.
+### No 2 applications write at the same time
 Currently, it is not handled when the sheet and another application try to update the resource in the pod at exactly the same time.
