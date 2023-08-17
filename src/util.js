@@ -1,5 +1,6 @@
 /**
  * Compares objects - checks keys and values
+ * Called shallowEqual because javascript's `===` checks equality from objects on memory level, and not value level.
  * @param {Object} obj1 - first object to compare
  * @param {Object} obj2 - second object to compare
  * @returns {boolean} Boolean that indicates if the objects are equal
