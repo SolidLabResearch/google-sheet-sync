@@ -35,18 +35,12 @@ Set the `id` section to the id of an existing Google Sheet.
 - Follow and execute all steps in the "cold start" test above.
 
 ### Steps
-Using postman or another software to make requests, send 
+The pod can be updated with the following request:
+```curl
+curl --location --request PATCH 'http://localhost:3000/example/software' --header 'Content-Type: text/n3' --data-raw '@prefix solid: <http://www.w3.org/ns/solid/terms#>. @prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>. @prefix schema: <http://schema.org/>. _:rename a solid:InsertDeletePatch; solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.'
 ```
-@prefix solid: <http://www.w3.org/ns/solid/terms#>.
-@prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>.
-@prefix schema: <http://schema.org/>.
-_:rename a solid:InsertDeletePatch;
-solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.
-```
-The resource endpoint ([http://localhost:3000/example/softwate](http://localhost:3000/example/softwate)).
-
 When using websockets, the change should be almost immediately be shown, 
-otherwise wait at least the configured amount of milliseconds as configured under interval in the configuration file (default 5000).
+otherwise wait at least the configured amount of milliseconds (default 5000ms).
 
 ### Postconditions
 - The changes are correctly converted and visible in the google sheet
