@@ -63,8 +63,6 @@ export async function writeToSheet(array, sheetId) {
  */
 export async function checkSheetForChanges(sheetId, sheetName) {
     const rows = await getFromSheet(sheetId, sheetName);
-    console.log(rows.slice(rows.length - 2, rows.length));
-    console.log(previousRows.slice(previousRows.length - 2, previousRows.length));
     const hasChanged = previousRows !== undefined && !areArraysEqual(rows, previousRows);
     previousRows = rows;
     return {
