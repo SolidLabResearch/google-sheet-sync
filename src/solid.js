@@ -41,6 +41,11 @@ export async function queryResource(config, noCache = false) {
     });
 }
 
+/**
+ * Query the available websocket channels that may be listed in a given endpoint
+ * @param {string} url - host to query (e.g. http://localhost:3000/.well-known/solid/)
+ * @returns {Promise<string[]>} list of available endpoints to request a websocket connection
+ */
 export async function getNotificationChannelTypes(url){
     const myEngine = new QueryEngine();
     const result = await (await myEngine.queryBindings(`
