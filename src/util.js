@@ -26,14 +26,15 @@ export function shallowEqual(obj1, obj2) {
  * Compares 2 arrays and checks if they contain the same objects (order doesn't matter)
  * @param {Object[]} first
  * @param {Object[]} second
+ * @param {function(Object, Object): boolean } comparator
  * @returns {boolean} Boolean that indicates if the arrays are equal (not counting order)
  */
-export function compareArrays(first, second) {
+export function compareArrays(first, second, comparator = shallowEqual) {
     if (first.length !== second.length) {
         return false;
     }
     first.forEach((element) => {
-        if (second.filter((entry) => shallowEqual(entry, element)).length === 0) {
+        if (second.filter((entry) => comparator(entry, element)).length === 0) {
             return false;
         }
     })
@@ -50,17 +51,12 @@ export function getWebsocketRequestOptions(source) {
     myHeaders.append("Content-Type", "application/ld+json");
 
     let raw = JSON.stringify({
-        "@context": [
-            "https://www.w3.org/ns/solid/notification/v1"
-        ],
+        "@context": ["https://www.w3.org/ns/solid/notification/v1"],
         "type": "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023",
         "topic": source
     });
 
     return {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+        method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
     };
 }
