@@ -77,12 +77,6 @@ The `sheet` section of the configuration file contains settings related to a spe
 #### id (string)
 This parameter allows you to specify an id for the Google sheet that should be read and/or altered.
 
-example:
-```yaml
-sheet:
-  id: "ABCD1234"
-```
-
 To find the id of your Google sheet, look at the URL of the Google Sheet in the address bar of your web browser.
 The URL should look something like this:
 ```
@@ -91,6 +85,19 @@ https://docs.google.com/spreadsheets/d/DOCUMENT_ID/edit#gid=0
 
 Here, "DOCUMENT_ID" will be a long string of characters, letters, and numbers. 
 This is the unique identifier for the Google Sheet.
+
+#### name (string)
+This parameter allows you to specify a name for the google sheet that should be read and/or altered. \
+This is the name of the tab on the bottom left that you want to read and/or alter
+
+example:
+
+```yaml
+sheet:
+  id: "ABCD1234"
+  name: "Sheet1"
+```
+
 
 
 ### Using Fields for Data Retrieving
@@ -154,3 +161,6 @@ write back changes from the Google Sheet back to a single destination.
 ### Public read/write authorization
 It is required for the resource specified in the configuration file to have public read and write access,
 as the agent has no support for authentication.
+
+### No 2 applications write at the same time.
+Currently, it is not handled when the sheet and the resource in the pod are updated at exactly the same time.
