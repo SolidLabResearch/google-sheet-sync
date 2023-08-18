@@ -10,7 +10,7 @@ import {Writer} from "n3";
  */
 export async function queryResource(config, noCache = false) {
   const myEngine = new QueryEngine();
-  if (noCache){
+  if (noCache) {
     await myEngine.invalidateHttpCache();
   }
   const results = [];
@@ -23,7 +23,7 @@ export async function queryResource(config, noCache = false) {
 
   const stream = await result.execute();
 
-  stream.on('data', (binding) =>  {
+  stream.on('data', (binding) => {
     const result = new Map();
     binding.entries.forEach((value, key) => {
       keys.add(key)
@@ -46,7 +46,7 @@ export async function queryResource(config, noCache = false) {
  * @param {string} url - host to query (e.g. http://localhost:3000/.well-known/solid/)
  * @returns {Promise<string[]>} list of available endpoints to request a websocket connection
  */
-export async function getNotificationChannelTypes(url){
+export async function getNotificationChannelTypes(url) {
   const myEngine = new QueryEngine();
   const result = await (await myEngine.queryBindings(`
         SELECT DISTINCT ?channel WHERE {
