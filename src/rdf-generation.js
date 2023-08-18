@@ -1,3 +1,4 @@
+import {Quad} from "n3";
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 import {Parser, Writer} from 'n3';
 
@@ -5,7 +6,7 @@ import {Parser, Writer} from 'n3';
  * Convert an array of objects into RDF data
  * @param {[object]} data - Array of objects which should be converted into RDF
  * @param {string} rml - RML containing declarative rules on how to convert the objects into RDF.
- * @returns {Promise<[quad]>} - Converted RDF data.
+ * @returns {Promise<[Quad]>} - Converted RDF data.
  */
 export async function objectsToRdf(data, rml) {
   const input = {
@@ -30,7 +31,7 @@ export async function objectsToRdf(data, rml) {
 /**
  * Convert a String containing RDF data into quad objects.
  * @param {string} text - A string containing the RDF data.
- * @returns {Promise<[quad]>} Parsed quad objects.
+ * @returns {Promise<[Quad]>} Parsed quad objects.
  */
 async function convertRdfToQuads(text) {
   const parser = new Parser();
