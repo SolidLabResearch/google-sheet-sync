@@ -1,8 +1,10 @@
 import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {queryResource, updateResource} from "./solid.js";
+import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
 import {readFile} from 'fs/promises'
+import {WebSocket} from 'ws';
+import {compareArrays, getWebsocketRequestOptions} from "./util.js";
 
 // Object containing information relating to the configuration of the synchronisation app.
 let config = {};
@@ -51,6 +53,22 @@ function ymlContentToConfig(ymlContent) {
         config.sheetid = configJson.sheet.id;
     } else {
         throw new Error("Error parsing YAML: Google sheet id should be specified");
+    }
+
+    if (configJson.sheet.name) {
+        config.sheetName = configJson.sheet.name
+    } else {
+        throw new Error("Error parsing YAML: Google sheet name should be specified")
+    }
+
+    if (configJson.host) {
+        config.host = configJson.host
+    } else {
+        throw new Error("Error parsing YAML: host value should be specified")
+    }
+
+    if (configJson.websockets) {
+        config.noWebsockets = configJson.websockets === "false"
     }
 
     config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
@@ -167,9 +185,51 @@ async function startFromFile(configPath, rulesPath) {
 
     console.log("Synchronisation cold start completed");
 
+    // Pod -> Sheet sync
+    let websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
+
+    if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
+        // listen using websockets
+        let url = websocketEndpoints[0]
+        let requestOptions = getWebsocketRequestOptions(config.source)
+
+        let response = await (await fetch(url, requestOptions)).json()
+        let endpoint = response["receiveFrom"];
+        const ws = new WebSocket(endpoint);
+        ws.on("message", async (notification) => {
+            let content = JSON.parse(notification);
+            if (content.type === "Update") {
+                const {results} = await queryResource(config, true);
+                const arrays = mapsTo2DArray(results);
+                const maps = rowsToObjects(arrays);
+                const quads = await objectsToRdf({data: maps}, rml);
+                if (!compareArrays(quads, previousQuads, compareQuads)) {
+                    const rows = await writeToSheet(arrays, config.sheetid);
+                    const maps2 = rowsToObjects(rows);
+                    previousQuads = await objectsToRdf({data: maps2}, rml);
+                } else {
+                    console.log("got notified but the latest changes are already present");
+                }
+            }
+        })
+    } else {
+        // polling using timers
+        setInterval(async () => {
+            const {results} = await queryResource(config, true);
+            const arrays = mapsTo2DArray(results);
+            const maps = rowsToObjects(arrays);
+            const quads = await objectsToRdf({data: maps}, rml);
+            if (!compareArrays(quads, previousQuads, compareQuads)) {
+                const rows = await writeToSheet(arrays, config.sheetid);
+                const maps2 = rowsToObjects(rows);
+                previousQuads = await objectsToRdf({data: maps2}, rml);
+            }
+        }, config.interval);
+    }
+
     // Sheet -> Pod sync
     setInterval(async () => {
-        const {rows, hasChanged} = await checkSheetForChanges(config.sheetid);
+        const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
         if (hasChanged) {
             console.log("Changes detected. Synchronizing...");
             const maps = rowsToObjects(rows);

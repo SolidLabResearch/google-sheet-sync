@@ -49,16 +49,22 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 The synchronisation application is configured through the `config.yml` file.
 
-#### resource (string)
+### resource (string)
 This parameter allows a user to specify a resource. 
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
+
+### host (string)
+This parameter allows a user to specify the host of a resource.
+This is required to use the websocket protocol to listen for changes on the resource.
+
 example:
 ```yaml
-resource: "https://data.knows.idlab.ugent.be/person/office/software"
+resource: "http://localhost:3000/example/software"
+host: "http://localhost:3000"
 ```
 
-#### query (string)
+### query (string)
 This parameter allows a user to define a SPARQL query that will be used to retrieve data from the specified data sources.
 
 example:
@@ -77,12 +83,6 @@ The `sheet` section of the configuration file contains settings related to a spe
 #### id (string)
 This parameter allows you to specify an id for the Google sheet that should be read and/or altered.
 
-example:
-```yaml
-sheet:
-  id: "ABCD1234"
-```
-
 To find the id of your Google sheet, look at the URL of the Google Sheet in the address bar of your web browser.
 The URL should look something like this:
 ```
@@ -91,6 +91,26 @@ https://docs.google.com/spreadsheets/d/DOCUMENT_ID/edit#gid=0
 
 Here, "DOCUMENT_ID" will be a long string of characters, letters, and numbers. 
 This is the unique identifier for the Google Sheet.
+
+#### name (string)
+This parameter allows you to specify a name for the Google sheet that should be read and/or altered. \
+This is the name of the tab on the bottom left that you want to sync.
+
+
+#### interval (int)
+This parameter allows you to specify the number of milliseconds between polls.
+The code will poll the sheet for changes after the specified number of milliseconds.
+The code will also poll the pod after this amount of milliseconds when websockets aren't used.
+
+example:
+
+```yaml
+sheet:
+  id: "ABCD1234"
+  name: "Sheet1"
+  interval: 1000
+```
+
 
 
 ### Using Fields for Data Retrieving
@@ -120,6 +140,17 @@ fields:
    - logo: "<http://schema.org/logo>"
 ```
 
+### Debug configurations
+
+#### websockets
+This parameter allows you to turn off websockets when you want explicit polling every 5 seconds.
+The `interval` option from the Google Sheet configuration changes this value.
+
+example:
+```yaml
+debug:
+  websockets: "false"
+```
 
 ### Full examples
 Full configuration examples that incorporate either the query or fields method are present in 
@@ -154,3 +185,6 @@ write back changes from the Google Sheet back to a single destination.
 ### Public read/write authorization
 It is required for the resource specified in the configuration file to have public read and write access,
 as the agent has no support for authentication.
+
+### No 2 applications write at the same time
+Currently, it is not handled when the sheet and another application try to update the resource in the pod at exactly the same time.

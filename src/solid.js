@@ -4,11 +4,15 @@ import {Writer} from "n3";
 /**
  * Query the data from the Solid pod/resource(s) using the configuration
  * @param {Object} config - Configuration object containing the necessary information to query and process the retrieved data.
+ * @param {boolean} noCache - clear http cache to get most recent document.
  * @return {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
  */
-export async function queryResource(config) {
+export async function queryResource(config, noCache = false) {
     const myEngine = new QueryEngine();
+    if (noCache){
+        await myEngine.invalidateHttpCache();
+    }
     const results = [];
     const keys = new Set();
     const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
@@ -35,6 +39,26 @@ export async function queryResource(config) {
 
         stream.on('error', reject);
     });
+}
+
+/**
+ * Query the available websocket channels that may be listed in a given endpoint
+ * @param {string} url - host to query (e.g. http://localhost:3000/.well-known/solid/)
+ * @returns {Promise<string[]>} list of available endpoints to request a websocket connection
+ */
+export async function getNotificationChannelTypes(url){
+    const myEngine = new QueryEngine();
+    const result = await (await myEngine.queryBindings(`
+        SELECT DISTINCT ?channel WHERE {
+            ?s a <http://www.w3.org/ns/pim/space#Storage> .
+            ?s <http://www.w3.org/ns/solid/notifications#subscription> ?channel .
+            ?channel <http://www.w3.org/ns/solid/notifications#channelType> <http://www.w3.org/ns/solid/notifications#WebSocketChannel2023>
+        }`,
+        {
+            sources: [url],
+        }
+    )).toArray();
+    return result.map(binding => binding.get("channel").value)
 }
 
 /**

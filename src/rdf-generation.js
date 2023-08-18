@@ -31,7 +31,7 @@ export async function objectsToRdf(data, rml) {
 /**
  * Convert a String containing RDF data into quad objects.
  * @param {String} text - A string containing the RDF data.
- * @return {[quad]} Parsed quad objects.
+ * @return {Promise<[quad]>} Parsed quad objects.
  */
 async function convertRdfToQuads(text) {
     const parser = new Parser();
