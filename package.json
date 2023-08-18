@@ -4,14 +4,20 @@
   "scripts": {
     "auth": "node src/auth-server/auth-server.js",
     "prepare:pods": "cpy initial-pod-data/* pods/example/ --flat",
-    "reset:pods": "npx rimraf pods && npm run prepare:pods",
+    "reset:pods": "rimraf pods && npm run prepare:pods",
     "start": "node src/main.js",
-    "start:pods": "npx @solid/community-server -c @css:config/file-no-setup.json -f pods"
+    "start:pods": "@solid/community-server -c @css:config/file-no-setup.json -f pods",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
     "@solid/community-server": "^6.0.1",
     "cpy-cli": "^5.0.0",
-    "rimraf": "^5.0.1"
+    "rimraf": "^5.0.1",
+    "eslint": "^8.45.0",
+    "eslint-plugin-jsdoc": "^46.4.6",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3"
   },
   "dependencies": {
     "@comunica/query-sparql": "^2.8.1",
