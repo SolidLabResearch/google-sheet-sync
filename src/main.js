@@ -67,10 +67,8 @@ function ymlContentToConfig(ymlContent) {
         throw new Error("Error parsing YAML: host value should be specified")
     }
 
-    if (configJson.debug){
-        if (configJson.debug.websockets) {
-            config.debug_noWebSockets = configJson.debug.websockets === "false"
-        }
+    if (configJson.websockets) {
+        config.noWebsockets = configJson.websockets === "false"
     }
 
     config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
@@ -190,7 +188,7 @@ async function startFromFile(configPath, rulesPath) {
     // Pod -> Sheet sync
     let websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
 
-    if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.debug_noWebSockets)) {
+    if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
         // listen using websockets
         let url = websocketEndpoints[0]
         let requestOptions = getWebsocketRequestOptions(config.source)
