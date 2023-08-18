@@ -5,6 +5,7 @@ import {getNotificationChannelTypes, queryResource, updateResource} from "./soli
 import {readFile} from 'fs/promises'
 import {WebSocket} from 'ws';
 import {compareArrays, getWebsocketRequestOptions} from "./util.js";
+import {Quad} from "n3";
 
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
@@ -125,8 +126,8 @@ function rowsToObjects(arrays) {
 
 /**
  * Determine if two Quad objects are considered equal.
- * @param {quad} a - First quad object
- * @param {quad} b - Second quad object
+ * @param {Quad} a - First quad object
+ * @param {Quad} b - Second quad object
  * @returns {boolean} Boolean that indicate if the two quad objects are considered equal.
  */
 function compareQuads(a, b) {
