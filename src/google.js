@@ -31,6 +31,7 @@ export async function makeClient() {
  * Write a 2D array to a Google Sheet
  * @param {Array} array - 2D array containing the data that should be written to the Google Sheet.
  * @param {string} sheetId - ID of the sheet to which the data should be written.
+ * @returns {Array} - Sheet data
  */
 export async function writeToSheet(array, sheetId) {
   const range = 'A1:' + convertToCellIndex(array);
