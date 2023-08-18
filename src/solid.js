@@ -1,3 +1,4 @@
+import {Quad} from "n3";
 import {QueryEngine} from "@comunica/query-sparql";
 import {Writer} from "n3";
 
@@ -82,8 +83,8 @@ function configToSPARQLQuery(config) {
 
 /**
  * Add and delete a collection of N-Triples on a Solid resource.
- * @param {[quad]} deleted - String of N-Triples that should be deleted from the resource.
- * @param {[quad]} added - String of N-Triples that should be added to the resource.
+ * @param {[Quad]} deleted - String of N-Triples that should be deleted from the resource.
+ * @param {[Quad]} added - String of N-Triples that should be added to the resource.
  * @param {string} url - URL of the resource on which the additions and deletions should be executed.
  */
 export async function updateResource(deleted, added, url) {
@@ -131,7 +132,7 @@ export async function updateResource(deleted, added, url) {
 
 /**
  * Convert an array of quads into a string of N-triples.
- * @param {[quad]} quads - Array of quads that should be converted.
+ * @param {[Quad]} quads - Array of quads that should be converted.
  * @returns {Promise<string>} String of N-triples.
  */
 async function joinQuads(quads) {
