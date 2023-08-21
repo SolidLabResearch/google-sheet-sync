@@ -1,0 +1,40 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ma: <http://www.w3.org/ns/ma-ont#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix schema: <http://schema.org/> .
+@prefix ex: <http://www.example.com/> .
+@prefix e: <http://myontology.com/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix grel: <http://users.ugent.be/~bjdmeest/function/grel.ttl#> .
+
+ex:0 rdf:type schema:Person ;
+	schema:givenName "Natsu" ;
+	schema:lastname "Dragneel" ;
+	e:debutEpisode "1"^^xsd:integer ;
+	dbo:hairColor "pink"@en .
+
+ex:1 rdf:type schema:Person ;
+	schema:givenName "Gray" ;
+	schema:lastname "Fullbuster" ;
+	e:debutEpisode "2"^^xsd:integer ;
+	dbo:hairColor "dark blue"@en .
+
+ex:2 rdf:type schema:Person ;
+	schema:givenName "Gajeel" ;
+	schema:lastname "Redfox" ;
+	e:debutEpisode "21"^^xsd:integer ;
+	dbo:hairColor "black"@en .
+
+ex:3 rdf:type schema:Person ;
+	schema:givenName "Lucy" ;
+	schema:lastname "Heartfilia" ;
+	e:debutEpisode "1"^^xsd:integer ;
+	dbo:hairColor "blonde"@en .
+
+ex:4 rdf:type schema:Person ;
+	schema:givenName "Erza" ;
+	schema:lastname "Scarlet" ;
+	e:debutEpisode "4"^^xsd:integer ;
+	dbo:hairColor "scarlet"@en .
+
