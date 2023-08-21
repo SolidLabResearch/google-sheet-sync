@@ -196,6 +196,12 @@ Afterwards, start the agent by running
 npm start
 ```
 
+## Linting
+
+There is a markdown linter set up for this project. To run the linter, execute the following command:
+`npm run lint:markdown` or `npm run lint:markdown:fix`
+to apply automatical fixes.
+
 ## Technical assumptions
 
 ### Single resource
