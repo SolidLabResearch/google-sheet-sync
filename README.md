@@ -148,8 +148,7 @@ The `interval` option from the Google Sheet configuration changes this value.
 
 example:
 ```yaml
-debug:
-  websockets: "false"
+websockets: "false"
 ```
 
 ### Full examples
@@ -174,6 +173,12 @@ npm i
 Afterwards, start the agent by running
 ```shell
 npm start
+```
+
+## Linting
+There is a linter set up for this project. To run the linter, execute the following command:
+```shell
+npm run lint
 ```
 
 ## Technical assumptions
