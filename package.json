@@ -6,7 +6,7 @@
     "prepare:pods": "cpy initial-pod-data/* pods/example/ --flat",
     "reset:pods": "rimraf pods && npm run prepare:pods",
     "start": "node src/main.js",
-    "start:pods": "@solid/community-server -c @css:config/file-no-setup.json -f pods",
+    "start:pods": "community-solid-server -c @css:config/file-no-setup.json -f pods",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "devDependencies": {
