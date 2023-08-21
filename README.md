@@ -148,8 +148,7 @@ The `interval` option from the Google Sheet configuration changes this value.
 
 example:
 ```yaml
-debug:
-  websockets: "false"
+websockets: "false"
 ```
 
 ### Full examples
