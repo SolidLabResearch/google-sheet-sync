@@ -182,7 +182,6 @@ async function startFromFile(configPath, rulesPath) {
   ymlContentToConfig(configYml);
   const {results, keys} = await queryResource(config);
   console.log(results);
-  throw Error("end");
   config.keys = [...keys]
   const arrays = mapsTo2DArray(results);
   await makeClient();
