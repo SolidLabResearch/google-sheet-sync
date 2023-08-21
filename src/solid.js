@@ -18,8 +18,9 @@ export async function queryResource(config, noCache = false) {
   const keys = new Set();
   const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
+  const communica_sources = config.multiple ? config.resource_hostmap.map((entry) => entry.resource) : [config.source]
   const result = await myEngine.query(query, {
-    sources: [config.source],
+    sources: communica_sources,
   });
 
   const stream = await result.execute();
