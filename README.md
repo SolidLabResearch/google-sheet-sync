@@ -176,6 +176,12 @@ Afterwards, start the agent by running
 npm start
 ```
 
+## Linting
+There is a linter set up for this project. To run the linter, execute the following command:
+```shell
+npm run lint
+```
+
 ## Technical assumptions
 
 ### Single resource
