@@ -7,11 +7,14 @@
     "reset:pods": "rimraf pods && npm run prepare:pods",
     "start": "node src/main.js",
     "start:pods": "community-solid-server -c @css:config/file-no-setup.json -f pods",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+    "lint:js": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:markdown": "markdownlint-cli2",
+    "lint:markdown:fix": "markdownlint-cli2-fix"
   },
   "devDependencies": {
     "@solid/community-server": "^6.0.1",
     "cpy-cli": "^5.0.0",
+    "markdownlint-cli2": "^0.8.1",
     "rimraf": "^5.0.1",
     "eslint": "^8.45.0",
     "eslint-plugin-jsdoc": "^46.4.6",

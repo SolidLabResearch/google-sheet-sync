@@ -1,3 +1,5 @@
+# Sequence diagram
+
 ````mermaid
 sequenceDiagram
     actor user as User
