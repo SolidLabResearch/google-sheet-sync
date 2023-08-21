@@ -1,16 +1,22 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ma: <http://www.w3.org/ns/ma-ont#> .
 @prefix schema: <http://schema.org/> .
+@prefix ex: <http://example.com/> .
 
 <http://www.example.com/episode_1> rdf:type schema:Episode ;
+    ex:index "1"^^xsd:integer ;
 	schema:title "Fairy Tail" .
 
 <http://www.example.com/episode_2> rdf:type schema:Episode ;
+    ex:index "2"^^xsd:integer ;
 	schema:title "The Fire Dragon, the Monkey, and the Ox" .
 
 <http://www.example.com/episode_3> rdf:type schema:Episode ;
+    ex:index "3"^^xsd:integer ;
 	schema:title "Infiltrate! The Everlue Mansion!" .
 
 <http://www.example.com/episode_4> rdf:type schema:Episode ;
+    ex:index "4"^^xsd:integer ;
 	schema:title "DEAR KABY" .
 
