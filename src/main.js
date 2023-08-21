@@ -19,7 +19,6 @@ let previousQuads;
  */
 function ymlContentToConfig(ymlContent) {
   const configJson = load(ymlContent);
-
   if (configJson.fields) {
     if (configJson.fields.required) {
       const requiredFields = {};
@@ -46,8 +45,12 @@ function ymlContentToConfig(ymlContent) {
 
   if (configJson.resource) {
     config.source = configJson.resource;
+    config.multiple = false;
+  } else if (configJson.resources) {
+    config.multiple = true;
+    config.resource_hostmap = configJson.resources
   } else {
-    throw new Error("Error parsing YAML: source must be specified");
+    throw new Error("Error parsing YAML: At least 1 resource must be specified");
   }
 
   if (configJson.sheet.id) {
@@ -62,10 +65,12 @@ function ymlContentToConfig(ymlContent) {
     throw new Error("Error parsing YAML: Google sheet name should be specified")
   }
 
-  if (configJson.host) {
-    config.host = configJson.host
-  } else {
-    throw new Error("Error parsing YAML: host value should be specified")
+  if (!config.multiple) {
+    if (configJson.host) {
+      config.host = configJson.host
+    } else {
+      throw new Error("Error parsing YAML: host value should be specified")
+    }
   }
 
   if (configJson.websockets) {
@@ -176,6 +181,8 @@ async function startFromFile(configPath, rulesPath) {
   // Cold start
   ymlContentToConfig(configYml);
   const {results, keys} = await queryResource(config);
+  console.log(results);
+  throw Error("end");
   config.keys = [...keys]
   const arrays = mapsTo2DArray(results);
   await makeClient();
