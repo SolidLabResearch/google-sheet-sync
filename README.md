@@ -217,7 +217,7 @@ to apply automatical fixes.
 
 ### Single resource
 
-Only a single resource url can be specified in the configuration file, as the agent can only
+The configuration file should contain only a single resource url, as the agent can only
 write back changes from the Google Sheet back to a single destination.
 
 ### Public read/write authorization
