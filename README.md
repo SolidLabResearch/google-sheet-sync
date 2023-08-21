@@ -204,7 +204,14 @@ npm run lint:js
 ```
 
 There is also a markdown linter set up for this project. To run, execute the following command:
-`npm run lint:markdown` or `npm run lint:markdown:fix` to apply automatical fixes.
+```shell
+npm run lint:markdown
+``` 
+or 
+```shell
+npm run lint:markdown:fix
+```
+to apply automatical fixes.
 
 ## Technical assumptions
 
