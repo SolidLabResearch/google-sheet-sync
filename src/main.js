@@ -1,10 +1,9 @@
 import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
+import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from "./solid.js";
 import {readFile} from 'fs/promises'
-import {WebSocket} from 'ws';
-import {compareArrays, getWebsocketRequestOptions} from "./util.js";
+import {compareArrays} from "./util.js";
 import {Quad} from "n3";
 
 // Object containing information relating to the configuration of the synchronisation app.
@@ -173,9 +172,14 @@ async function startFromFile(configPath, rulesPath) {
 
   const rml = await yarrrmlToRml(yarrrml);
 
+  await setupAuth();
+
   // Cold start
   ymlContentToConfig(configYml);
-  const {results, keys} = await queryResource(config);
+  const {results, keys} = await queryResource(config, true);
+  if (results.length === 0){
+    throw Error("Failed cold start, no data collected from pod");
+  }
   config.keys = [...keys]
   const arrays = mapsTo2DArray(results);
   await makeClient();
@@ -191,11 +195,7 @@ async function startFromFile(configPath, rulesPath) {
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
     const url = websocketEndpoints[0]
-    const requestOptions = getWebsocketRequestOptions(config.source)
-
-    const response = await (await fetch(url, requestOptions)).json()
-    const endpoint = response["receiveFrom"];
-    const ws = new WebSocket(endpoint);
+    const ws = await getWebsocket(url, config.source);
     ws.on("message", async (notification) => {
       const content = JSON.parse(notification);
       if (content.type === "Update") {

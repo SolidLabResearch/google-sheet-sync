@@ -1,6 +1,91 @@
 import {Quad} from "n3";
 import {QueryEngine} from "@comunica/query-sparql";
 import {Writer} from "n3";
+import fs from "fs";
+import fetch from 'node-fetch';
+import {WebSocket} from 'ws';
+
+import {buildAuthenticatedFetch, createDpopHeader, generateDpopKeyPair} from "@inrupt/solid-client-authn-core";
+import {getWebsocketRequestOptions} from "./util.js";
+
+const solid_auth = {
+  auth: false,
+  id: undefined,
+  secret: undefined,
+  host: undefined,
+  token: undefined,
+  expiration: undefined,
+  fetch: fetch
+};
+
+/**
+ *
+ */
+export async function setupAuth() {
+  try {
+    const {host, id, secret} = JSON.parse(fs.readFileSync('solid_credentials.json', 'utf-8'))
+    solid_auth.auth = true
+    solid_auth.host = host
+    solid_auth.id = id
+    solid_auth.secret = secret
+    await requestAccessToken();
+    console.log("Solid auth succeeded")
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      // no file found
+      console.log("no file found, skipping auth")
+    } else {
+      console.error(err);
+    }
+  }
+}
+
+/**
+ *
+ */
+async function requestAccessToken() {
+  const dpopKey = await generateDpopKeyPair();
+
+  const data = await (await fetch(solid_auth.host + "/.well-known/openid-configuration".replace("//", "/"))).json()
+  const tokenUrl = data.token_endpoint;
+
+  const authString = `${encodeURIComponent(solid_auth.id)}:${encodeURIComponent(solid_auth.secret)}`;
+  const response = await fetch(tokenUrl, {
+    method: 'POST',
+    headers: {
+      authorization: `Basic ${Buffer.from(authString).toString('base64')}`,
+      'content-type': 'application/x-www-form-urlencoded',
+      dpop: await createDpopHeader(tokenUrl, 'POST', dpopKey),
+    },
+    body: 'grant_type=client_credentials&scope=webid',
+  });
+
+  // access token with expiration in seconds
+  const {access_token: accessToken, expires_in: expiration} = await response.json();
+  solid_auth.token = accessToken;
+  solid_auth.expiration = new Date(Date.now() + (expiration * 1000)).getTime();
+  const authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
+  solid_auth.fetch = async (url, init) => {
+    if (solid_auth.auth && Date.now() >= solid_auth.expiration) {
+      console.log("token expired, requesting new token");
+      await requestAccessToken();
+    }
+    return await authFetch(url, init)
+  }
+}
+
+/**
+ *
+ * @param url
+ * @param resource
+ */
+export async function getWebsocket(url, resource) {
+  const requestOptions = getWebsocketRequestOptions(resource)
+
+  const response = await (await solid_auth.fetch(url, requestOptions)).json()
+  const endpoint = response["receiveFrom"];
+  return new WebSocket(endpoint);
+}
 
 /**
  * Query the data from the Solid pod/resource(s) using the configuration
@@ -20,6 +105,7 @@ export async function queryResource(config, noCache = false) {
 
   const result = await myEngine.query(query, {
     sources: [config.source],
+    fetch: solid_auth.fetch
   });
 
   const stream = await result.execute();
@@ -115,7 +201,7 @@ export async function updateResource(deleted, added, url) {
     update += '.'
   }
 
-  const response = await fetch(url, {
+  const response = await solid_auth.fetch(url, {
     method: 'PATCH',
     headers: {'Content-Type': 'text/n3'},
     body: update
@@ -125,6 +211,7 @@ export async function updateResource(deleted, added, url) {
     console.log("Synchronization done.");
   } else if (response.status === 401) {
     console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
+    console.log(await response.json())
   } else {
     console.error("Synchronization failed.");
   }
@@ -145,3 +232,16 @@ async function joinQuads(quads) {
     })
   })
 }
+setupAuth().then(() => {
+  solid_auth.fetch("http://localhost:3000/example/software", {
+    method: "PATCH",
+    headers: {"Content-Type": "text/n3"},
+    body: `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>.
+@prefix schema: <http://schema.org/>.
+_:rename a solid:InsertDeletePatch; 
+solid:deletes { software:fdsq schema:description "testtest2". };
+solid:inserts { software:fdsq schema:description "testtest". }.`
+  })
+}
+)
