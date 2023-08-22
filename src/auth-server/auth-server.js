@@ -13,6 +13,11 @@ const server = createServer(async (request, response) => {
   const code = query.code;
   const id = query.id;
   const secret = query.secret
+  const host = query.host
+  console.log(code)
+  console.log(id)
+  console.log(secret)
+  console.log(host)
   if (code) {
     // capture google code
     client.getToken(code, (error, token) => {
@@ -26,9 +31,9 @@ const server = createServer(async (request, response) => {
       fs.writeFileSync('credentials.json', jsonString, 'utf-8');
     });
   }
-  if (id && secret) {
+  if (id && secret && host) {
     console.log("received solid id and secret")
-    fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret}), "utf-8")
+    fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret, host}), "utf-8")
   }
   const authUrl = client.generateAuthUrl({
     access_type: 'offline',

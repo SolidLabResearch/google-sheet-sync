@@ -30,7 +30,7 @@
     location.href = 'DYNAMIC_AUTH_URL'
   }
   document.getElementById("solidButton").onclick = async function () {
-    const response = await fetch(document.getElementById("host").value + "/idp/credentials/", {
+    const response = await fetch(document.getElementById("host").value + "/idp/credentials/".replace("//", "/"), {
       method: "POST",
       headers: {"content-type": "application/json"},
       body: JSON.stringify({
@@ -42,7 +42,7 @@
     const {id, secret} = await response.json()
     console.log(id);
     console.log(secret);
-    location.href = location.href + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}`
+    location.href = location.href + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
   }
 </script>
 </body>
