@@ -232,16 +232,3 @@ async function joinQuads(quads) {
     })
   })
 }
-setupAuth().then(() => {
-  solid_auth.fetch("http://localhost:3000/example/software", {
-    method: "PATCH",
-    headers: {"Content-Type": "text/n3"},
-    body: `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
-@prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>.
-@prefix schema: <http://schema.org/>.
-_:rename a solid:InsertDeletePatch; 
-solid:deletes { software:fdsq schema:description "testtest2". };
-solid:inserts { software:fdsq schema:description "testtest". }.`
-  })
-}
-)
