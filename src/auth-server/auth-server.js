@@ -8,11 +8,13 @@ const port = 8081;
 
 let client;
 
-const server = createServer((request, response) => {
+const server = createServer(async (request, response) => {
   const {query} = parse(request.url, true);
   const code = query.code;
-
+  const id = query.id;
+  const secret = query.secret
   if (code) {
+    // capture google code
     client.getToken(code, (error, token) => {
       if (error) {
         console.error('Error retrieving access token:', error);
@@ -22,30 +24,31 @@ const server = createServer((request, response) => {
 
       const jsonString = JSON.stringify(token, null, 2);
       fs.writeFileSync('credentials.json', jsonString, 'utf-8');
-
-      response.writeHead(200, {'Content-Type': 'text/plain'});
-      response.end('Authentication successful. Credentials written to "credentials.json"');
-    });
-  } else {
-    const authUrl = client.generateAuthUrl({
-      access_type: 'offline',
-      scope: ['https://www.googleapis.com/auth/spreadsheets'],
-      redirect_uri: "http://localhost:" + port
-    });
-
-    fs.readFile('src/auth-server/index.html', 'utf8', (error, data) => {
-      if (error) {
-        response.writeHead(500, { 'Content-Type': 'text/plain' });
-        response.end('Internal Server Error');
-        return;
-      }
-
-      const html = data.replace('DYNAMIC_AUTH_URL', authUrl);
-
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end(html);
     });
   }
+  if (id && secret) {
+    console.log("received solid id and secret")
+    fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret}), "utf-8")
+  }
+  const authUrl = client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/spreadsheets'],
+    redirect_uri: "http://localhost:" + port
+  });
+
+  fs.readFile('src/auth-server/index.html', 'utf8', (error, data) => {
+    if (error) {
+      response.writeHead(500, {'Content-Type': 'text/plain'});
+      response.end('Internal Server Error');
+      return;
+    }
+
+    const html = data.replace('DYNAMIC_AUTH_URL', authUrl);
+
+    response.writeHead(200, {'Content-Type': 'text/html'});
+    response.end(html);
+  });
+
 })
 
 /**
