@@ -25,20 +25,21 @@
     <input id="passwd" placeholder="password" type="password">
     <button class="btn btn-primary" id='solidButton'>Authenticate</button>
     <button class="btn btn-primary" id='solidButton-logout'>Logout</button>
+    <p id = status>STATUS_TEXT</p>
 </div>
 <script>
   function clearParameters(input) {
     const index = input.search("\\?");
     const output = input.slice(0, index === -1 ? input.length : index)
-    console.log(output)
-    return output
+    return output.endsWith("/") ? output.slice(0, output.length - 1) : output
   }
 
   document.getElementById('authButton').onclick = function () {
     location.href = 'DYNAMIC_AUTH_URL'
   }
   document.getElementById("solidButton").onclick = async function () {
-    const response = await fetch((document.getElementById("host").value + "/idp/credentials/").replace("//", "/"), {
+    const h = (document.getElementById("host").value + "/idp/credentials/")
+    const response = await fetch(h, {
       method: "POST",
       headers: {"content-type": "application/json"},
       body: JSON.stringify({
@@ -47,12 +48,11 @@
         name: "google_sheet_sync"
       }),
     })
-
-    const {id, secret} = await response.json()
-    console.log(id);
-    console.log(secret);
+    const json =  await response.json()
+    console.log(json)
+    const {id, secret} = json
     location.href = clearParameters(location.href) + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
-  }
+    }
   document.getElementById("solidButton-logout").onclick = function () {
     const x = clearParameters(location.href);
     console.log(x)
