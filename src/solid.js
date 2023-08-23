@@ -108,29 +108,39 @@ export async function queryResource(config, noCache = false) {
   const keys = new Set();
   const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
-  const result = await myEngine.query(query, {
-    sources: [config.source],
-    fetch: solid_auth.fetch
-  });
-
-  const stream = await result.execute();
-
-  stream.on('data', (binding) => {
-    const result = new Map();
-    binding.entries.forEach((value, key) => {
-      keys.add(key)
-      result.set(key, value.value);
-    });
-    results.push(result);
-  })
-
-  return new Promise((resolve, reject) => {
-    stream.on('end', () => {
-      resolve({results, keys});
+  try {
+    const result = await myEngine.query(query, {
+      sources: [config.source],
+      fetch: solid_auth.fetch
     });
 
-    stream.on('error', reject);
-  });
+    const stream = await result.execute();
+
+    stream.on('data', (binding) => {
+      const result = new Map();
+      binding.entries.forEach((value, key) => {
+        keys.add(key)
+        result.set(key, value.value);
+      });
+      results.push(result);
+    })
+
+    return new Promise((resolve, reject) => {
+      stream.on('end', () => {
+        resolve({results, keys});
+      });
+
+      stream.on('error', reject);
+    });
+
+  } catch (err) {
+    if (err.message.split("\n")[0].endsWith("(HTTP status 401):")) {
+      console.error("could not fetch resource because you haven't setup authentication. Please use the auth-server to setup Solid authentication");
+      return {results: {}, keys:{}};
+    } else {
+      throw err;
+    }
+  }
 }
 
 /**
