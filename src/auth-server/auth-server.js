@@ -14,10 +14,7 @@ const server = createServer(async (request, response) => {
   const id = query.id;
   const secret = query.secret
   const host = query.host
-  console.log(code)
-  console.log(id)
-  console.log(secret)
-  console.log(host)
+  const solid_logout = query.solid_logout
   if (code) {
     // capture google code
     client.getToken(code, (error, token) => {
@@ -34,6 +31,9 @@ const server = createServer(async (request, response) => {
   if (id && secret && host) {
     console.log("received solid id and secret")
     fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret, host}), "utf-8")
+  }
+  if (solid_logout) {
+    fs.writeFileSync("solid_credentials.json", "");
   }
   const authUrl = client.generateAuthUrl({
     access_type: 'offline',

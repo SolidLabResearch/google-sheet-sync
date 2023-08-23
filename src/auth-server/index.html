@@ -13,7 +13,7 @@
 <body style="display: flex; align-items: center; justify-content: center; height: 100vh">
 <div style="text-align: center; flex: 50%">
     <h2>Google Sheets API Authentication</h2>
-    <p>To create an access and refresh token pair, click the authentication button bellow and log in with the Google
+    <p>To create an access and refresh token pair, <br/> click the authentication button bellow and log in with the Google
         account connected to your Client ID and secret.</p>
     <button class="btn btn-primary" id='authButton'>Authenticate</button>
 </div>
@@ -21,28 +21,42 @@
     <h2>Solid pod Authentication</h2>
     <p>To create a token used to query non-public resources.</p>
     <input id="host" placeholder="host server"/>
-    <input id ="email" placeholder="email">
-    <input id ="passwd" placeholder="password" type="password">
+    <input id="email" placeholder="email">
+    <input id="passwd" placeholder="password" type="password">
     <button class="btn btn-primary" id='solidButton'>Authenticate</button>
+    <button class="btn btn-primary" id='solidButton-logout'>Logout</button>
 </div>
 <script>
+  function clearParameters(input) {
+    const index = input.search("\\?");
+    const output = input.slice(0, index === -1 ? input.length : index)
+    console.log(output)
+    return output
+  }
+
   document.getElementById('authButton').onclick = function () {
     location.href = 'DYNAMIC_AUTH_URL'
   }
   document.getElementById("solidButton").onclick = async function () {
-    const response = await fetch(document.getElementById("host").value + "/idp/credentials/".replace("//", "/"), {
+    const response = await fetch((document.getElementById("host").value + "/idp/credentials/").replace("//", "/"), {
       method: "POST",
       headers: {"content-type": "application/json"},
       body: JSON.stringify({
         email: document.getElementById("email").value,
         password: document.getElementById("passwd").value,
-        name: "google_sheet_sync"}),
+        name: "google_sheet_sync"
+      }),
     })
 
     const {id, secret} = await response.json()
     console.log(id);
     console.log(secret);
-    location.href = location.href + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
+    location.href = clearParameters(location.href) + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
+  }
+  document.getElementById("solidButton-logout").onclick = function () {
+    const x = clearParameters(location.href);
+    console.log(x)
+    location.href = x + encodeURI("?solid_logout=true")
   }
 </script>
 </body>
