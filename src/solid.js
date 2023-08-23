@@ -23,19 +23,24 @@ const solid_auth = {
  */
 export async function setupAuth() {
   try {
-    const {host, id, secret} = JSON.parse(fs.readFileSync('solid_credentials.json', 'utf-8'))
-    solid_auth.auth = true
-    solid_auth.host = host
-    solid_auth.id = id
-    solid_auth.secret = secret
-    await requestAccessToken();
-    console.log("Solid auth succeeded")
+    const content = fs.readFileSync('solid_credentials.json', 'utf-8')
+    if (content) {
+      const {host, id, secret} = JSON.parse(content)
+      solid_auth.auth = true
+      solid_auth.host = host
+      solid_auth.id = id
+      solid_auth.secret = secret
+      await requestAccessToken();
+      console.log("Solid auth succeeded")
+    } else {
+      console.log("empty file, skipping auth")
+    }
   } catch (err) {
     if (err.code === "ENOENT") {
       // no file found
       console.log("no file found, skipping auth")
     } else {
-      console.error(err);
+      throw err;
     }
   }
 }
