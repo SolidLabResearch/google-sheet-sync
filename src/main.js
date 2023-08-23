@@ -177,8 +177,9 @@ async function startFromFile(configPath, rulesPath) {
   // Cold start
   ymlContentToConfig(configYml);
   const {results, keys} = await queryResource(config, true);
-  if (results.length === 0){
-    throw Error("Failed cold start, no data collected from pod");
+  if (Object.keys(results).length === 0){
+    console.error("Failed cold start, no data collected from pod");
+    return;
   }
   config.keys = [...keys]
   const arrays = mapsTo2DArray(results);
