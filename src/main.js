@@ -49,9 +49,56 @@ function ymlContentToConfig(ymlContent) {
   if (configJson.resource) {
     config.source = configJson.resource;
     config.multiple = false;
+    config.cacheComparator = compareArrays;
+    config.diffChecker = onlyInLeft;
+    config.updater = (del, add) => updateResource(del, add, config.source)
   } else if (configJson.resources) {
     config.multiple = true;
     config.resource_hostmap = configJson.resources
+    config.cacheComparator = (first, second, comparator) => {
+      const firstKeys = Object.keys(first);
+      const secondKeys = Object.keys(second);
+      if(firstKeys.length !== secondKeys.length){
+        return false;
+      }
+      const result = firstKeys.every((entry) => secondKeys.includes(entry))
+      if (!result){
+        return false;
+      }
+      return firstKeys.every((entry) => compareArrays(first[entry], second[entry], comparator))
+    }
+    config.diffChecker = (left, right, cmp) => {
+      // the assumption is made that the structures of left and right are the same
+      const leftKeys = Object.keys(left);
+      const out = {}
+      leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp))
+      return out;
+    }
+    config.updater = async (del, add) => {
+      const keys = new Set()
+      const delKeys = Object.keys(del)
+      const addKeys = Object.keys(add)
+      delKeys.forEach((entry) => keys.add(entry));
+      addKeys.forEach((entry) => keys.add(entry));
+      for (const index of keys) {
+        if(index === "stdout"){
+          continue;
+        }
+        let d = [];
+        let a = [];
+        if (delKeys.includes(index)) {
+          d = del[index]
+        }
+        if (addKeys.includes(index)) {
+          a = add[index];
+        }
+        const int_index = Number.parseInt(index);
+        console.log(config.resource_hostmap[int_index].resource)
+        console.log(d);
+        console.log(a)
+        await updateResource(d, a, config.resource_hostmap[int_index].resource)
+      }
+    }
   } else {
     throw new Error("Error parsing YAML: At least 1 resource must be specified");
   }
@@ -184,23 +231,82 @@ async function startFromFile(configPath, rulesPath) {
   // Cold start
   ymlContentToConfig(configYml);
   const {results, keys} = await queryResource(config);
-  console.log(results);
   config.keys = [...keys]
   const arrays = mapsTo2DArray(results);
   await makeClient();
-  const rows = await writeToSheet(arrays, config.sheetid);
+  const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
   const maps = rowsToObjects(rows);
-  previousQuads = await objectsToRdf({data: maps}, rml);
-
+  previousData = await objectsToRdf(config, {data: maps}, rml);
   console.log("Synchronisation cold start completed");
 
+  if (!config.multiple) {
+    const status = await setupResourceListening(config.host, config.source);
+    if (!status) {
+      setInterval(async () => {
+        const {results} = await queryResource(config, true);
+        const arrays = mapsTo2DArray(results);
+        const maps = rowsToObjects(arrays);
+        const quads = await objectsToRdf(config, {data: maps}, rml);
+        if (!config.cacheComparator(quads, previousData, compareQuads)) {
+          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
+          const maps2 = rowsToObjects(rows);
+          previousData = await objectsToRdf(config, {data: maps2}, rml);
+        }
+      }, config.interval);
+    }
+  } else {
+    // try to setup a websocket connection for each resource
+    const result = await Promise.all(config.resource_hostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)))
+    const all_on_websockets = result.every((e) => e);
+    if (!all_on_websockets) {
+      console.log("not all resources supported websockets, polling using timer")
+      // polling using timers
+      setInterval(async () => {
+        const {results} = await queryResource(config, true);
+        const arrays = mapsTo2DArray(results);
+        const maps = rowsToObjects(arrays);
+        const quads = await objectsToRdf(config, {data: maps}, rml);
+        if (!config.cacheComparator(quads, previousData, compareQuads)) {
+          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
+          const maps2 = rowsToObjects(rows);
+          previousData = await objectsToRdf(config, {data: maps2}, rml);
+        }
+      }, config.interval);
+    } else {
+      console.log("all resources are monitored using websockets");
+    }
+  }
+
+  // Sheet -> Pod sync
+  setInterval(async () => {
+    const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
+    if (hasChanged) {
+      console.log("Changes detected. Synchronizing...");
+      const maps = rowsToObjects(rows);
+
+      const quads = await objectsToRdf(config, {data: maps}, rml);
+
+      const deletedQuads = config.diffChecker(previousData, quads, compareQuads);
+      const addedQuads = config.diffChecker(quads, previousData, compareQuads);
+      previousData = quads;
+      await config.updater(deletedQuads, addedQuads);
+    }
+  }, config.interval);
+}
+
+/**
+ * @param {string} host - host of the resource, used to gather websocket endpoints
+ * @param {string} src - resource url
+ * @returns {Promise<boolean>} - true when using websockets, false when using a timer.
+ */
+async function setupResourceListening(host, src) {
   // Pod -> Sheet sync
-  const websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
+  const websocketEndpoints = await getNotificationChannelTypes(host + "/.well-known/solid");
 
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
     const url = websocketEndpoints[0]
-    const requestOptions = getWebsocketRequestOptions(config.source)
+    const requestOptions = getWebsocketRequestOptions(src)
 
     const response = await (await fetch(url, requestOptions)).json()
     const endpoint = response["receiveFrom"];
@@ -211,47 +317,19 @@ async function startFromFile(configPath, rulesPath) {
         const {results} = await queryResource(config, true);
         const arrays = mapsTo2DArray(results);
         const maps = rowsToObjects(arrays);
-        const quads = await objectsToRdf({data: maps}, rml);
-        if (!compareArrays(quads, previousQuads, compareQuads)) {
-          const rows = await writeToSheet(arrays, config.sheetid);
+        const quads = await objectsToRdf(config, {data: maps}, rml);
+        if (!config.cacheComparator(quads, previousData, compareQuads)) {
+          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
           const maps2 = rowsToObjects(rows);
-          previousQuads = await objectsToRdf({data: maps2}, rml);
+          previousData = await objectsToRdf(config, {data: maps2}, rml);
         } else {
-          console.log("got notified but the latest changes are already present");
+          console.log(`[${src}]\tgot notified but the latest changes are already present`);
         }
       }
     })
-  } else {
-    // polling using timers
-    setInterval(async () => {
-      const {results} = await queryResource(config, true);
-      const arrays = mapsTo2DArray(results);
-      const maps = rowsToObjects(arrays);
-      const quads = await objectsToRdf({data: maps}, rml);
-      if (!compareArrays(quads, previousQuads, compareQuads)) {
-        const rows = await writeToSheet(arrays, config.sheetid);
-        const maps2 = rowsToObjects(rows);
-        previousQuads = await objectsToRdf({data: maps2}, rml);
-      }
-    }, config.interval);
+    return true;
   }
-
-  // Sheet -> Pod sync
-  setInterval(async () => {
-    const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
-    if (hasChanged) {
-      console.log("Changes detected. Synchronizing...");
-      const maps = rowsToObjects(rows);
-
-      const quads = await objectsToRdf({data: maps}, rml);
-
-      const deletedQuads = onlyInLeft(previousQuads, quads, compareQuads);
-      const addedQuads = onlyInLeft(quads, previousQuads, compareQuads);
-      previousQuads = quads;
-
-      await updateResource(deletedQuads, addedQuads, config.source);
-    }
-  }, config.interval);
+  return false;
 }
 
 /**
