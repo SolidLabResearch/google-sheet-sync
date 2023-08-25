@@ -10,8 +10,11 @@ import {Quad} from "n3";
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
 
-// Array containing all quads on the sheet when the last change was detected.
-let previousQuads;
+// global variable to store RML data for the queries
+let rml;
+
+// Array containing all the data on the sheet when the last change was detected.
+let previousData;
 
 /**
  * Parse YAML data and store it in the configuration object.
@@ -176,7 +179,7 @@ async function startFromFile(configPath, rulesPath) {
     process.exit(1);
   }
 
-  const rml = await yarrrmlToRml(yarrrml);
+  rml = await yarrrmlToRml(yarrrml);
 
   // Cold start
   ymlContentToConfig(configYml);
