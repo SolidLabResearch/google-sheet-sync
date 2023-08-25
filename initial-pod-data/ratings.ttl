@@ -1,0 +1,31 @@
+@prefix schema: <http://schema.org/> .
+
+# The Mandalorian
+<http://dbpedia.org/resource/The_Mandalorian> schema:review <#review-1>.
+
+<#review-1> a schema:Review;
+  schema:datePublished "2023-06-08";
+  schema:reviewRating <#rating-1>.
+
+<#rating-1> a schema:Rating;
+  schema:ratingValue "4".
+
+# Game of Thrones
+<http://dbpedia.org/resource/Game_of_Thrones> schema:review <#review-2>.
+
+<#review-2> a schema:Review;
+  schema:datePublished "2023-03-12";
+  schema:reviewRating <#rating-2>.
+
+<#rating-2> a schema:Rating;
+  schema:ratingValue "3".
+
+# One Piece
+<http://dbpedia.org/resource/One_Piece_(TV_series)> schema:review <#review-3>.
+
+<#review-3> a schema:Review;
+  schema:datePublished "2023-01-21";
+  schema:reviewRating <#rating-3>.
+
+<#rating-3> a schema:Rating;
+  schema:ratingValue "5".

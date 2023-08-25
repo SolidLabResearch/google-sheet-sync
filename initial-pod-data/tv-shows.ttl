@@ -1,0 +1,49 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+<http://dbpedia.org/resource/The_Mandalorian> 
+  a dbo:TelevisionShow;
+  rdfs:label "The Mandalorian";
+  dbo:abstract """
+  The Mandalorian is an American space western television series created by Jon Favreau for the streaming service Disney+. 
+  It is the first live-action series in the Star Wars franchise, beginning five years after the events of Return of the Jedi (1983), 
+  and stars Pedro Pascal as the title character, a lone bounty hunter who goes on the run to protect "the Child". 
+  Star Wars creator George Lucas had begun developing a live-action Star Wars television series by 2009, 
+  but this project was deemed too expensive to produce. He sold Lucasfilm to Disney in October 2012. Subsequently, 
+  work on a new Star Wars series began for Disney+. Favreau signed on in March 2018, serving as writer and showrunner. 
+  He executive produces alongside Dave Filoni, Kathleen Kennedy, and Colin Wilson. 
+  The series' title was announced in October 2018, with filming starting at Manhattan Beach Studios in California. 
+  Visual effects company Industrial Light & Magic developed the StageCraft technology for the series, 
+  using virtual sets and a 360-degree video wall to create the series' environments. 
+  This has since been adopted by other film and television productions. 
+  The Mandalorian premiered with the launch of Disney+ on November 12, 2019. 
+  The eight-episode first season was met with positive reviews, was nominated for Outstanding Drama Series at 
+  the 72nd Primetime Emmy Awards, and won seven Primetime Creative Arts Emmy Awards. 
+  A second season premiered on October 30, 2020, to positive reviews, and a 
+  third season is scheduled to premiere on March 1, 2023. A fourth season is in development. 
+  Interconnected spin-off series The Book of Boba Fett, Ahsoka, and Skeleton Crew expand on The Mandalorian's timeframe. 
+  """.
+
+<http://dbpedia.org/resource/Game_of_Thrones>
+  a dbo:TelevisionShow;
+  rdfs:label "Game of Thrones";
+  dbo:abstract """
+  Game of Thrones is an American fantasy drama television series created by David Benioff and D. B. Weiss for HBO.
+   It is an adaptation of A Song of Ice and Fire, a series of fantasy novels by George R. R. Martin, 
+   the first of which is A Game of Thrones. The show was shot in the United Kingdom, Canada, Croatia, Iceland, Malta, Morocco, and 
+   Spain. It premiered on HBO in the United States on April 17, 2011, and concluded on May 19, 2019, with 
+   73 episodes broadcast over eight seasons. A prequel series, House of the Dragon, premiered on HBO in 2022.
+  """.
+
+<http://dbpedia.org/resource/One_Piece_(TV_series)>
+  a dbo:TelevisionShow;
+  rdfs:label "One Piece";
+  dbo:abstract """
+  One Piece (stylized as ONE PIECE) is a Japanese anime television series produced by Toei Animation that 
+  premiered on Fuji TV in October 1999. It is based on Eiichiro Oda's manga series of the same name. 
+  The story follows the adventures of Monkey D. Luffy, a boy whose body gained the properties of rubber after
+  unintentionally eating a Devil Fruit. With his crew of pirates, named the Straw Hat Pirates, 
+  Luffy explores the Grand Line in search of the world's ultimate treasure known as "One Piece" in order to become 
+  the next Pirate King.
+  """.
