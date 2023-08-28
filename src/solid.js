@@ -80,9 +80,9 @@ async function requestAccessToken() {
 }
 
 /**
- *
- * @param url
- * @param resource
+ * @param {string} url - endpoint where websockets can be requested
+ * @param {string} resource - resource url to listen to using the websocket
+ * @returns {WebSocket} - Websocket object for that resource
  */
 export async function getWebsocket(url, resource) {
   const requestOptions = getWebsocketRequestOptions(resource)
