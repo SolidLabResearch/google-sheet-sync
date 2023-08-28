@@ -51,7 +51,9 @@ export async function setupAuth() {
 async function requestAccessToken() {
   const dpopKey = await generateDpopKeyPair();
 
-  const data = await (await fetch(solid_auth.host + "/.well-known/openid-configuration".replace("//", "/"))).json()
+  const cleanHost = solid_auth.host.endsWith("/") ? solid_auth.host.slice(0, solid_auth.length - 1) : solid_auth.host
+
+  const data = await (await fetch(cleanHost + "/.well-known/openid-configuration")).json()
   const tokenUrl = data.token_endpoint;
 
   const authString = `${encodeURIComponent(solid_auth.id)}:${encodeURIComponent(solid_auth.secret)}`;
