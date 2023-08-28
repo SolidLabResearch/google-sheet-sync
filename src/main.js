@@ -2,7 +2,7 @@ import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
 import {load} from "js-yaml";
 import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
 import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from "./solid.js";
-import {readFile} from 'fs/promises'
+import {readFile} from 'fs/promises';
 import {compareArrays} from "./util.js";
 import {Quad} from "n3";
 
@@ -56,19 +56,19 @@ function ymlContentToConfig(ymlContent) {
   }
 
   if (configJson.sheet.name) {
-    config.sheetName = configJson.sheet.name
+    config.sheetName = configJson.sheet.name;
   } else {
-    throw new Error("Error parsing YAML: Google sheet name should be specified")
+    throw new Error("Error parsing YAML: Google sheet name should be specified");
   }
 
   if (configJson.host) {
-    config.host = configJson.host
+    config.host = configJson.host;
   } else {
-    throw new Error("Error parsing YAML: host value should be specified")
+    throw new Error("Error parsing YAML: host value should be specified");
   }
 
   if (configJson.websockets) {
-    config.noWebsockets = configJson.websockets === "false"
+    config.noWebsockets = configJson.websockets === "false";
   }
 
   config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
@@ -181,7 +181,7 @@ async function startFromFile(configPath, rulesPath) {
     console.error("Failed cold start, no data collected from pod");
     return;
   }
-  config.keys = [...keys]
+  config.keys = [...keys];
   const arrays = mapsTo2DArray(results);
   await makeClient();
   const rows = await writeToSheet(arrays, config.sheetid);
@@ -195,7 +195,7 @@ async function startFromFile(configPath, rulesPath) {
 
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
-    const url = websocketEndpoints[0]
+    const url = websocketEndpoints[0];
     const ws = await getWebsocket(url, config.source);
     ws.on("message", async (notification) => {
       const content = JSON.parse(notification);
@@ -212,7 +212,7 @@ async function startFromFile(configPath, rulesPath) {
           console.log("got notified but the latest changes are already present");
         }
       }
-    })
+    });
   } else {
     // polling using timers
     setInterval(async () => {

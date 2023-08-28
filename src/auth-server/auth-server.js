@@ -12,10 +12,10 @@ const server = createServer(async (request, response) => {
   const {query} = parse(request.url, true);
   const code = query.code;
   const id = query.id;
-  const secret = query.secret
-  const host = query.host
-  const solid_logout = query.solid_logout
-  let status = ""
+  const secret = query.secret;
+  const host = query.host;
+  const solidLogout = query.solid_logout;
+  let status = "";
   if (code) {
     // capture google code
     client.getToken(code, (error, token) => {
@@ -30,17 +30,19 @@ const server = createServer(async (request, response) => {
     });
   }
   if (id && secret && host) {
-    console.log("received solid id and secret")
-    fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret, host}), "utf-8")
-    status = "[DONE]\tlogin"
+    console.log("received solid id and secret");
+    fs.writeFileSync("solid_credentials.json", JSON.stringify({id, secret, host}), "utf-8");
+    status = "[DONE]\tlogin";
   }
-  if (solid_logout) {
+  if (solidLogout) {
     fs.writeFileSync("solid_credentials.json", "");
-    status = "[DONE]\tlogout"
+    status = "[DONE]\tlogout";
   }
   const authUrl = client.generateAuthUrl({
+    /*eslint-disable camelcase*/
     access_type: 'offline',
     scope: ['https://www.googleapis.com/auth/spreadsheets'],
+    /*eslint-disable camelcase*/
     redirect_uri: "http://localhost:" + port
   });
 
@@ -57,7 +59,7 @@ const server = createServer(async (request, response) => {
     response.end(html);
   });
 
-})
+});
 
 /**
  *
@@ -69,7 +71,7 @@ function main() {
 
   server.listen(port, () => {
     console.log("Authentication server running on port", port);
-  })
+  });
 }
 
 main();

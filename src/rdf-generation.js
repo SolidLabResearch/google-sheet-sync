@@ -14,7 +14,7 @@ export async function objectsToRdf(data, rml) {
       "data.json": JSON.stringify(data)
     },
     rml
-  }
+  };
 
   const response = await fetch('https://rml.io/api/rmlmapper/execute', {
     method: 'POST',

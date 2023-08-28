@@ -8,7 +8,7 @@ import {WebSocket} from 'ws';
 import {buildAuthenticatedFetch, createDpopHeader, generateDpopKeyPair} from "@inrupt/solid-client-authn-core";
 import {getWebsocketRequestOptions} from "./util.js";
 
-const solid_auth = {
+const solidAuthDetails = {
   auth: false,
   id: undefined,
   secret: undefined,
@@ -24,22 +24,22 @@ const solid_auth = {
  */
 export async function setupAuth() {
   try {
-    const content = fs.readFileSync('solid_credentials.json', 'utf-8')
+    const content = fs.readFileSync('solid_credentials.json', 'utf-8');
     if (content) {
-      const {host, id, secret} = JSON.parse(content)
-      solid_auth.auth = true
-      solid_auth.host = host
-      solid_auth.id = id
-      solid_auth.secret = secret
+      const {host, id, secret} = JSON.parse(content);
+      solidAuthDetails.auth = true;
+      solidAuthDetails.host = host;
+      solidAuthDetails.id = id;
+      solidAuthDetails.secret = secret;
       await requestAccessToken();
-      console.log("Solid auth succeeded")
+      console.log("Solid auth succeeded");
     } else {
-      console.log("empty file, skipping auth")
+      console.log("empty file, skipping auth");
     }
   } catch (err) {
     if (err.code === "ENOENT") {
       // no file found
-      console.log("no file found, skipping auth")
+      console.log("no file found, skipping auth");
     } else {
       throw err;
     }
@@ -53,12 +53,12 @@ export async function setupAuth() {
 async function requestAccessToken() {
   const dpopKey = await generateDpopKeyPair();
 
-  const cleanHost = solid_auth.host.endsWith("/") ? solid_auth.host.slice(0, solid_auth.length - 1) : solid_auth.host
+  const cleanHost = solidAuthDetails.host.endsWith("/") ? solidAuthDetails.host.slice(0, solidAuthDetails.length - 1) : solidAuthDetails.host;
 
-  const data = await (await fetch(cleanHost + "/.well-known/openid-configuration")).json()
+  const data = await (await fetch(cleanHost + "/.well-known/openid-configuration")).json();
   const tokenUrl = data.token_endpoint;
 
-  const authString = `${encodeURIComponent(solid_auth.id)}:${encodeURIComponent(solid_auth.secret)}`;
+  const authString = `${encodeURIComponent(solidAuthDetails.id)}:${encodeURIComponent(solidAuthDetails.secret)}`;
   const response = await fetch(tokenUrl, {
     method: 'POST',
     headers: {
@@ -71,16 +71,16 @@ async function requestAccessToken() {
 
   // access token with expiration in seconds
   const {access_token: accessToken, expires_in: expiration} = await response.json();
-  solid_auth.token = accessToken;
-  solid_auth.expiration = new Date(Date.now() + (expiration * 1000)).getTime();
+  solidAuthDetails.token = accessToken;
+  solidAuthDetails.expiration = new Date(Date.now() + (expiration * 1000)).getTime();
   const authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
-  solid_auth.fetch = async (url, init) => {
-    if (solid_auth.auth && Date.now() >= solid_auth.expiration) {
+  solidAuthDetails.fetch = async (url, init) => {
+    if (solidAuthDetails.auth && Date.now() >= solidAuthDetails.expiration) {
       console.log("token expired, requesting new token");
       await requestAccessToken();
     }
-    return await authFetch(url, init)
-  }
+    return await authFetch(url, init);
+  };
 }
 
 /**
@@ -89,9 +89,9 @@ async function requestAccessToken() {
  * @returns {WebSocket} - Websocket object for that resource
  */
 export async function getWebsocket(url, resource) {
-  const requestOptions = getWebsocketRequestOptions(resource)
+  const requestOptions = getWebsocketRequestOptions(resource);
 
-  const response = await (await solid_auth.fetch(url, requestOptions)).json()
+  const response = await (await solidAuthDetails.fetch(url, requestOptions)).json();
   const endpoint = response["receiveFrom"];
   return new WebSocket(endpoint);
 }
@@ -115,7 +115,7 @@ export async function queryResource(config, noCache = false) {
   try {
     const result = await myEngine.query(query, {
       sources: [config.source],
-      fetch: solid_auth.fetch
+      fetch: solidAuthDetails.fetch
     });
 
     const stream = await result.execute();
@@ -123,11 +123,11 @@ export async function queryResource(config, noCache = false) {
     stream.on('data', (binding) => {
       const result = new Map();
       binding.entries.forEach((value, key) => {
-        keys.add(key)
+        keys.add(key);
         result.set(key, value.value);
       });
       results.push(result);
-    })
+    });
 
     return new Promise((resolve, reject) => {
       stream.on('end', () => {
@@ -164,7 +164,7 @@ export async function getNotificationChannelTypes(url) {
     sources: [url],
   }
   )).toArray();
-  return result.map(binding => binding.get("channel").value)
+  return result.map(binding => binding.get("channel").value);
 }
 
 /**
@@ -200,13 +200,13 @@ export async function updateResource(deleted, added, url) {
 
   let update = `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
     _:rename a solid:InsertDeletePatch;
-    `
+    `;
 
   if (deleted.length !== 0) {
     const deletedString = await joinQuads(deleted);
     update += `solid:deletes {
         ${deletedString}
-        }`
+        }`;
   }
 
   if (added.length !== 0) {
@@ -215,12 +215,12 @@ export async function updateResource(deleted, added, url) {
         solid:inserts {
         ${addedString}
         }.
-        `
+        `;
   } else {
-    update += '.'
+    update += '.';
   }
 
-  const response = await solid_auth.fetch(url, {
+  const response = await solidAuthDetails.fetch(url, {
     method: 'PATCH',
     headers: {'Content-Type': 'text/n3'},
     body: update
@@ -230,7 +230,7 @@ export async function updateResource(deleted, added, url) {
     console.log("Synchronization done.");
   } else if (response.status === 401) {
     console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
-    console.log(await response.json())
+    console.log(await response.json());
   } else {
     console.error("Synchronization failed.");
   }
@@ -248,6 +248,6 @@ async function joinQuads(quads) {
   return new Promise(resolve => {
     writer.end((error, result) => {
       resolve(result);
-    })
-  })
+    });
+  });
 }
