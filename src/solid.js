@@ -1,12 +1,12 @@
-import {Quad} from "n3";
-import {QueryEngine} from "@comunica/query-sparql";
-import {Writer} from "n3";
-import fs from "fs";
+import {Quad} from 'n3';
+import {QueryEngine} from '@comunica/query-sparql';
+import {Writer} from 'n3';
+import fs from 'fs';
 import fetch from 'node-fetch';
 import {WebSocket} from 'ws';
 
-import {buildAuthenticatedFetch, createDpopHeader, generateDpopKeyPair} from "@inrupt/solid-client-authn-core";
-import {getWebsocketRequestOptions} from "./util.js";
+import {buildAuthenticatedFetch, createDpopHeader, generateDpopKeyPair} from '@inrupt/solid-client-authn-core';
+import {getWebsocketRequestOptions} from './util.js';
 
 const solidAuthDetails = {
   auth: false,
@@ -32,14 +32,14 @@ export async function setupAuth() {
       solidAuthDetails.id = id;
       solidAuthDetails.secret = secret;
       await requestAccessToken();
-      console.log("Solid auth succeeded");
+      console.log('Solid auth succeeded');
     } else {
-      console.log("empty file, skipping auth");
+      console.log('empty file, skipping auth');
     }
   } catch (err) {
-    if (err.code === "ENOENT") {
+    if (err.code === 'ENOENT') {
       // no file found
-      console.log("no file found, skipping auth");
+      console.log('no file found, skipping auth');
     } else {
       throw err;
     }
@@ -53,9 +53,9 @@ export async function setupAuth() {
 async function requestAccessToken() {
   const dpopKey = await generateDpopKeyPair();
 
-  const cleanHost = solidAuthDetails.host.endsWith("/") ? solidAuthDetails.host.slice(0, solidAuthDetails.length - 1) : solidAuthDetails.host;
+  const cleanHost = solidAuthDetails.host.endsWith('/') ? solidAuthDetails.host.slice(0, solidAuthDetails.length - 1) : solidAuthDetails.host;
 
-  const data = await (await fetch(cleanHost + "/.well-known/openid-configuration")).json();
+  const data = await (await fetch(cleanHost + '/.well-known/openid-configuration')).json();
   const tokenUrl = data.token_endpoint;
 
   const authString = `${encodeURIComponent(solidAuthDetails.id)}:${encodeURIComponent(solidAuthDetails.secret)}`;
@@ -76,7 +76,7 @@ async function requestAccessToken() {
   const authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
   solidAuthDetails.fetch = async (url, init) => {
     if (solidAuthDetails.auth && Date.now() >= solidAuthDetails.expiration) {
-      console.log("token expired, requesting new token");
+      console.log('token expired, requesting new token');
       await requestAccessToken();
     }
     return await authFetch(url, init);
@@ -92,7 +92,7 @@ export async function getWebsocket(url, resource) {
   const requestOptions = getWebsocketRequestOptions(resource);
 
   const response = await (await solidAuthDetails.fetch(url, requestOptions)).json();
-  const endpoint = response["receiveFrom"];
+  const endpoint = response['receiveFrom'];
   return new WebSocket(endpoint);
 }
 
@@ -138,7 +138,7 @@ export async function queryResource(config, noCache = false) {
     });
 
   } catch (err) {
-    if (err.message.split("\n")[0].endsWith("(HTTP status 401):")) {
+    if (err.message.split('\n')[0].endsWith('(HTTP status 401):')) {
       console.error("could not fetch resource because you haven't setup authentication. Please use the auth-server to setup Solid authentication");
       return {results: {}, keys:{}};
     } else {
@@ -164,7 +164,7 @@ export async function getNotificationChannelTypes(url) {
     sources: [url],
   }
   )).toArray();
-  return result.map(binding => binding.get("channel").value);
+  return result.map(binding => binding.get('channel').value);
 }
 
 /**
@@ -173,16 +173,16 @@ export async function getNotificationChannelTypes(url) {
  * @returns {string} The constructed SPARQL query.
  */
 function configToSPARQLQuery(config) {
-  let sparqlQuery = `SELECT DISTINCT * WHERE {\n`;
+  let sparqlQuery = 'SELECT DISTINCT * WHERE {\n';
   for (const key in config.required) {
     sparqlQuery += `    ?s ${config.required[key]} ?${key} .\n`;
   }
   for (const key in config.optional) {
     sparqlQuery += `    OPTIONAL {?s ${config.optional[key]} ?${key}} .\n`;
   }
-  sparqlQuery += `}`;
+  sparqlQuery += '}';
 
-  console.log("Constructed query: ", sparqlQuery);
+  console.log('Constructed query: ', sparqlQuery);
   return sparqlQuery;
 }
 
@@ -194,7 +194,7 @@ function configToSPARQLQuery(config) {
  */
 export async function updateResource(deleted, added, url) {
   if (added.length === 0 && deleted.length === 0) {
-    console.log("Synchronization done.");
+    console.log('Synchronization done.');
     return;
   }
 
@@ -227,12 +227,12 @@ export async function updateResource(deleted, added, url) {
   });
 
   if (response.ok) {
-    console.log("Synchronization done.");
+    console.log('Synchronization done.');
   } else if (response.status === 401) {
     console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
     console.log(await response.json());
   } else {
-    console.error("Synchronization failed.");
+    console.error('Synchronization failed.');
   }
 }
 

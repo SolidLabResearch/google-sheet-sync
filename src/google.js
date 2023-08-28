@@ -1,6 +1,6 @@
-import {config} from "dotenv";
+import {config} from 'dotenv';
 import fs from 'fs';
-import {google} from "googleapis";
+import {google} from 'googleapis';
 
 // Authenticated Google Sheet API object.
 let sheets;
@@ -35,7 +35,7 @@ export async function makeClient() {
  */
 export async function writeToSheet(array, sheetId) {
   const range = 'A1:' + convertToCellIndex(array);
-  console.log("range: ", range);
+  console.log('range: ', range);
 
   const resource = {
     values: array,

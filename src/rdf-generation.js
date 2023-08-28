@@ -1,4 +1,4 @@
-import {Quad} from "n3";
+import {Quad} from 'n3';
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 import {Parser, Writer} from 'n3';
 
@@ -11,7 +11,7 @@ import {Parser, Writer} from 'n3';
 export async function objectsToRdf(data, rml) {
   const input = {
     sources: {
-      "data.json": JSON.stringify(data)
+      'data.json': JSON.stringify(data)
     },
     rml
   };
