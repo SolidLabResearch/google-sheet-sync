@@ -53,9 +53,9 @@ To set up authentication for Solid pods, one can use the same authentication ser
 2) Run `npm run auth` to start the authentication web app.
 3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
 4) Fill in all the necessary information:
-    * host server (Url of your [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer))
-    * email
-    * password
+    - host server (Url of your [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer))
+    - email
+    - password
 5) Press "Authenticate" under the 'Solid Pod' section.
 6) When successful, the correct tokens have now been written to `solid_credentials.json`.
 
