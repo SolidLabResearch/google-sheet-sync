@@ -49,12 +49,14 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 The synchronisation application is configured through the `config.yml` file.
 
-### resource (string)
+### Single resource mode
+
+#### resource (string)
 
 This parameter allows a user to specify a resource.
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
-### host (string)
+#### host (string)
 
 This parameter allows a user to specify the host of a resource.
 This is required to use the websocket protocol to listen for changes on the resource.
@@ -65,6 +67,20 @@ example:
 resource: "http://localhost:3000/example/software"
 host: "http://localhost:3000"
 ```
+
+### Multi resource mode
+
+When querying multiple resources at the same time, use the following structure.
+
+```yaml
+resources:
+   - resource: "http://localhost:3000/example/ratings.ttl"
+     host: "http://localhost:3000"
+   - resource: "http://localhost:3000/example/tv-shows.ttl"
+     host: "http://localhost:3000"
+```
+
+Make sure that for every resource, you provide a host value. Because each resource could be on a different host.
 
 ### query (string)
 
@@ -178,6 +194,10 @@ To convert and write back changes from the Google Sheet back to the resource, th
 uses the [RMLMapper](https://rml.io/). This mapper relies on declarative rules
 that define how the RDF data should be generated from the data on the Google Sheet.
 Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rules.yml` file.
+
+You are responsible that the Sheet data that is fed to the [RMLMapper](https://rml.io/)
+contains enough information to be converted back to triples. The program itself keeps no track of 
+the origin of the seperate pieces of data nor the entity to which they belong.
 
 You find an example in `rules.example.yml`.
 
