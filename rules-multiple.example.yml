@@ -1,0 +1,43 @@
+prefixes:
+  schema: "http://schema.org/"
+  dbo: "http://dbpedia.org/ontology/"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+targets:
+  show_target: ["1~void", "turtle"]
+  ratings_target: ["0~void", "turtle"]
+mappings:
+  tv-show:
+    sources:
+      - ['data.json~jsonpath', '$.data[*]']
+    s:
+      - value: $(show)
+        targets: show_target
+    po:
+      - [rdfs:label, $(title)]
+      - [dbo:abstract, $(description)]
+  review-show-link:
+    sources:
+      - ['data.json~jsonpath', '$.data[*]']
+    s:
+      - value: $(show)
+        targets: ratings_target
+    po:
+      - [schema:review, $(review)]
+  review:
+    sources:
+      - ['data.json~jsonpath', '$.data[*]']
+    s:
+      - value: $(review)
+        targets: ratings_target
+    po:
+      - [schema:datePublished, $(reviewDate)]
+      - [schema:reviewRating, $(rating)]
+  rating:
+    sources:
+      - ['data.json~jsonpath', '$.data[*]']
+    s:
+      - value: $(rating)
+        targets: ratings_target
+    po:
+      - [schema:ratingValue, $(score)]
+

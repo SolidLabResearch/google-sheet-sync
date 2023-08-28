@@ -1,0 +1,28 @@
+resources:
+  - resource: "http://localhost:3000/example/ratings.ttl"
+    host: "http://localhost:3000"
+  - resource: "http://localhost:3000/example/tv-shows.ttl"
+    host: "http://localhost:3000"
+
+query: >
+  PREFIX schema: <http://schema.org/>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX dbo: <http://dbpedia.org/ontology/>
+  
+  SELECT ?show ?title ?description ?review ?reviewDate ?rating ?score WHERE {
+      ?show a dbo:TelevisionShow;
+      rdfs:label ?title;
+      dbo:abstract ?description;
+      schema:review ?review.
+  
+      ?review schema:datePublished ?reviewDate;
+      schema:reviewRating ?rating.
+  
+      ?rating schema:ratingValue ?score.
+    }
+
+
+sheet:
+  id: "ABCD1234"
+  name: "Sheet1"
+  interval: 10000
