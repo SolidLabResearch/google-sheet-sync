@@ -19,7 +19,8 @@ const solid_auth = {
 };
 
 /**
- *
+ * Prepare authentication variables
+ * @returns {Promise<void>}
  */
 export async function setupAuth() {
   try {
@@ -46,7 +47,8 @@ export async function setupAuth() {
 }
 
 /**
- *
+ * Request an access token using the id and secret from the setup
+ * @returns {Promise<void>}
  */
 async function requestAccessToken() {
   const dpopKey = await generateDpopKeyPair();
