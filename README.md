@@ -4,6 +4,17 @@ Google Sheet Sync is an agent that allows a user to convert and synchronise data
 It is based off of [this challenge](https://github.com/SolidLabResearch/Challenges/issues/120).
 You find a screencast of the agent [here](https://cloud.ilabt.imec.be/index.php/s/eFrEKF2YCkSx22j).
 
+## Pods
+
+To set up the CSS instances with pod data, run 
+```shell
+npm run prepare:pods
+```
+To start the server, run 
+```shell
+npm run start:pods
+```
+
 ## Google Sheet API
 
 To read and alter Google Sheets, we use the [Google Sheet API](https://developers.google.com/sheets/api/guides/concepts).
