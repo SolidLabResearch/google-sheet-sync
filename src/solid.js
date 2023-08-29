@@ -24,7 +24,7 @@ const solidAuthDetails = {
  */
 export async function setupAuth() {
   try {
-    const content = fs.readFileSync('solid_credentials.json', 'utf-8');
+    const content = fs.readFileSync('solid-credentials.json', 'utf-8');
     if (content) {
       const {host, id, secret} = JSON.parse(content);
       solidAuthDetails.auth = true;

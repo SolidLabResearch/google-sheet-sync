@@ -31,11 +31,11 @@ const server = createServer(async (request, response) => {
   }
   if (id && secret && host) {
     console.log('received solid id and secret');
-    fs.writeFileSync('solid_credentials.json', JSON.stringify({id, secret, host}), 'utf-8');
+    fs.writeFileSync('solid-credentials.json', JSON.stringify({id, secret, host}), 'utf-8');
     status = '[DONE]\tlogin';
   }
   if (solidLogout) {
-    fs.writeFileSync('solid_credentials.json', '');
+    fs.writeFileSync('solid-credentials.json', '');
     status = '[DONE]\tlogout';
   }
   const authUrl = client.generateAuthUrl({

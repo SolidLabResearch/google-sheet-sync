@@ -57,7 +57,7 @@ To set up authentication for Solid pods, you use the same authentication server 
     - email
     - password
 5) Press "Authenticate" under the 'Solid Pod' section.
-6) When successful, the correct tokens have now been written to `solid_credentials.json`.
+6) When successful, the correct tokens have now been written to `solid-credentials.json`.
 
 ## Configuration
 
