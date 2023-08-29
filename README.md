@@ -37,7 +37,7 @@ To create these, follow these steps using the authentication app:
 1) Make sure all dependencies have been installed by running `npm i`.
 2) Run `npm run auth` to start the authentication web app.
 3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
-4) Press "Authenticate" under the 'Google' section.
+4) Press "Authenticate" under the "Google" section.
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
 6) When successful, the correct tokens have now been written to `credentials.json`.
@@ -47,7 +47,7 @@ The synchronisation app can now read and use these tokes to access the Google Sh
 
 ## Solid authentication
 
-To set up authentication for Solid pods, one can use the same authentication server as the OAuth2 setup.
+To set up authentication for Solid pods, you use the same authentication server as the OAuth2 setup.
 
 1) Make sure all dependencies have been installed by running `npm i`.
 2) Run `npm run auth` to start the authentication web app.
