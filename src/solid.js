@@ -128,6 +128,8 @@ export async function updateResource(deleted, added, url) {
     console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
   } else {
     console.error("Synchronization failed.");
+    console.log(response.status)
+    console.log(await response.text())
   }
 }
 
