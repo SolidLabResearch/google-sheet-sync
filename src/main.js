@@ -63,11 +63,11 @@ function ymlContentToConfig(ymlContent) {
     config.cacheComparator = (first, second, comparator) => {
       const firstKeys = Object.keys(first);
       const secondKeys = Object.keys(second);
-      if(firstKeys.length !== secondKeys.length){
+      if (firstKeys.length !== secondKeys.length) {
         return false;
       }
       const result = firstKeys.every((entry) => secondKeys.includes(entry))
-      if (!result){
+      if (!result) {
         return false;
       }
       return firstKeys.every((entry) => compareArrays(first[entry], second[entry], comparator))
@@ -85,23 +85,30 @@ function ymlContentToConfig(ymlContent) {
       const addKeys = Object.keys(add)
       delKeys.forEach((entry) => keys.add(entry));
       addKeys.forEach((entry) => keys.add(entry));
-      for (const index of keys) {
-        if(index === "stdout"){
+      console.log(keys);
+      for (const key of keys) {
+        if (key === "stdout") {
           continue;
         }
         let d = [];
         let a = [];
-        if (delKeys.includes(index)) {
-          d = del[index]
+        if (delKeys.includes(key)) {
+          d = del[key]
         }
-        if (addKeys.includes(index)) {
-          a = add[index];
+        if (addKeys.includes(key)) {
+          a = add[key];
         }
-        const int_index = Number.parseInt(index);
-        console.log(config.resource_hostmap[int_index].resource)
-        console.log(d);
-        console.log(a)
-        await updateResource(d, a, config.resource_hostmap[int_index].resource)
+        let found = false;
+        for (const resourceHostmapElement of config.resource_hostmap) {
+          if (resourceHostmapElement.resource.endsWith(key)) {
+            found = true
+            await updateResource(d, a, resourceHostmapElement.resource)
+            break
+          }
+        }
+        if(!found){
+          console.error(`[ERROR]\tCould not find resource to update for key ${key}`)
+        }
       }
     }
   } else {
