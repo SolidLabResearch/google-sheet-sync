@@ -60,3 +60,16 @@ export function getWebsocketRequestOptions(source) {
     method: 'POST', headers: myHeaders, body: raw, redirect: 'follow'
   };
 }
+
+/**
+ * function to remove a possible trailing slash of a string
+ * Used to clean up IRIs
+ * @param {string} input - string to clean up
+ * @returns {string} - cleaned up string
+ */
+export function removeTrailingSlashes(input){
+  if(input.endsWith("/")){
+    return input.slice(0, input.length - 1);
+  }
+  return input;
+}

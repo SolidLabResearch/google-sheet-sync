@@ -4,7 +4,7 @@ import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
 import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
 import {readFile} from 'fs/promises'
 import {WebSocket} from 'ws';
-import {compareArrays, getWebsocketRequestOptions} from "./util.js";
+import {compareArrays, getWebsocketRequestOptions, removeTrailingSlashes} from "./util.js";
 import {Quad} from "n3";
 
 // Object containing information relating to the configuration of the synchronisation app.
@@ -47,14 +47,20 @@ function ymlContentToConfig(ymlContent) {
   }
 
   if (configJson.resource) {
-    config.source = configJson.resource;
+    config.source = removeTrailingSlashes(configJson.resource);
     config.multiple = false;
     config.cacheComparator = compareArrays;
     config.diffChecker = onlyInLeft;
     config.updater = (del, add) => updateResource(del, add, config.source)
   } else if (configJson.resources) {
     config.multiple = true;
-    config.resource_hostmap = configJson.resources
+    config.resource_hostmap = configJson.resources.map((object) => {
+      return {
+        resource: removeTrailingSlashes(object.resource),
+        host: removeTrailingSlashes(object.host)
+      }
+    })
+    console.log(config.resource_hostmap);
     config.cacheComparator = (first, second, comparator) => {
       const firstKeys = Object.keys(first);
       const secondKeys = Object.keys(second);
@@ -117,7 +123,7 @@ function ymlContentToConfig(ymlContent) {
 
   if (!config.multiple) {
     if (configJson.host) {
-      config.host = configJson.host
+      config.host = removeTrailingSlashes(configJson.host)
     } else {
       throw new Error("Error parsing YAML: host value should be specified")
     }
