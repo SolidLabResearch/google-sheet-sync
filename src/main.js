@@ -60,7 +60,6 @@ function ymlContentToConfig(ymlContent) {
         host: removeTrailingSlashes(object.host)
       }
     })
-    console.log(config.resource_hostmap);
     config.cacheComparator = (first, second, comparator) => {
       const firstKeys = Object.keys(first);
       const secondKeys = Object.keys(second);
