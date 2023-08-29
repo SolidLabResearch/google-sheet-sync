@@ -6,7 +6,7 @@
     "prepare:pods": "cpy initial-pod-data/* pods/example/ --flat",
     "reset:pods": "rimraf pods && npm run prepare:pods",
     "start": "node src/main.js",
-    "start:pods": "community-solid-server -c solidconfig.json -f pods",
+    "start:pods": "community-solid-server -c solidconfig.json -f pods --seededPodConfigJson seeded-pod-config.json",
     "lint:js": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:js:fix": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0 --fix",
     "lint:markdown": "markdownlint-cli2",
