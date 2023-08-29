@@ -6,11 +6,14 @@ You find a screencast of the agent [here](https://cloud.ilabt.imec.be/index.php/
 
 ## Pods
 
-To set up the CSS instances with pod data, run 
+To set up the CSS instances with pod data, run
+
 ```shell
 npm run prepare:pods
 ```
-To start the server, run 
+
+To start the server, run
+
 ```shell
 npm run start:pods
 ```
@@ -64,11 +67,12 @@ To set up authentication for Solid pods, you use the same authentication server 
 2) Run `npm run auth` to start the authentication web app.
 3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
 4) Fill in all the necessary information:
-    - host server (Url of your [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer) where your pod is located)
+    - host server (Url of your [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer)
+    where your pod is located)
     - email for your pod
     - password for your pod
   
-    The Solid instance that comes with this program is seeded with 1 pod by default. The default pod name is `example`. 
+    The Solid instance that comes with this program is seeded with 1 pod by default. The default pod name is `example`.
 The email is `hello@example.com` with password `abc123`. You can use these values to authenticate.
 5) Press "Authenticate" under the "Solid Pod" section.
 6) When successful, the correct tokens have now been written to `solid-credentials.json`.
