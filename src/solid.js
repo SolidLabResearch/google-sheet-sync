@@ -39,7 +39,7 @@ export async function setupAuth() {
   } catch (err) {
     if (err.code === 'ENOENT') {
       // no file found
-      console.log('no file found, skipping auth');
+      console.log('No file found. Skipping auth');
     } else {
       throw err;
     }
@@ -139,7 +139,7 @@ export async function queryResource(config, noCache = false) {
 
   } catch (err) {
     if (err.message.split('\n')[0].endsWith('(HTTP status 401):')) {
-      console.error("could not fetch resource because you haven't setup authentication. Please use the auth-server to setup Solid authentication");
+      console.error("Could not fetch resource because you haven't setup authentication. Please use the auth-server to setup Solid authentication");
       return {results: {}, keys:{}};
     } else {
       throw err;
