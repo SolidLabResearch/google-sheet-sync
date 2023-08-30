@@ -1,11 +1,10 @@
-import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
-import {load} from "js-yaml";
-import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
-import {readFile} from 'fs/promises'
-import {WebSocket} from 'ws';
-import {compareArrays, getWebsocketRequestOptions} from "./util.js";
-import {Quad} from "n3";
+import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
+import {load} from 'js-yaml';
+import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
+import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from './solid.js';
+import {readFile} from 'fs/promises';
+import {compareArrays} from './util.js';
+import {Quad} from 'n3';
 
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
@@ -41,35 +40,35 @@ function ymlContentToConfig(ymlContent) {
   } else if (configJson.query) {
     config.query = configJson.query;
   } else {
-    throw new Error("Error parsing YAML: either fields or a SPARQL query should be given");
+    throw new Error('Error parsing YAML: either fields or a SPARQL query should be given');
   }
 
   if (configJson.resource) {
     config.source = configJson.resource;
   } else {
-    throw new Error("Error parsing YAML: source must be specified");
+    throw new Error('Error parsing YAML: source must be specified');
   }
 
   if (configJson.sheet.id) {
     config.sheetid = configJson.sheet.id;
   } else {
-    throw new Error("Error parsing YAML: Google sheet id should be specified");
+    throw new Error('Error parsing YAML: Google sheet id should be specified');
   }
 
   if (configJson.sheet.name) {
-    config.sheetName = configJson.sheet.name
+    config.sheetName = configJson.sheet.name;
   } else {
-    throw new Error("Error parsing YAML: Google sheet name should be specified")
+    throw new Error('Error parsing YAML: Google sheet name should be specified');
   }
 
   if (configJson.host) {
-    config.host = configJson.host
+    config.host = configJson.host;
   } else {
-    throw new Error("Error parsing YAML: host value should be specified")
+    throw new Error('Error parsing YAML: host value should be specified');
   }
 
   if (configJson.websockets) {
-    config.noWebsockets = configJson.websockets === "false"
+    config.noWebsockets = configJson.websockets === 'false';
   }
 
   config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
@@ -173,32 +172,34 @@ async function startFromFile(configPath, rulesPath) {
 
   const rml = await yarrrmlToRml(yarrrml);
 
+  await setupAuth();
+
   // Cold start
   ymlContentToConfig(configYml);
-  const {results, keys} = await queryResource(config);
-  config.keys = [...keys]
+  const {results, keys} = await queryResource(config, true);
+  if (Object.keys(results).length === 0){
+    console.error('Failed cold start, no data collected from pod');
+    return;
+  }
+  config.keys = [...keys];
   const arrays = mapsTo2DArray(results);
   await makeClient();
   const rows = await writeToSheet(arrays, config.sheetid);
   const maps = rowsToObjects(rows);
   previousQuads = await objectsToRdf({data: maps}, rml);
 
-  console.log("Synchronisation cold start completed");
+  console.log('Synchronisation cold start completed');
 
   // Pod -> Sheet sync
-  const websocketEndpoints = await getNotificationChannelTypes(config.host + "/.well-known/solid");
+  const websocketEndpoints = await getNotificationChannelTypes(config.host + '/.well-known/solid');
 
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
-    const url = websocketEndpoints[0]
-    const requestOptions = getWebsocketRequestOptions(config.source)
-
-    const response = await (await fetch(url, requestOptions)).json()
-    const endpoint = response["receiveFrom"];
-    const ws = new WebSocket(endpoint);
-    ws.on("message", async (notification) => {
+    const url = websocketEndpoints[0];
+    const ws = await getWebsocket(url, config.source);
+    ws.on('message', async (notification) => {
       const content = JSON.parse(notification);
-      if (content.type === "Update") {
+      if (content.type === 'Update') {
         const {results} = await queryResource(config, true);
         const arrays = mapsTo2DArray(results);
         const maps = rowsToObjects(arrays);
@@ -208,10 +209,10 @@ async function startFromFile(configPath, rulesPath) {
           const maps2 = rowsToObjects(rows);
           previousQuads = await objectsToRdf({data: maps2}, rml);
         } else {
-          console.log("got notified but the latest changes are already present");
+          console.log('got notified but the latest changes are already present');
         }
       }
-    })
+    });
   } else {
     // polling using timers
     setInterval(async () => {
@@ -231,7 +232,7 @@ async function startFromFile(configPath, rulesPath) {
   setInterval(async () => {
     const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
     if (hasChanged) {
-      console.log("Changes detected. Synchronizing...");
+      console.log('Changes detected. Synchronizing...');
       const maps = rowsToObjects(rows);
 
       const quads = await objectsToRdf({data: maps}, rml);
@@ -249,7 +250,7 @@ async function startFromFile(configPath, rulesPath) {
  *
  */
 function main() {
-  startFromFile("config.yml", "rules.yml");
+  startFromFile('config.yml', 'rules.yml');
 }
 
 main();

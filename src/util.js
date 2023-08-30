@@ -48,12 +48,12 @@ export function compareArrays(first, second, comparator = shallowEqual) {
  */
 export function getWebsocketRequestOptions(source) {
   const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/ld+json");
+  myHeaders.append('Content-Type', 'application/ld+json');
 
   const raw = JSON.stringify({
-    "@context": ["https://www.w3.org/ns/solid/notification/v1"],
-    "type": "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023",
-    "topic": source
+    '@context': ['https://www.w3.org/ns/solid/notification/v1'],
+    'type': 'http://www.w3.org/ns/solid/notifications#WebSocketChannel2023',
+    'topic': source
   });
 
   return {

@@ -25,6 +25,9 @@ module.exports = {
       {'max': 1, 'maxEOF': 0}
     ],
     'indent': ['error', 2],
+    'semi': ['error', 'always'],
+    'camelcase': 'error',
+    'quotes': ['error', 'single', { 'avoidEscape': true }],
     'jsdoc/check-access': 1, // Recommended
     'jsdoc/check-alignment': 1, // Recommended
     // 'jsdoc/check-examples': 1,

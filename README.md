@@ -4,6 +4,20 @@ Google Sheet Sync is an agent that allows a user to convert and synchronise data
 It is based off of [this challenge](https://github.com/SolidLabResearch/Challenges/issues/120).
 You find a screencast of the agent [here](https://cloud.ilabt.imec.be/index.php/s/eFrEKF2YCkSx22j).
 
+## Pods
+
+To set up the CSS instances with pod data, run
+
+```shell
+npm run prepare:pods
+```
+
+To start the server, run
+
+```shell
+npm run start:pods
+```
+
 ## Google Sheet API
 
 To read and alter Google Sheets, we use the [Google Sheet API](https://developers.google.com/sheets/api/guides/concepts).
@@ -37,13 +51,31 @@ To create these, follow these steps using the authentication app:
 1) Make sure all dependencies have been installed by running `npm i`.
 2) Run `npm run auth` to start the authentication web app.
 3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
-4) Press "Authenticate".
+4) Press "Authenticate" under the "Google" section.
 5) Log in/select a Google account that has access to the Google Cloud project and/or is added as a test user
    if the project is not published yet.
 6) When successful, the correct tokens have now been written to `credentials.json`.
    You find an example in `credentials.example.json`.
 
 The synchronisation app can now read and use these tokes to access the Google Sheet with the Google Sheets API.
+
+## Solid authentication
+
+To set up authentication for Solid pods, you use the same authentication server as the OAuth2 setup.
+
+1) Make sure all dependencies have been installed by running `npm i`.
+2) Run `npm run auth` to start the authentication web app.
+3) Navigate to `http://localhost:8081/` (or another port if changed) in a browser.
+4) Fill in all the necessary information:
+    - host server (Url of your [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer)
+    where your pod is located)
+    - email for your pod
+    - password for your pod
+  
+    The Solid instance that comes with this program is seeded with 1 pod by default. The default pod name is `example`.
+The email is `hello@example.com` with password `abc123`. You can use these values to authenticate.
+5) Press "Authenticate" under the "Solid Pod" section.
+6) When successful, the correct tokens have now been written to `solid-credentials.json`.
 
 ## Configuration
 
@@ -204,13 +236,17 @@ npm run lint:js
 ```
 
 There is also a markdown linter set up for this project. To run, execute the following command:
+
 ```shell
 npm run lint:markdown
-``` 
-or 
+```
+
+or
+
 ```shell
 npm run lint:markdown:fix
 ```
+
 to apply automatical fixes.
 
 ## Technical assumptions
