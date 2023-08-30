@@ -1,11 +1,11 @@
-import {checkSheetForChanges, makeClient, writeToSheet} from "./google.js";
-import {load} from "js-yaml";
-import {objectsToRdf, yarrrmlToRml} from "./rdf-generation.js";
-import {getNotificationChannelTypes, queryResource, updateResource} from "./solid.js";
-import {readFile} from 'fs/promises'
 import {WebSocket} from 'ws';
-import {compareArrays, getWebsocketRequestOptions, removeTrailingSlashes} from "./util.js";
-import {Quad} from "n3";
+import {compareArrays, getWebsocketRequestOptions, removeTrailingSlashes} from './util.js';
+import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
+import {load} from 'js-yaml';
+import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
+import {getNotificationChannelTypes, queryResource, setupAuth, updateResource} from './solid.js';
+import {readFile} from 'fs/promises';
+import {Quad} from 'n3';
 
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
@@ -43,7 +43,7 @@ function ymlContentToConfig(ymlContent) {
   } else if (configJson.query) {
     config.query = configJson.query;
   } else {
-    throw new Error("Error parsing YAML: either fields or a SPARQL query should be given");
+    throw new Error('Error parsing YAML: either fields or a SPARQL query should be given');
   }
 
   if (configJson.resource) {
@@ -51,49 +51,49 @@ function ymlContentToConfig(ymlContent) {
     config.multiple = false;
     config.cacheComparator = compareArrays;
     config.diffChecker = onlyInLeft;
-    config.updater = (del, add) => updateResource(del, add, config.source)
+    config.updater = (del, add) => updateResource(del, add, config.source);
   } else if (configJson.resources) {
     config.multiple = true;
     config.resource_hostmap = configJson.resources.map((object) => {
       return {
         resource: removeTrailingSlashes(object.resource),
         host: removeTrailingSlashes(object.host)
-      }
-    })
+      };
+    });
     config.cacheComparator = (first, second, comparator) => {
       const firstKeys = Object.keys(first);
       const secondKeys = Object.keys(second);
       if (firstKeys.length !== secondKeys.length) {
         return false;
       }
-      const result = firstKeys.every((entry) => secondKeys.includes(entry))
+      const result = firstKeys.every((entry) => secondKeys.includes(entry));
       if (!result) {
         return false;
       }
-      return firstKeys.every((entry) => compareArrays(first[entry], second[entry], comparator))
-    }
+      return firstKeys.every((entry) => compareArrays(first[entry], second[entry], comparator));
+    };
     config.diffChecker = (left, right, cmp) => {
       // the assumption is made that the structures of left and right are the same
       const leftKeys = Object.keys(left);
-      const out = {}
-      leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp))
+      const out = {};
+      leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
       return out;
-    }
+    };
     config.updater = async (del, add) => {
-      const keys = new Set()
-      const delKeys = Object.keys(del)
-      const addKeys = Object.keys(add)
+      const keys = new Set();
+      const delKeys = Object.keys(del);
+      const addKeys = Object.keys(add);
       delKeys.forEach((entry) => keys.add(entry));
       addKeys.forEach((entry) => keys.add(entry));
       console.log(keys);
       for (const key of keys) {
-        if (key === "stdout") {
+        if (key === 'stdout') {
           continue;
         }
         let d = [];
         let a = [];
         if (delKeys.includes(key)) {
-          d = del[key]
+          d = del[key];
         }
         if (addKeys.includes(key)) {
           a = add[key];
@@ -101,42 +101,42 @@ function ymlContentToConfig(ymlContent) {
         let found = false;
         for (const resourceHostmapElement of config.resource_hostmap) {
           if (resourceHostmapElement.resource.endsWith(key)) {
-            found = true
-            await updateResource(d, a, resourceHostmapElement.resource)
-            break
+            found = true;
+            await updateResource(d, a, resourceHostmapElement.resource);
+            break;
           }
         }
-        if(!found){
-          console.error(`[ERROR]\tCould not find resource to update for key ${key}`)
+        if (!found) {
+          console.error(`[ERROR]\tCould not find resource to update for key ${key}`);
         }
       }
-    }
+    };
   } else {
-    throw new Error("Error parsing YAML: At least 1 resource must be specified");
+    throw new Error('Error parsing YAML: At least 1 resource must be specified');
   }
 
   if (configJson.sheet.id) {
     config.sheetid = configJson.sheet.id;
   } else {
-    throw new Error("Error parsing YAML: Google sheet id should be specified");
+    throw new Error('Error parsing YAML: Google sheet id should be specified');
   }
 
   if (configJson.sheet.name) {
-    config.sheetName = configJson.sheet.name
+    config.sheetName = configJson.sheet.name;
   } else {
-    throw new Error("Error parsing YAML: Google sheet name should be specified")
+    throw new Error('Error parsing YAML: Google sheet name should be specified');
   }
 
   if (!config.multiple) {
     if (configJson.host) {
-      config.host = removeTrailingSlashes(configJson.host)
+      config.host = removeTrailingSlashes(configJson.host);
     } else {
-      throw new Error("Error parsing YAML: host value should be specified")
+      throw new Error('Error parsing YAML: host value should be specified');
     }
   }
 
   if (configJson.websockets) {
-    config.noWebsockets = configJson.websockets === "false"
+    config.noWebsockets = configJson.websockets === 'false';
   }
 
   config.interval = configJson.sheet.interval ? configJson.sheet.interval : 5000;
@@ -240,16 +240,22 @@ async function startFromFile(configPath, rulesPath) {
 
   rml = await yarrrmlToRml(yarrrml);
 
+  await setupAuth();
+
   // Cold start
   ymlContentToConfig(configYml);
-  const {results, keys} = await queryResource(config);
-  config.keys = [...keys]
+  const {results, keys} = await queryResource(config, true);
+  if (Object.keys(results).length === 0) {
+    console.error('Failed cold start, no data collected from pod');
+    return;
+  }
+  config.keys = [...keys];
   const arrays = mapsTo2DArray(results);
   await makeClient();
   const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
   const maps = rowsToObjects(rows);
   previousData = await objectsToRdf(config, {data: maps}, rml);
-  console.log("Synchronisation cold start completed");
+  console.log('Synchronisation cold start completed');
 
   if (!config.multiple) {
     const status = await setupResourceListening(config.host, config.source);
@@ -268,10 +274,10 @@ async function startFromFile(configPath, rulesPath) {
     }
   } else {
     // try to setup a websocket connection for each resource
-    const result = await Promise.all(config.resource_hostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)))
+    const result = await Promise.all(config.resource_hostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
     const all_on_websockets = result.every((e) => e);
     if (!all_on_websockets) {
-      console.log("not all resources supported websockets, polling using timer")
+      console.log('not all resources supported websockets, polling using timer');
       // polling using timers
       setInterval(async () => {
         const {results} = await queryResource(config, true);
@@ -285,7 +291,7 @@ async function startFromFile(configPath, rulesPath) {
         }
       }, config.interval);
     } else {
-      console.log("all resources are monitored using websockets");
+      console.log('all resources are monitored using websockets');
     }
   }
 
@@ -293,7 +299,7 @@ async function startFromFile(configPath, rulesPath) {
   setInterval(async () => {
     const {rows, hasChanged} = await checkSheetForChanges(config.sheetid, config.sheetName);
     if (hasChanged) {
-      console.log("Changes detected. Synchronizing...");
+      console.log('Changes detected. Synchronizing...');
       const maps = rowsToObjects(rows);
 
       const quads = await objectsToRdf(config, {data: maps}, rml);
@@ -313,19 +319,19 @@ async function startFromFile(configPath, rulesPath) {
  */
 async function setupResourceListening(host, src) {
   // Pod -> Sheet sync
-  const websocketEndpoints = await getNotificationChannelTypes(host + "/.well-known/solid");
+  const websocketEndpoints = await getNotificationChannelTypes(host + '/.well-known/solid');
 
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
-    const url = websocketEndpoints[0]
-    const requestOptions = getWebsocketRequestOptions(src)
+    const url = websocketEndpoints[0];
+    const requestOptions = getWebsocketRequestOptions(src);
 
-    const response = await (await fetch(url, requestOptions)).json()
-    const endpoint = response["receiveFrom"];
+    const response = await (await fetch(url, requestOptions)).json();
+    const endpoint = response['receiveFrom'];
     const ws = new WebSocket(endpoint);
-    ws.on("message", async (notification) => {
+    ws.on('message', async (notification) => {
       const content = JSON.parse(notification);
-      if (content.type === "Update") {
+      if (content.type === 'Update') {
         const {results} = await queryResource(config, true);
         const arrays = mapsTo2DArray(results);
         const maps = rowsToObjects(arrays);
@@ -338,7 +344,7 @@ async function setupResourceListening(host, src) {
           console.log(`[${src}]\tgot notified but the latest changes are already present`);
         }
       }
-    })
+    });
     return true;
   }
   return false;
@@ -348,7 +354,7 @@ async function setupResourceListening(host, src) {
  *
  */
 function main() {
-  startFromFile("config.yml", "rules.yml");
+  startFromFile('config.yml', 'rules.yml');
 }
 
 main();

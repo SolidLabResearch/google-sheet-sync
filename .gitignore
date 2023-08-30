@@ -5,4 +5,4 @@ credentials.json
 node_modules
 pods
 rules.yml
-/solid-credentials.json
+solid-credentials.json

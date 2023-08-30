@@ -1,6 +1,6 @@
-import {config} from "dotenv";
+import {config} from 'dotenv';
 import fs from 'fs';
-import {google} from "googleapis"
+import {google} from 'googleapis';
 
 // Authenticated Google Sheet API object.
 let sheets;
@@ -16,7 +16,7 @@ export async function makeClient() {
   const {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET} = process.env;
   const client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
 
-  const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'))
+  const credentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
   client.setCredentials(credentials);
 
   await client.refreshAccessToken();
@@ -36,7 +36,7 @@ export async function makeClient() {
  */
 export async function writeToSheet(array, sheetId, sheetName) {
   const range = sheetName + '!A1:' + convertToCellIndex(array);
-  console.log("range: ", range)
+  console.log('range: ', range);
 
   const resource = {
     values: array,

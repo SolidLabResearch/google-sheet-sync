@@ -11,10 +11,10 @@ import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 export async function objectsToRdf(config, data, rml) {
   const input = {
     sources: {
-      "data.json": JSON.stringify(data)
+      'data.json': JSON.stringify(data)
     },
     rml
-  }
+  };
 
   const response = await fetch('https://rml.io/api/rmlmapper/execute', {
     method: 'POST',
