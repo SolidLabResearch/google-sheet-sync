@@ -71,9 +71,7 @@ async function requestAccessToken() {
   });
 
   // access token with expiration in seconds
-  let {access_token: accessToken, expires_in: expiration} = await response.json();
-  console.log(expiration);
-  expiration = 60;
+  const {access_token: accessToken, expires_in: expiration} = await response.json();
   solidAuthDetails.token = accessToken;
   solidAuthDetails.expiration = new Date(Date.now() + (expiration * 1000)).getTime();
   solidAuthDetails.authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
