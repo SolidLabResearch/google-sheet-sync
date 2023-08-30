@@ -10,22 +10,29 @@
             crossorigin="anonymous"></script>
 
 </head>
-<body style="display: flex; align-items: center; justify-content: center; height: 100vh">
-<div style="text-align: center; flex: 50%">
-    <h2>Google Sheets API Authentication</h2>
-    <p>To create an access and refresh token pair, <br/> click the authentication button bellow and log in with the Google
-        account connected to your Client ID and secret.</p>
-    <button class="btn btn-primary" id='authButton'>Authenticate</button>
+<body>
+<div style="display: flex; align-items: center; justify-content: center; height: 80vh">
+    <div style="text-align: center; flex: 50%">
+        <h2>Google Sheets API Authentication</h2>
+        <p>To create an access and refresh token pair, <br/> click the authentication button bellow and log in with the
+            Google
+            account connected to your Client ID and secret.</p>
+        <button class="btn btn-primary" id='authButton'>Authenticate</button>
+    </div>
+    <div style="text-align: center; flex: 50%">
+        <h2>Solid Pod Authentication</h2>
+        <p>To create a token used to query non-public resources.</p>
+        <input id="host" placeholder="host server"/>
+        <input id="email" placeholder="email">
+        <input id="passwd" placeholder="password" type="password">
+        <button class="btn btn-primary" id='solidButton'>Authenticate</button>
+        <button class="btn btn-primary" id='solidButton-logout'>Logout</button>
+    </div>
 </div>
-<div style="text-align: center; flex: 50%">
-    <h2>Solid Pod Authentication</h2>
-    <p>To create a token used to query non-public resources.</p>
-    <input id="host" placeholder="host server"/>
-    <input id="email" placeholder="email">
-    <input id="passwd" placeholder="password" type="password">
-    <button class="btn btn-primary" id='solidButton'>Authenticate</button>
-    <button class="btn btn-primary" id='solidButton-logout'>Logout</button>
-    <p id = status>STATUS_TEXT</p>
+<div style="display: flex; align-items: center; justify-content: center;">
+    <h3>
+        <b id=status>STATUS_TEXT</b>
+    </h3>
 </div>
 <script>
   function clearParameters(input) {
@@ -48,11 +55,11 @@
         name: "google_sheet_sync"
       }),
     })
-    const json =  await response.json()
+    const json = await response.json()
     console.log(json)
     const {id, secret} = json
     location.href = clearParameters(location.href) + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
-    }
+  }
   document.getElementById("solidButton-logout").onclick = function () {
     const x = clearParameters(location.href);
     console.log(x)
