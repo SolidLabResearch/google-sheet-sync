@@ -3,7 +3,7 @@ import {compareArrays, getWebsocketRequestOptions, removeTrailingSlashes} from '
 import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
 import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
-import {getNotificationChannelTypes, queryResource, setupAuth, updateResource} from './solid.js';
+import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from './solid.js';
 import {readFile} from 'fs/promises';
 import {Quad} from 'n3';
 
@@ -320,15 +320,10 @@ async function startFromFile(configPath, rulesPath) {
 async function setupResourceListening(host, src) {
   // Pod -> Sheet sync
   const websocketEndpoints = await getNotificationChannelTypes(host + '/.well-known/solid');
-
   if (websocketEndpoints.length > 0 && websocketEndpoints[0].length > 0 && (!config.noWebsockets)) {
     // listen using websockets
     const url = websocketEndpoints[0];
-    const requestOptions = getWebsocketRequestOptions(src);
-
-    const response = await (await fetch(url, requestOptions)).json();
-    const endpoint = response['receiveFrom'];
-    const ws = new WebSocket(endpoint);
+    const ws = await getWebsocket(url, src);
     ws.on('message', async (notification) => {
       const content = JSON.parse(notification);
       if (content.type === 'Update') {
