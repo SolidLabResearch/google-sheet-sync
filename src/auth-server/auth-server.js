@@ -1,4 +1,4 @@
-import {createServer} from 'http';
+import {createServer, ServerResponse} from 'http';
 import {parse} from 'url';
 import {config} from 'dotenv';
 import {google} from 'googleapis';
@@ -18,7 +18,7 @@ const server = createServer(async (request, response) => {
   let status = '';
   if (code) {
     // capture google code
-    client.getToken(code, (error, token) => {
+    await client.getToken(code, (error, token) => {
       if (error) {
         console.error('Error retrieving access token:', error);
         response.writeHead(400, {'Content-Type': 'text/plain'});
@@ -27,17 +27,31 @@ const server = createServer(async (request, response) => {
 
       const jsonString = JSON.stringify(token, null, 2);
       fs.writeFileSync('credentials.json', jsonString, 'utf-8');
+      console.log('here');
+      status = '[DONE]\tGoogle login successful';
+      returnWithStatusText(response, status);
     });
+    return;
   }
   if (id && secret && host) {
     console.log('received solid id and secret');
     fs.writeFileSync('solid-credentials.json', JSON.stringify({id, secret, host}), 'utf-8');
-    status = '[DONE]\tlogin';
+    status = '[DONE]\tSolid login successful';
   }
   if (solidLogout) {
     fs.writeFileSync('solid-credentials.json', '');
-    status = '[DONE]\tlogout';
+    status = '[DONE]\tSolid logout successful';
   }
+  returnWithStatusText(response, status);
+});
+
+/**
+ * Sends back the index.html with status filled in
+ * @param {ServerResponse} response - response object to write to
+ * @param {string} status - status text to use
+ * @returns {void}
+ */
+function returnWithStatusText(response, status) {
   const authUrl = client.generateAuthUrl({
     /*eslint-disable camelcase*/
     access_type: 'offline',
@@ -58,8 +72,7 @@ const server = createServer(async (request, response) => {
     response.writeHead(200, {'Content-Type': 'text/html'});
     response.end(html);
   });
-
-});
+}
 
 /**
  *
