@@ -196,7 +196,7 @@ that define how the RDF data should be generated from the data on the Google She
 Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rules.yml` file.
 
 You are responsible that the Sheet data that is fed to the [RMLMapper](https://rml.io/)
-contains enough information to be converted back to triples. The program itself keeps no track of 
+contains enough information to be converted back to triples. The program itself keeps no track of
 the origin of the seperate pieces of data nor the entity to which they belong.
 
 You find an example in `rules.example.yml`.
@@ -224,13 +224,17 @@ npm run lint:js
 ```
 
 There is also a markdown linter set up for this project. To run, execute the following command:
+
 ```shell
 npm run lint:markdown
-``` 
-or 
+```
+
+or
+
 ```shell
 npm run lint:markdown:fix
 ```
+
 to apply automatical fixes.
 
 ## Technical assumptions
