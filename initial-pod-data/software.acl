@@ -4,5 +4,5 @@
 <#public>
     a acl:Authorization;
     acl:accessTo <./software>;
-    acl:agentClass foaf:Agent;
+    acl:agentClass acl:AuthenticatedAgent;
     acl:mode acl:Read, acl:Write, acl:Control.
