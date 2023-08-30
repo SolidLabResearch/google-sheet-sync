@@ -18,6 +18,8 @@ const solidAuthDetails = {
   fetch: fetch
 };
 
+let authFetch;
+
 /**
  * Prepare authentication variables
  * @returns {Promise<void>}
@@ -70,10 +72,12 @@ async function requestAccessToken() {
   });
 
   // access token with expiration in seconds
-  const {access_token: accessToken, expires_in: expiration} = await response.json();
+  let {access_token: accessToken, expires_in: expiration} = await response.json();
+  console.log(expiration);
+  expiration = 60;
   solidAuthDetails.token = accessToken;
   solidAuthDetails.expiration = new Date(Date.now() + (expiration * 1000)).getTime();
-  const authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
+  authFetch = await buildAuthenticatedFetch(fetch, accessToken, {dpopKey: dpopKey});
   solidAuthDetails.fetch = async (url, init) => {
     if (solidAuthDetails.auth && Date.now() >= solidAuthDetails.expiration) {
       console.log('token expired, requesting new token');
