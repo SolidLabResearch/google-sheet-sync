@@ -235,14 +235,9 @@ or
 npm run lint:markdown:fix
 ```
 
-to apply automatical fixes.
+to apply automatic fixes.
 
 ## Technical assumptions
-
-### Single resource
-
-The configuration file allows specifying only a single resource URL, as the agent can only
-write back changes from the Google Sheet back to a single destination.
 
 ### Public read/write authorization
 
