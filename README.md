@@ -197,7 +197,7 @@ Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rule
 
 You are responsible that the Sheet data that is fed to the [RMLMapper](https://rml.io/)
 contains enough information to be converted back to triples. The program itself keeps no track of
-the origin of the seperate pieces of data nor the entity to which they belong.
+the origin of the separate pieces of data nor the entity to which they belong.
 
 You find an example in `rules.example.yml`.
 
@@ -209,7 +209,7 @@ To set up and use the synchronisation agent, first make sure all the necessary d
 npm i
 ```
 
-Afterwards, start the agent by running
+Afterward, start the agent by running
 
 ```shell
 npm start
