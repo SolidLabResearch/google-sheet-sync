@@ -214,9 +214,10 @@ async function startFromFile(configPath, rulesPath) {
 }
 
 /**
+ * Tries to set up resource listening using websockets
  * @param {string} host - host of the resource, used to gather websocket endpoints
  * @param {string} src - resource url
- * @returns {Promise<boolean>} - true when using websockets, false when using a timer.
+ * @returns {Promise<boolean>} - true if successful, false otherwise.
  */
 async function setupResourceListening(host, src) {
   // Pod -> Sheet sync
