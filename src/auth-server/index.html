@@ -56,13 +56,11 @@
       }),
     })
     const json = await response.json()
-    console.log(json)
     const {id, secret} = json
     location.href = clearParameters(location.href) + `?id=${encodeURI(id)}&secret=${encodeURI(secret)}&host=${encodeURI(document.getElementById("host").value)}`
   }
   document.getElementById("solidButton-logout").onclick = function () {
     const x = clearParameters(location.href);
-    console.log(x)
     location.href = x + encodeURI("?solid_logout=true")
   }
 </script>

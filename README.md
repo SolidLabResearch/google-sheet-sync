@@ -81,12 +81,14 @@ The email is `hello@example.com` with password `abc123`. You can use these value
 
 The synchronisation application is configured through the `config.yml` file.
 
-### resource (string)
+### Single resource mode
+
+#### resource (string)
 
 This parameter allows a user to specify a resource.
 This resource should be represented as a URI to a Solid pod from which the data will be fetched.
 
-### host (string)
+#### host (string)
 
 This parameter allows a user to specify the host of a resource.
 This is required to use the websocket protocol to listen for changes on the resource.
@@ -94,9 +96,25 @@ This is required to use the websocket protocol to listen for changes on the reso
 example:
 
 ```yaml
-resource: "http://localhost:3000/example/software"
+resource: "http://localhost:3000/testing/software"
 host: "http://localhost:3000"
 ```
+
+### Multi resource mode
+
+When querying multiple resources at the same time, use the following structure.
+
+```yaml
+resources:
+   - resource: "http://localhost:3000/testing/ratings"
+     host: "http://localhost:3000"
+   - resource: "http://localhost:3000/testing/tv-shows"
+     host: "http://localhost:3000"
+```
+
+Make sure that for every resource, you provide a host value. Because each resource could be on a different host.
+
+You can find an example for multiple resources in the files `config.query-multiple.example.yml` and `rules-multiple.example.yml`
 
 ### query (string)
 
@@ -211,6 +229,10 @@ uses the [RMLMapper](https://rml.io/). This mapper relies on declarative rules
 that define how the RDF data should be generated from the data on the Google Sheet.
 Write these rules in the form of [YARRRML](https://rml.io/yarrrml/) in the `rules.yml` file.
 
+You are responsible that the Sheet data that is fed to the [RMLMapper](https://rml.io/)
+contains enough information to be converted back to triples. The program itself keeps no track of
+the origin of the separate pieces of data nor the entity to which they belong.
+
 You find an example in `rules.example.yml`.
 
 ## Start synchronisation app
@@ -221,7 +243,7 @@ To set up and use the synchronisation agent, first make sure all the necessary d
 npm i
 ```
 
-Afterwards, start the agent by running
+Afterward, start the agent by running
 
 ```shell
 npm start
@@ -247,19 +269,9 @@ or
 npm run lint:markdown:fix
 ```
 
-to apply automatical fixes.
+to apply automatic fixes.
 
 ## Technical assumptions
-
-### Single resource
-
-The configuration file allows specifying only a single resource URL, as the agent can only
-write back changes from the Google Sheet back to a single destination.
-
-### Public read/write authorization
-
-It is required for the resource specified in the configuration file to have public read and write access,
-as the agent has no support for authentication.
 
 ### No 2 applications write at the same time
 

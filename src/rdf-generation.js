@@ -1,14 +1,14 @@
-import {Quad} from 'n3';
+import {Parser, Quad, Writer} from 'n3';
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
-import {Parser, Writer} from 'n3';
 
 /**
  * Convert an array of objects into RDF data
- * @param {[object]} data - Array of objects which should be converted into RDF
+ * @param {object} config - configuration of setup
+ * @param {{data: [object]}} data - Array of objects which should be converted into RDF
  * @param {string} rml - RML containing declarative rules on how to convert the objects into RDF.
- * @returns {Promise<[Quad]>} - Converted RDF data.
+ * @returns {Promise<[Quad] | {str: Quad[]}>} - Converted RDF data.
  */
-export async function objectsToRdf(data, rml) {
+export async function objectsToRdf(config, data, rml) {
   const input = {
     sources: {
       'data.json': JSON.stringify(data)
@@ -24,6 +24,15 @@ export async function objectsToRdf(data, rml) {
     body: JSON.stringify(input),
   });
 
+  if(config.multiple){
+    const out = {};
+    const content = await response.json();
+    for (const key of Object.keys(content.output)) {
+      const value = content.output[key];
+      out[key] = await convertRdfToQuads(value);
+    }
+    return out;
+  }
   const text = await response.text();
   return await convertRdfToQuads(JSON.parse(text).output);
 }

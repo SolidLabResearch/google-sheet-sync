@@ -104,7 +104,7 @@ export async function getWebsocket(url, resource) {
  * @returns {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
  */
-export async function queryResource(config, noCache = false) {
+export async function queryResources(config, noCache = false) {
   const myEngine = new QueryEngine();
   if (noCache) {
     await myEngine.invalidateHttpCache();
@@ -113,9 +113,10 @@ export async function queryResource(config, noCache = false) {
   const keys = new Set();
   const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
+  const comunicaSources = config.multiple ? config.resourceHostmap.map((entry) => entry.resource) : [config.source];
   try {
     const result = await myEngine.query(query, {
-      sources: [config.source],
+      sources: comunicaSources,
       fetch: solidAuthDetails.fetch
     });
 
@@ -137,11 +138,10 @@ export async function queryResource(config, noCache = false) {
 
       stream.on('error', reject);
     });
-
   } catch (err) {
     if (err.message.split('\n')[0].endsWith('(HTTP status 401):')) {
       console.error("Could not fetch resource because you haven't setup authentication. Please use the auth-server to setup Solid authentication");
-      return {results: {}, keys:{}};
+      return {results: {}, keys: {}};
     } else {
       throw err;
     }
@@ -231,9 +231,10 @@ export async function updateResource(deleted, added, url) {
     console.log('Synchronization done.');
   } else if (response.status === 401) {
     console.error(`Synchronization failed. Insufficient write permissions on resource ${url}`);
-    console.log(await response.json());
   } else {
     console.error('Synchronization failed.');
+    console.log(response.status);
+    console.log(await response.text());
   }
 }
 
