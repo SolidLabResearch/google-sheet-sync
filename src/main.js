@@ -2,7 +2,7 @@ import {compareArrays, compareQuads, onlyInLeft, rowsToObjects} from './util.js'
 import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
 import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
-import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from './solid.js';
+import {getNotificationChannelTypes, getWebsocket, queryResources, setupAuth, updateResource} from './solid.js';
 import {readFile} from 'fs/promises';
 import {Quad} from 'n3';
 
@@ -167,7 +167,7 @@ async function startFromFile(configPath, rulesPath) {
 
   // Cold start
   ymlContentToConfig(configYml);
-  const {results, keys} = await queryResource(config, true);
+  const {results, keys} = await queryResources(config, true);
   if (Object.keys(results).length === 0) {
     console.error('Failed cold start, no data collected from pod');
     return;
@@ -245,7 +245,7 @@ async function setupResourceListening(host, src) {
  * @returns {Promise<boolean>} true if there was new data written to the sheet, false if not
  */
 async function updateSheet() {
-  const {results} = await queryResource(config, true);
+  const {results} = await queryResources(config, true);
   const arrays = mapsTo2DArray(results);
   const maps = rowsToObjects(arrays);
   const quads = await objectsToRdf(config, {data: maps}, rml);

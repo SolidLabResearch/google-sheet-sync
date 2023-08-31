@@ -104,7 +104,7 @@ export async function getWebsocket(url, resource) {
  * @returns {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
  */
-export async function queryResource(config, noCache = false) {
+export async function queryResources(config, noCache = false) {
   const myEngine = new QueryEngine();
   if (noCache) {
     await myEngine.invalidateHttpCache();
