@@ -71,7 +71,7 @@ function ymlContentToConfig(ymlContent) {
       return firstKeys.every((entry) => compareArrays(first[entry], second[entry], comparator));
     };
     config.diffChecker = (left, right, cmp) => {
-      // the assumption is made that the structures of left and right are the same
+      // The assumption is made that the structures of left and right object are the same.
       const leftKeys = Object.keys(left);
       const out = {};
       leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
