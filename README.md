@@ -114,6 +114,8 @@ resources:
 
 Make sure that for every resource, you provide a host value. Because each resource could be on a different host.
 
+You can find an example for multiple resources in the files `config.query-multiple.example.yml` and `rules-multiple.example.yml`
+
 ### query (string)
 
 This parameter allows a user to define a SPARQL query that will be used to retrieve data from the specified data sources.
