@@ -231,7 +231,7 @@ async function setupResourceListening(host, src) {
       if (content.type === 'Update') {
         const res = await updateSheet();
         if (!res) {
-          console.log(`The program got a websocket ping from [${src}], but the latest changes were already present.`);
+          console.log(`Got a websocket ping from [${src}], but the latest changes were already present.`);
         }
       }
     });
