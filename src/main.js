@@ -255,42 +255,22 @@ async function startFromFile(configPath, rulesPath) {
   previousData = await objectsToRdf(config, {data: maps}, rml);
   console.log('Synchronisation cold start completed');
 
+  let allOnWebsockets;
   if (!config.multiple) {
-    const status = await setupResourceListening(config.host, config.source);
-    if (!status) {
-      setInterval(async () => {
-        const {results} = await queryResource(config, true);
-        const arrays = mapsTo2DArray(results);
-        const maps = rowsToObjects(arrays);
-        const quads = await objectsToRdf(config, {data: maps}, rml);
-        if (!config.cacheComparator(quads, previousData, compareQuads)) {
-          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
-          const maps2 = rowsToObjects(rows);
-          previousData = await objectsToRdf(config, {data: maps2}, rml);
-        }
-      }, config.interval);
-    }
+    allOnWebsockets = await setupResourceListening(config.host, config.source);
   } else {
     // try to setup a websocket connection for each resource
     const result = await Promise.all(config.resourceHostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
-    const allOnWebsockets = result.every((e) => e);
-    if (!allOnWebsockets) {
-      console.log('not all resources supported websockets, polling using timer');
-      // polling using timers
-      setInterval(async () => {
-        const {results} = await queryResource(config, true);
-        const arrays = mapsTo2DArray(results);
-        const maps = rowsToObjects(arrays);
-        const quads = await objectsToRdf(config, {data: maps}, rml);
-        if (!config.cacheComparator(quads, previousData, compareQuads)) {
-          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
-          const maps2 = rowsToObjects(rows);
-          previousData = await objectsToRdf(config, {data: maps2}, rml);
-        }
-      }, config.interval);
-    } else {
-      console.log('all resources are monitored using websockets');
-    }
+    allOnWebsockets = result.every((e) => e);
+  }
+  if (!allOnWebsockets) {
+    console.log('not all resources supported websockets, polling using timer');
+    // polling using timers
+    setInterval(async () => {
+      await updateSheet();
+    }, config.interval);
+  } else {
+    console.log('all resources are monitored using websockets');
   }
 
   // Sheet -> Pod sync
@@ -325,19 +305,30 @@ async function setupResourceListening(host, src) {
     ws.on('message', async (notification) => {
       const content = JSON.parse(notification);
       if (content.type === 'Update') {
-        const {results} = await queryResource(config, true);
-        const arrays = mapsTo2DArray(results);
-        const maps = rowsToObjects(arrays);
-        const quads = await objectsToRdf(config, {data: maps}, rml);
-        if (!config.cacheComparator(quads, previousData, compareQuads)) {
-          const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
-          const maps2 = rowsToObjects(rows);
-          previousData = await objectsToRdf(config, {data: maps2}, rml);
-        } else {
+        const res = await updateSheet();
+        if (!res) {
           console.log(`[${src}]\tgot notified but the latest changes are already present`);
         }
       }
     });
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Queries resource and writes changes to sheet
+ * @returns {Promise<boolean>} true if there was new data written to the sheet, false if not
+ */
+async function updateSheet() {
+  const {results} = await queryResource(config, true);
+  const arrays = mapsTo2DArray(results);
+  const maps = rowsToObjects(arrays);
+  const quads = await objectsToRdf(config, {data: maps}, rml);
+  if (!config.cacheComparator(quads, previousData, compareQuads)) {
+    const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
+    const maps2 = rowsToObjects(rows);
+    previousData = await objectsToRdf(config, {data: maps2}, rml);
     return true;
   }
   return false;
