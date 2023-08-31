@@ -3,8 +3,8 @@ prefixes:
   dbo: "http://dbpedia.org/ontology/"
   rdfs: "http://www.w3.org/2000/01/rdf-schema#"
 targets:
-  show_target: ["1~void", "turtle"]
-  ratings_target: ["0~void", "turtle"]
+  show_target: ["http://localhost:3000/testing/tv-shows~void", "turtle"]
+  ratings_target: ["http://localhost:3000/testing/ratings~void", "turtle"]
 mappings:
   tv-show:
     sources:
