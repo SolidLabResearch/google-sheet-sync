@@ -50,7 +50,7 @@ function ymlContentToConfig(ymlContent) {
     config.multiple = false;
     config.cacheComparator = compareArrays;
     config.diffChecker = onlyInLeft;
-    config.updater = (del, add) => updateResource(del, add, config.source);
+    config.resourceUpdater = (del, add) => updateResource(del, add, config.source);
   } else if (configJson.resources) {
     config.multiple = true;
     config.resourceHostmap = configJson.resources.map((object) => {
@@ -78,7 +78,7 @@ function ymlContentToConfig(ymlContent) {
       leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
       return out;
     };
-    config.updater = async (del, add) => {
+    config.resourceUpdater = async (del, add) => {
       const keys = new Set();
       const delKeys = Object.keys(del);
       const addKeys = Object.keys(add);
@@ -285,7 +285,7 @@ async function startFromFile(configPath, rulesPath) {
       const deletedQuads = config.diffChecker(previousData, quads, compareQuads);
       const addedQuads = config.diffChecker(quads, previousData, compareQuads);
       previousData = quads;
-      await config.updater(deletedQuads, addedQuads);
+      await config.resourceUpdater(deletedQuads, addedQuads);
     }
   }, config.interval);
 }
