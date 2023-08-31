@@ -36,7 +36,7 @@
 
 ### Postconditions
 
-- The resource `http://localhost:3000/example/software` contains the new data.
+- The resource `http://localhost:3000/testing/software` contains the new data.
 
 ## Test if changes on the Pod are synced back to the Google Sheet
 
@@ -49,7 +49,7 @@
 The pod can be updated with the following request:
 
 ```shell
-curl --location --request PATCH 'http://localhost:3000/example/software' --header 'Content-Type: text/n3' --data-raw '@prefix solid: <http://www.w3.org/ns/solid/terms#>. @prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>. @prefix schema: <http://schema.org/>. _:rename a solid:InsertDeletePatch; solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.'
+curl --location --request PATCH 'http://localhost:3000/testing/software' --header 'Content-Type: text/n3' --data-raw '@prefix solid: <http://www.w3.org/ns/solid/terms#>. @prefix software: <https://data.knows.idlab.ugent.be/person/office/software#>. @prefix schema: <http://schema.org/>. _:rename a solid:InsertDeletePatch; solid:inserts { software:test schema:name "test"; schema:description "abracadabra". }.'
 ```
 
 When using websockets, the change should be almost immediately shown,

@@ -96,7 +96,7 @@ This is required to use the websocket protocol to listen for changes on the reso
 example:
 
 ```yaml
-resource: "http://localhost:3000/example/software"
+resource: "http://localhost:3000/testing/software"
 host: "http://localhost:3000"
 ```
 
@@ -106,9 +106,9 @@ When querying multiple resources at the same time, use the following structure.
 
 ```yaml
 resources:
-   - resource: "http://localhost:3000/example/ratings.ttl"
+   - resource: "http://localhost:3000/testing/ratings"
      host: "http://localhost:3000"
-   - resource: "http://localhost:3000/example/tv-shows.ttl"
+   - resource: "http://localhost:3000/testing/tv-shows"
      host: "http://localhost:3000"
 ```
 

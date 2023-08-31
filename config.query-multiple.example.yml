@@ -1,7 +1,7 @@
 resources:
-  - resource: "http://localhost:3000/example/ratings.ttl"
+  - resource: "http://localhost:3000/testing/ratings"
     host: "http://localhost:3000"
-  - resource: "http://localhost:3000/example/tv-shows.ttl"
+  - resource: "http://localhost:3000/testing/tv-shows"
     host: "http://localhost:3000"
 
 query: >

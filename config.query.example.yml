@@ -1,4 +1,4 @@
-resource: "http://localhost:3000/example/software"
+resource: "http://localhost:3000/testing/software"
 host: "http://localhost:3000"
 
 query: >
