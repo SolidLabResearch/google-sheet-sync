@@ -224,7 +224,7 @@ async function startFromFile(configPath, rulesPath) {
       await updateSheet();
     }, config.interval);
   } else {
-    console.log('all resources are monitored using websockets');
+    console.log('All resources are monitored using websockets.');
   }
 
   // Sheet -> Pod sync
