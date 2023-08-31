@@ -45,7 +45,7 @@ function ymlContentToConfig(ymlContent) {
   }
 
   if (configJson.resource) {
-    config.source = removeTrailingSlashes(configJson.resource);
+    config.source = configJson.resource;
     config.multiple = false;
     config.cacheComparator = compareArrays;
     config.diffChecker = onlyInLeft;
@@ -54,7 +54,7 @@ function ymlContentToConfig(ymlContent) {
     config.multiple = true;
     config.resourceHostmap = configJson.resources.map((object) => {
       return {
-        resource: removeTrailingSlashes(object.resource),
+        resource: object.resource,
         host: removeTrailingSlashes(object.host)
       };
     });
