@@ -4,6 +4,7 @@ import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
 import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from './solid.js';
 import {readFile} from 'fs/promises';
+import {Quad} from 'n3';
 
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
@@ -77,37 +78,7 @@ function ymlContentToConfig(ymlContent) {
       leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
       return out;
     };
-    config.resourceUpdater = async (del, add) => {
-      const keys = new Set();
-      const delKeys = Object.keys(del);
-      const addKeys = Object.keys(add);
-      delKeys.forEach((entry) => keys.add(entry));
-      addKeys.forEach((entry) => keys.add(entry));
-      for (const key of keys) {
-        if (key === 'stdout') {
-          continue;
-        }
-        let d = [];
-        let a = [];
-        if (delKeys.includes(key)) {
-          d = del[key];
-        }
-        if (addKeys.includes(key)) {
-          a = add[key];
-        }
-        let found = false;
-        for (const resourceHostmapElement of config.resourceHostmap) {
-          if (resourceHostmapElement.resource.endsWith(key)) {
-            found = true;
-            await updateResource(d, a, resourceHostmapElement.resource);
-            break;
-          }
-        }
-        if (!found) {
-          console.error(`[ERROR]\tCould not find resource to update for key ${key}`);
-        }
-      }
-    };
+    config.resourceUpdater = multipleResourceUpdater; 
   } else {
     throw new Error('Error parsing YAML: At least 1 resource must be specified');
   }
@@ -284,6 +255,44 @@ async function updateSheet() {
     return true;
   }
   return false;
+}
+
+/**
+ * Updates the resources specified in the config (multi-resource mode)
+ * @param {Record<string, Quad[]>} del - pair of resource and list of quads to delete
+ * @param {Record<string, Quad[]>} add - pair of resource and list of quads to add
+ * @returns {Promise<void>}
+ */
+async function multipleResourceUpdater(del, add) {
+  const keys = new Set();
+  const delKeys = Object.keys(del);
+  const addKeys = Object.keys(add);
+  delKeys.forEach((entry) => keys.add(entry));
+  addKeys.forEach((entry) => keys.add(entry));
+  for (const key of keys) {
+    if (key === 'stdout') {
+      continue;
+    }
+    let d = [];
+    let a = [];
+    if (delKeys.includes(key)) {
+      d = del[key];
+    }
+    if (addKeys.includes(key)) {
+      a = add[key];
+    }
+    let found = false;
+    for (const resourceHostmapElement of config.resourceHostmap) {
+      if (resourceHostmapElement.resource.endsWith(key)) {
+        found = true;
+        await updateResource(d, a, resourceHostmapElement.resource);
+        break;
+      }
+    }
+    if (!found) {
+      console.error(`[ERROR]\tCould not find resource to update for key ${key}`);
+    }
+  }
 }
 
 /**
