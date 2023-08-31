@@ -1,3 +1,5 @@
+import {Quad} from 'n3';
+
 /**
  * Compares objects - checks keys and values
  * Called shallowEqual because javascript's `===` checks equality from objects on memory level, and not value level.
@@ -67,9 +69,54 @@ export function getWebsocketRequestOptions(source) {
  * @param {string} input - string to clean up
  * @returns {string} - cleaned up string
  */
-export function removeTrailingSlashes(input){
-  if(input.endsWith('/')){
+export function removeTrailingSlashes(input) {
+  if (input.endsWith('/')) {
     return input.slice(0, input.length - 1);
   }
   return input;
+}
+
+/**
+ * Determine if two Quad objects are considered equal.
+ * @param {Quad} a - First quad object
+ * @param {Quad} b - Second quad object
+ * @returns {boolean} Boolean that indicate if the two quad objects are considered equal.
+ */
+export function compareQuads(a, b) {
+  return a.equals(b);
+}
+
+/**
+ * Convert a 2D-array into objects using the first row as keys.
+ * @param {[Array]} arrays - 2D-array that should be converted.
+ * @returns {[object]} converted objects.
+ */
+export function rowsToObjects(arrays) {
+  const [keys, ...values] = arrays;
+  const results = [];
+
+  for (const valueSet of values) {
+    const result = {};
+    for (let i = 0; i < keys.length; i++) {
+      if (valueSet[i]) {
+        result[keys[i]] = valueSet[i];
+      }
+    }
+    results.push(result);
+  }
+
+  return results;
+}
+
+/**
+ * Give objects that are only present in one list but not in the other.
+ * @param {Array} left - Array in which the objects should be present.
+ * @param {Array} right - Array in which the objects should not be present.
+ * @param {Function} compareFunction - Function to determine if two objects are considered equal.
+ * @returns {Array} Collection of objects that are present in the 'left' array but not in the 'right' array.
+ */
+export function onlyInLeft(left, right, compareFunction) {
+  return left.filter(leftValue =>
+    !right.some(rightValue =>
+      compareFunction(leftValue, rightValue)));
 }

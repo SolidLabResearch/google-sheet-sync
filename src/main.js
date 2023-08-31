@@ -1,10 +1,9 @@
-import {compareArrays, removeTrailingSlashes} from './util.js';
+import {compareArrays, compareQuads, onlyInLeft, removeTrailingSlashes, rowsToObjects} from './util.js';
 import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
 import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
 import {getNotificationChannelTypes, getWebsocket, queryResource, setupAuth, updateResource} from './solid.js';
 import {readFile} from 'fs/promises';
-import {Quad} from 'n3';
 
 // Object containing information relating to the configuration of the synchronisation app.
 const config = {};
@@ -165,51 +164,6 @@ function mapsTo2DArray(maps) {
   });
 
   return arrays;
-}
-
-/**
- * Convert a 2D-array into objects using the first row as keys.
- * @param {[Array]} arrays - 2D-array that should be converted.
- * @returns {[object]} converted objects.
- */
-function rowsToObjects(arrays) {
-  const [keys, ...values] = arrays;
-  const results = [];
-
-  for (const valueSet of values) {
-    const result = {};
-    for (let i = 0; i < keys.length; i++) {
-      if (valueSet[i]) {
-        result[keys[i]] = valueSet[i];
-      }
-    }
-    results.push(result);
-  }
-
-  return results;
-}
-
-/**
- * Determine if two Quad objects are considered equal.
- * @param {Quad} a - First quad object
- * @param {Quad} b - Second quad object
- * @returns {boolean} Boolean that indicate if the two quad objects are considered equal.
- */
-function compareQuads(a, b) {
-  return a.equals(b);
-}
-
-/**
- * Give objects that are only present in one list but not in the other.
- * @param {Array} left - Array in which the objects should be present.
- * @param {Array} right - Array in which the objects should not be present.
- * @param {Function} compareFunction - Function to determine if two objects are considered equal.
- * @returns {Array} Collection of objects that are present in the 'left' array but not in the 'right' array.
- */
-function onlyInLeft(left, right, compareFunction) {
-  return left.filter(leftValue =>
-    !right.some(rightValue =>
-      compareFunction(leftValue, rightValue)));
 }
 
 /**
