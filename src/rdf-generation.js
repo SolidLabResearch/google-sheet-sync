@@ -1,4 +1,4 @@
-import {Parser, Quad, Writer} from "n3";
+import {Parser, Quad, Writer} from 'n3';
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 
 /**
@@ -25,10 +25,10 @@ export async function objectsToRdf(config, data, rml) {
   });
 
   if(config.multiple){
-    const out = {}
-    const content = await response.json()
+    const out = {};
+    const content = await response.json();
     for (const key of Object.keys(content.output)) {
-      const value = content.output[key]
+      const value = content.output[key];
       out[key] = await convertRdfToQuads(value);
     }
     return out;

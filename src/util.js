@@ -68,7 +68,7 @@ export function getWebsocketRequestOptions(source) {
  * @returns {string} - cleaned up string
  */
 export function removeTrailingSlashes(input){
-  if(input.endsWith("/")){
+  if(input.endsWith('/')){
     return input.slice(0, input.length - 1);
   }
   return input;

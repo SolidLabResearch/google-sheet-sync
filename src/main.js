@@ -1,5 +1,4 @@
-import {WebSocket} from 'ws';
-import {compareArrays, getWebsocketRequestOptions, removeTrailingSlashes} from './util.js';
+import {compareArrays, removeTrailingSlashes} from './util.js';
 import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
 import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
@@ -54,7 +53,7 @@ function ymlContentToConfig(ymlContent) {
     config.updater = (del, add) => updateResource(del, add, config.source);
   } else if (configJson.resources) {
     config.multiple = true;
-    config.resource_hostmap = configJson.resources.map((object) => {
+    config.resourceHostmap = configJson.resources.map((object) => {
       return {
         resource: removeTrailingSlashes(object.resource),
         host: removeTrailingSlashes(object.host)
@@ -99,7 +98,7 @@ function ymlContentToConfig(ymlContent) {
           a = add[key];
         }
         let found = false;
-        for (const resourceHostmapElement of config.resource_hostmap) {
+        for (const resourceHostmapElement of config.resourceHostmap) {
           if (resourceHostmapElement.resource.endsWith(key)) {
             found = true;
             await updateResource(d, a, resourceHostmapElement.resource);
@@ -274,9 +273,9 @@ async function startFromFile(configPath, rulesPath) {
     }
   } else {
     // try to setup a websocket connection for each resource
-    const result = await Promise.all(config.resource_hostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
-    const all_on_websockets = result.every((e) => e);
-    if (!all_on_websockets) {
+    const result = await Promise.all(config.resourceHostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
+    const allOnWebsockets = result.every((e) => e);
+    if (!allOnWebsockets) {
       console.log('not all resources supported websockets, polling using timer');
       // polling using timers
       setInterval(async () => {

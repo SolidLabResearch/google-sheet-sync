@@ -113,10 +113,10 @@ export async function queryResource(config, noCache = false) {
   const keys = new Set();
   const query = config.query !== undefined ? config.query : configToSPARQLQuery(config);
 
-  const communica_sources = config.multiple ? config.resource_hostmap.map((entry) => entry.resource) : [config.source];
+  const comunicaSources = config.multiple ? config.resource_hostmap.map((entry) => entry.resource) : [config.source];
   try {
     const result = await myEngine.query(query, {
-      sources: communica_sources,
+      sources: comunicaSources,
       fetch: solidAuthDetails.fetch
     });
 
