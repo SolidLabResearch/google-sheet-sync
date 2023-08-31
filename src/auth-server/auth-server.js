@@ -27,7 +27,6 @@ const server = createServer(async (request, response) => {
 
       const jsonString = JSON.stringify(token, null, 2);
       fs.writeFileSync('credentials.json', jsonString, 'utf-8');
-      console.log('here');
       status = '[DONE]\tGoogle login successful';
       returnWithStatusText(response, status);
     });

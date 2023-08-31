@@ -84,7 +84,6 @@ function ymlContentToConfig(ymlContent) {
       const addKeys = Object.keys(add);
       delKeys.forEach((entry) => keys.add(entry));
       addKeys.forEach((entry) => keys.add(entry));
-      console.log(keys);
       for (const key of keys) {
         if (key === 'stdout') {
           continue;
