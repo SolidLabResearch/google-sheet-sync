@@ -220,9 +220,7 @@ async function startFromFile(configPath, rulesPath) {
   if (!allOnWebsockets) {
     console.log('Not all resources supported websocket listening. A timer will be used to poll the resources.');
     // polling using timers
-    setInterval(async () => {
-      await updateSheet();
-    }, config.interval);
+    setInterval(updateSheet, config.interval);
   } else {
     console.log('All resources are monitored using websockets.');
   }
