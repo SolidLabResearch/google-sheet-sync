@@ -1,4 +1,4 @@
-import {compareArrays, compareQuads, onlyInLeft, removeTrailingSlashes, rowsToObjects} from './util.js';
+import {compareArrays, compareQuads, onlyInLeft, rowsToObjects} from './util.js';
 import {checkSheetForChanges, makeClient, writeToSheet} from './google.js';
 import {load} from 'js-yaml';
 import {objectsToRdf, yarrrmlToRml} from './rdf-generation.js';
@@ -56,7 +56,7 @@ function ymlContentToConfig(ymlContent) {
     config.resourceHostmap = configJson.resources.map((object) => {
       return {
         resource: object.resource,
-        host: removeTrailingSlashes(object.host)
+        host: object.host
       };
     });
     config.cacheComparator = (first, second, comparator) => {
@@ -97,7 +97,7 @@ function ymlContentToConfig(ymlContent) {
 
   if (!config.multiple) {
     if (configJson.host) {
-      config.host = removeTrailingSlashes(configJson.host);
+      config.host = configJson.host;
     } else {
       throw new Error('Error parsing YAML: host value should be specified');
     }
