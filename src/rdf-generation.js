@@ -24,17 +24,29 @@ export async function objectsToRdf(config, data, rml) {
     body: JSON.stringify(input),
   });
 
-  if(config.multiple){
-    const out = {};
-    const content = await response.json();
-    for (const key of Object.keys(content.output)) {
-      const value = content.output[key];
-      out[key] = await convertRdfToQuads(value);
+  if (response.ok) {
+    if (config.multiple) {
+      const out = {};
+      const content = await response.json();
+      for (const key of Object.keys(content.output)) {
+        const value = content.output[key];
+        out[key] = await convertRdfToQuads(value);
+      }
+      return out;
     }
-    return out;
+    const text = await response.text();
+    return await convertRdfToQuads(JSON.parse(text).output);
+  } else {
+    const body = await response.json();
+    if (response.status === 500 && body.message === 'Error while executing the rules.'){
+      console.error('[ERROR]\tThe RMLMapper encountered errors while executing the rules.');
+    } else {
+      console.log('[ERROR]\tThe RMLMapper returned an unexpected response:');
+      console.log(response.status);
+      console.error(body);
+    }
+    return config.multiple ? {} : [];
   }
-  const text = await response.text();
-  return await convertRdfToQuads(JSON.parse(text).output);
 }
 
 /**
