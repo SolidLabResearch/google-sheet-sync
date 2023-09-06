@@ -221,10 +221,10 @@ async function startFromFile(configPath, rulesPath) {
 }
 
 /**
- * Tries to set up resource listening using websockets
- * @param {string} host - host of the resource, used to gather websocket endpoints
- * @param {string} src - resource url
- * @returns {Promise<boolean>} - true if successful, false otherwise.
+ * Tries to set up resource listening using websockets.
+ * @param {string} host - Host of the resource, used to gather websocket endpoints.
+ * @param {string} src - Resource url.
+ * @returns {Promise<boolean>} - True if successful, false otherwise.
  */
 async function setupResourceListening(host, src) {
   // Pod -> Sheet sync
@@ -248,8 +248,8 @@ async function setupResourceListening(host, src) {
 }
 
 /**
- * Queries resource and writes changes to sheet
- * @returns {Promise<boolean>} true if there was new data written to the sheet, false if not
+ * Queries resource and writes changes to sheet.
+ * @returns {Promise<boolean>} True if there was new data written to the sheet, false if not.
  */
 async function updateSheet() {
   const {results} = await queryResources(config, true);
@@ -269,9 +269,9 @@ async function updateSheet() {
 }
 
 /**
- * Updates the resources specified in the config (multi-resource mode)
- * @param {Record<string, Quad[]>} del - pair of resource and list of quads to delete
- * @param {Record<string, Quad[]>} add - pair of resource and list of quads to add
+ * Updates the resources specified in the config (multi-resource mode).
+ * @param {Record<string, Quad[]>} del - Pair of resource and list of quads to delete.
+ * @param {Record<string, Quad[]>} add - Pair of resource and list of quads to add.
  * @returns {Promise<void>}
  */
 async function multipleResourceUpdater(del, add) {
@@ -307,7 +307,7 @@ async function multipleResourceUpdater(del, add) {
 }
 
 /**
- *
+ * This function starts the agent.
  */
 function main() {
   startFromFile('config.yml', 'rules.yml');

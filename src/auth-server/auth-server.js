@@ -45,9 +45,9 @@ const server = createServer(async (request, response) => {
 });
 
 /**
- * Sends back the index.html with status filled in
- * @param {ServerResponse} response - response object to write to
- * @param {string} status - status text to use
+ * Sends back the index.html with status filled in.
+ * @param {ServerResponse} response - Response object to write to.
+ * @param {string} status - Status text to use.
  * @returns {void}
  */
 function returnWithStatusText(response, status) {
@@ -74,7 +74,7 @@ function returnWithStatusText(response, status) {
 }
 
 /**
- *
+ * This function starts the server.
  */
 function main() {
   config();

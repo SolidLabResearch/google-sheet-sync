@@ -28,11 +28,11 @@ export async function makeClient() {
 }
 
 /**
- * Write a 2D array to a Google Sheet
+ * Write a 2D array to a Google Sheet.
  * @param {Array} array - 2D array containing the data that should be written to the Google Sheet.
  * @param {string} sheetId - ID of the sheet to which the data should be written.
- * @param {string} sheetName - Name of the Sheet page to check
- * @returns {Promise<Array>} - Sheet data
+ * @param {string} sheetName - Name of the Sheet page to check.
+ * @returns {Promise<Array>} - Sheet data.
  */
 export async function writeToSheet(array, sheetId, sheetName) {
   const range = sheetName + '!A1:' + convertToCellIndex(array);
@@ -59,7 +59,7 @@ export async function writeToSheet(array, sheetId, sheetName) {
 /**
  * Pull data from the sheet and check if there are any changes with the previously pulled data.
  * @param {string} sheetId - ID of the Google sheet from which the data should be pulled and checked.
- * @param {string} sheetName - Name of the Sheet page to check
+ * @param {string} sheetName - Name of the Sheet page to check.
  * @returns {Promise<{Boolean, Array}>} - 2D-array containing the latest data from the sheet
  * and a boolean indicating a possible change.
  */
@@ -76,7 +76,7 @@ export async function checkSheetForChanges(sheetId, sheetName) {
 /**
  * Get the data from the sheet in the initial range.
  * @param {string} sheetId - ID from the sheet from which the data should be pulled.
- * @param {string} sheetName - Name of the Sheet page to check
+ * @param {string} sheetName - Name of the Sheet page to check.
  * @returns {Promise<Array>} 2D-array containing the data from the sheet.
  */
 async function getFromSheet(sheetId, sheetName) {
@@ -108,8 +108,8 @@ function convertToCellIndex(array) {
 
 /**
  * Check if two 2D-arrays are equal (including sequence).
- * @param {Array} arr1 - first 2D-array
- * @param {Array} arr2 - second 2D-array
+ * @param {Array} arr1 - First 2D-array.
+ * @param {Array} arr2 - Second 2D-array.
  * @returns {boolean} Boolean indicating if the two 2D-arrays are equal.
  */
 function areArraysEqual(arr1, arr2) {

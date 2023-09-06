@@ -20,7 +20,7 @@ const solidAuthDetails = {
 };
 
 /**
- * Prepare authentication variables
+ * Prepare authentication variables.
  * @returns {Promise<void>}
  */
 export async function setupAuth() {
@@ -48,7 +48,7 @@ export async function setupAuth() {
 }
 
 /**
- * Request an access token using the id and secret from the setup
+ * Request an access token using the id and secret from the setup.
  * @returns {Promise<void>}
  */
 async function requestAccessToken() {
@@ -85,9 +85,10 @@ async function requestAccessToken() {
 }
 
 /**
- * @param {string} url - endpoint where websockets can be requested
- * @param {string} resource - resource url to listen to using the websocket
- * @returns {WebSocket} - Websocket object for that resource
+ * This function returns a WebSocket for a resource.
+ * @param {string} url - Endpoint where websockets can be requested.
+ * @param {string} resource - Resource url to listen to using the websocket.
+ * @returns {WebSocket} - Websocket object for that resource.
  */
 export async function getWebsocket(url, resource) {
   const requestOptions = getWebsocketRequestOptions(resource);
@@ -98,9 +99,9 @@ export async function getWebsocket(url, resource) {
 }
 
 /**
- * Query the data from the Solid pod/resource(s) using the configuration
+ * Query the data from the Solid pod/resource(s) using the configuration.
  * @param {object} config - Configuration object containing the necessary information to query and process the retrieved data.
- * @param {boolean} noCache - clear http cache to get most recent document.
+ * @param {boolean} noCache - Clear http cache to get most recent document.
  * @returns {Promise<{array, array}>} Map objects containing the retrieved data
  * and all possible keys representing the properties contained in the maps.
  */
@@ -149,9 +150,9 @@ export async function queryResources(config, noCache = false) {
 }
 
 /**
- * Query the available websocket channels that may be listed in a given endpoint
- * @param {string} url - host to query (e.g. http://localhost:3000/.well-known/solid/)
- * @returns {Promise<string[]>} list of available endpoints to request a websocket connection
+ * Query the available websocket channels that may be listed in a given endpoint.
+ * @param {string} url - Host to query (e.g. Http://localhost:3000/.well-known/solid/).
+ * @returns {Promise<string[]>} List of available endpoints to request a websocket connection.
  */
 export async function getNotificationChannelTypes(url) {
   const myEngine = new QueryEngine();
@@ -169,7 +170,7 @@ export async function getNotificationChannelTypes(url) {
 }
 
 /**
- * Convert the "fields" configuration data into a SPARQL query
+ * Convert the "fields" configuration data into a SPARQL query.
  * @param {object} config - Configuration object containing the necessary information build the SPARQL query (required and optional fields).
  * @returns {string} The constructed SPARQL query.
  */

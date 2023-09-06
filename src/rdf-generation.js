@@ -2,9 +2,9 @@ import {Parser, Quad, Writer} from 'n3';
 import pkg from '@rmlio/yarrrml-parser/lib/rml-generator.js';
 
 /**
- * Convert an array of objects into RDF data
- * @param {object} config - configuration of setup
- * @param {{data: [object]}} data - Array of objects which should be converted into RDF
+ * Convert an array of objects into RDF data.
+ * @param {object} config - Configuration of setup.
+ * @param {{data: [object]}} data - Array of objects which should be converted into RDF.
  * @param {string} rml - RML containing declarative rules on how to convert the objects into RDF.
  * @returns {Promise<[Quad] | {str: Quad[]}>} - Converted RDF data.
  */

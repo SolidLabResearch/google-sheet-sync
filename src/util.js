@@ -3,9 +3,9 @@ import {Quad} from 'n3';
 /**
  * Compares objects - checks keys and values
  * Called shallowEqual because javascript's `===` checks equality from objects on memory level, and not value level.
- * @param {object} obj1 - first object to compare
- * @param {object} obj2 - second object to compare
- * @returns {boolean} Boolean that indicates if the objects are equal
+ * @param {object} obj1 - First object to compare.
+ * @param {object} obj2 - Second object to compare.
+ * @returns {boolean} Boolean that indicates if the objects are equal.
  */
 export function shallowEqual(obj1, obj2) {
   const keys1 = Object.keys(obj1);
@@ -25,11 +25,11 @@ export function shallowEqual(obj1, obj2) {
 }
 
 /**
- * Compares 2 arrays and checks if they contain the same objects (order doesn't matter)
- * @param {object[]} first - first array of objects to compare
- * @param {object[]} second - second array of objects to compare
- * @param {function(object, object): boolean} comparator - comparator function to use. Defaults to shallowEqual
- * @returns {boolean} Boolean that indicates if the arrays are equal (not counting order)
+ * Compares 2 arrays and checks if they contain the same objects (order doesn't matter).
+ * @param {object[]} first - First array of objects to compare.
+ * @param {object[]} second - Second array of objects to compare.
+ * @param {function(object, object): boolean} comparator - Comparator function to use. Defaults to shallowEqual.
+ * @returns {boolean} Boolean that indicates if the arrays are equal (not counting order).
  */
 export function compareArrays(first, second, comparator = shallowEqual) {
   if (first.length !== second.length) {
@@ -44,9 +44,9 @@ export function compareArrays(first, second, comparator = shallowEqual) {
 }
 
 /**
- * Generates RequestOptions to establish a websocket connection for the source parameter resource
- * @param {string} source - resource to which a websocket should be provided.
- * @returns {{redirect: string, headers: Headers, method: string, body: string}} RequestOptions to request a websocket connection to source parameter
+ * Generates RequestOptions to establish a websocket connection for the source parameter resource.
+ * @param {string} source - Resource to which a websocket should be provided.
+ * @returns {{redirect: string, headers: Headers, method: string, body: string}} RequestOptions to request a websocket connection to source parameter.
  */
 export function getWebsocketRequestOptions(source) {
   const myHeaders = new Headers();
@@ -65,8 +65,8 @@ export function getWebsocketRequestOptions(source) {
 
 /**
  * Determine if two Quad objects are considered equal.
- * @param {Quad} a - First quad object
- * @param {Quad} b - Second quad object
+ * @param {Quad} a - First quad object.
+ * @param {Quad} b - Second quad object.
  * @returns {boolean} Boolean that indicate if the two quad objects are considered equal.
  */
 export function compareQuads(a, b) {
@@ -76,7 +76,7 @@ export function compareQuads(a, b) {
 /**
  * Convert a 2D-array into objects using the first row as keys.
  * @param {[Array]} arrays - 2D-array that should be converted.
- * @returns {[object]} converted objects.
+ * @returns {[object]} Converted objects.
  */
 export function rowsToObjects(arrays) {
   const [keys, ...values] = arrays;
