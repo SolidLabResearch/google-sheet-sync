@@ -2,21 +2,13 @@ module.exports = {
   root: true,
   env: {node: true, es2020: true},
   extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react/jsx-runtime',
-    'plugin:react-hooks/recommended',
+    'eslint:recommended'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parserOptions: {ecmaVersion: 'latest', sourceType: 'module'},
-  settings: {react: {version: '18.2'}},
-  plugins: ['react-refresh',
-  'jsdoc'],
+  plugins: [
+    'jsdoc'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      {allowConstantExport: true},
-    ],
     'prefer-const': ['error', {
       'destructuring': 'any',
       'ignoreReadBeforeAssign': false
@@ -27,7 +19,7 @@ module.exports = {
     'indent': ['error', 2],
     'semi': ['error', 'always'],
     'camelcase': 'error',
-    'quotes': ['error', 'single', { 'avoidEscape': true }],
+    'quotes': ['error', 'single', {'avoidEscape': true}],
     'jsdoc/check-access': 1, // Recommended
     'jsdoc/check-alignment': 1, // Recommended
     // 'jsdoc/check-examples': 1,
