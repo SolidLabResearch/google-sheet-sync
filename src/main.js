@@ -78,7 +78,7 @@ function ymlContentToConfig(ymlContent) {
       leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
       return out;
     };
-    config.resourceUpdater = multipleResourceUpdater; 
+    config.resourceUpdater = multipleResourceUpdater;
   } else {
     throw new Error('Error parsing YAML: At least 1 resource must be specified');
   }
@@ -178,13 +178,17 @@ async function startFromFile(configPath, rulesPath) {
   const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
   const maps = rowsToObjects(rows);
   previousData = await objectsToRdf(config, {data: maps}, rml);
+  if((Array.isArray(previousData) && previousData.length === 0) || Object.keys(previousData).length === 0) {
+    console.error('Failed cold start. Something went wrong.');
+    return;
+  }
   console.log('Synchronisation cold start completed');
 
   let allOnWebsockets;
   if (!config.multiple) {
     allOnWebsockets = await setupResourceListening(config.host, config.source);
   } else {
-    // try to setup a websocket connection for each resource
+    // try to set up a websocket connection for each resource
     const result = await Promise.all(config.resourceHostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
     allOnWebsockets = result.every((e) => e);
   }
@@ -204,7 +208,10 @@ async function startFromFile(configPath, rulesPath) {
       const maps = rowsToObjects(rows);
 
       const quads = await objectsToRdf(config, {data: maps}, rml);
-
+      if((Array.isArray(quads) && quads.length === 0) || Object.keys(quads).length === 0) {
+        console.error('Failed to Synchronize.');
+        return;
+      }
       const deletedQuads = config.diffChecker(previousData, quads, compareQuads);
       const addedQuads = config.diffChecker(quads, previousData, compareQuads);
       previousData = quads;
@@ -249,6 +256,9 @@ async function updateSheet() {
   const arrays = mapsTo2DArray(results);
   const maps = rowsToObjects(arrays);
   const quads = await objectsToRdf(config, {data: maps}, rml);
+  if((Array.isArray(quads) && quads.length === 0) || Object.keys(quads).length === 0) {
+    return false;
+  }
   if (!config.cacheComparator(quads, previousData, compareQuads)) {
     const rows = await writeToSheet(arrays, config.sheetid, config.sheetName);
     const maps2 = rowsToObjects(rows);
