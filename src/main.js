@@ -78,7 +78,7 @@ function ymlContentToConfig(ymlContent) {
       leftKeys.forEach((key) => out[key] = onlyInLeft(left[key], right[key], cmp));
       return out;
     };
-    config.resourceUpdater = multipleResourceUpdater; 
+    config.resourceUpdater = multipleResourceUpdater;
   } else {
     throw new Error('Error parsing YAML: At least 1 resource must be specified');
   }
@@ -179,7 +179,7 @@ async function startFromFile(configPath, rulesPath) {
   const maps = rowsToObjects(rows);
   previousData = await objectsToRdf(config, {data: maps}, rml);
   if((Array.isArray(previousData) && previousData.length === 0) || Object.keys(previousData).length === 0) {
-    console.error('Failed cold start, something went wrong');
+    console.error('Failed cold start. Something went wrong.');
     return;
   }
   console.log('Synchronisation cold start completed');
@@ -188,7 +188,7 @@ async function startFromFile(configPath, rulesPath) {
   if (!config.multiple) {
     allOnWebsockets = await setupResourceListening(config.host, config.source);
   } else {
-    // try to setup a websocket connection for each resource
+    // try to set up a websocket connection for each resource
     const result = await Promise.all(config.resourceHostmap.map(async (entry) => await setupResourceListening(entry.host, entry.resource)));
     allOnWebsockets = result.every((e) => e);
   }
@@ -209,7 +209,7 @@ async function startFromFile(configPath, rulesPath) {
 
       const quads = await objectsToRdf(config, {data: maps}, rml);
       if((Array.isArray(quads) && quads.length === 0) || Object.keys(quads).length === 0) {
-        console.error('Failed to Synchronize');
+        console.error('Failed to Synchronize.');
         return;
       }
       const deletedQuads = config.diffChecker(previousData, quads, compareQuads);
